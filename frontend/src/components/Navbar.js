@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
+import { FaHome } from 'react-icons/fa';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-lg fixed w-full z-50">
+    <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <span className="text-2xl font-bold text-primary">Tanavi Properties</span>
+          <div className="flex items-center space-x-2">
+            <FaHome className="text-3xl text-primary" />
+            <span className="text-xl font-bold"><span className="text-gray-900">TANAVI</span> <span className="text-gray-600">Properties</span></span>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-gray-700 hover:text-primary">Home</a>
-            <a href="/about" className="text-gray-700 hover:text-primary">About</a>
-            <a href="/projects" className="text-gray-700 hover:text-primary">Projects</a>
-            <a href="/blogs" className="text-gray-700 hover:text-primary">Blogs</a>
-            <a href="/careers" className="text-gray-700 hover:text-primary">Careers</a>
-            <a href="/#contact" className="text-gray-700 hover:text-primary">Contact</a>
+            <a href="/" className="text-gray-700 hover:text-primary font-medium">Home</a>
+            <a href="/about" className="text-gray-700 hover:text-primary font-medium">About</a>
+            <a href="/category/all" className="text-gray-700 hover:text-primary font-medium">Properties</a>
+            <a href="/buy-sell" className="text-gray-700 hover:text-primary font-medium">Buy Sell</a>
+            <a href="/blogs" className="text-gray-700 hover:text-primary font-medium">Gallery</a>
+            <button className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition font-medium">
+              List Your Property
+            </button>
           </div>
 
           <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
@@ -33,10 +37,9 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <a href="/" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Home</a>
             <a href="/about" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">About</a>
-            <a href="/projects" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Projects</a>
-            <a href="/blogs" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Blogs</a>
-            <a href="/careers" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Careers</a>
-            <a href="/#contact" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Contact</a>
+            <a href="/category/all" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Properties</a>
+            <a href="/buy-sell" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
+            <a href="/blogs" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
           </div>
         </div>
       )}

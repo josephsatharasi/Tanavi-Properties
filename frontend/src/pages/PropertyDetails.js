@@ -61,22 +61,34 @@ const PropertyDetails = () => {
             <p className="text-gray-600 mb-8">{property.location}</p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-3xl font-bold text-primary">{property.bedrooms}</p>
-                <p className="text-gray-600">Bedrooms</p>
-              </div>
+              {property.type !== 'Agricultural Land' && property.type !== 'Open Plot' && property.bedrooms > 0 && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.bedrooms}</p>
+                  <p className="text-gray-600">Bedrooms</p>
+                </div>
+              )}
               <div className="bg-blue-50 p-4 rounded-lg text-center">
                 <p className="text-3xl font-bold text-primary">{property.area}</p>
                 <p className="text-gray-600">Sq.ft</p>
               </div>
-              <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-3xl font-bold text-primary">{property.bathrooms}</p>
-                <p className="text-gray-600">Bathrooms</p>
-              </div>
-              <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-3xl font-bold text-primary">{property.parking}</p>
-                <p className="text-gray-600">Parking</p>
-              </div>
+              {property.type !== 'Agricultural Land' && property.type !== 'Open Plot' && property.bathrooms > 0 && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.bathrooms}</p>
+                  <p className="text-gray-600">Bathrooms</p>
+                </div>
+              )}
+              {property.parking > 0 && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.parking}</p>
+                  <p className="text-gray-600">Parking</p>
+                </div>
+              )}
+              {property.type === 'Agricultural Land' && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.type}</p>
+                  <p className="text-gray-600">Property Type</p>
+                </div>
+              )}
             </div>
 
             <div className="mb-8">
@@ -96,19 +108,21 @@ const PropertyDetails = () => {
               </ul>
             </div>
 
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Dimensions</h2>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {property.dimensions.map((dim, index) => (
-                    <div key={index} className="flex justify-between border-b pb-2">
-                      <span className="font-semibold">{dim.room}:</span>
-                      <span className="text-gray-600">{dim.size}</span>
-                    </div>
-                  ))}
+            {property.dimensions && property.dimensions.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Dimensions</h2>
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {property.dimensions.map((dim, index) => (
+                      <div key={index} className="flex justify-between border-b pb-2">
+                        <span className="font-semibold">{dim.room}:</span>
+                        <span className="text-gray-600">{dim.size}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <button className="w-full bg-primary text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
               Schedule a Visit

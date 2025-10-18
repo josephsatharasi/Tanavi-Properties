@@ -1,47 +1,32 @@
 import React from 'react';
 import Hero from '../components/Hero';
-import Stats from '../components/Stats';
-import Expertise from '../components/Expertise';
 import PropertyCard from '../components/PropertyCard';
-import Testimonials from '../components/Testimonials';
-import FAQ from '../components/FAQ';
+import PropertyCategories from '../components/PropertyCategories';
+import WhyChoose from '../components/WhyChoose';
+import RegisterCTA from '../components/RegisterCTA';
 import { properties } from '../data/properties';
 
 const Home = () => {
   return (
     <div>
       <Hero />
-      <Stats />
-      <Expertise />
       
-      <section id="properties" className="py-20 bg-gray-50">
+      <section id="properties" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center mb-12">Featured Properties</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">Featured Properties</h2>
+          <div className="md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 flex md:flex-none overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide">
+            {properties.slice(0, 4).map((property) => (
+              <div key={property.id} className="min-w-[280px] md:min-w-0 snap-center">
+                <PropertyCard property={property} />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <Testimonials />
-      <FAQ />
-
-      <section id="contact" className="py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center mb-12">Contact Us</h2>
-          <form className="space-y-6">
-            <input type="text" placeholder="Name" className="w-full px-4 py-3 border rounded-lg" />
-            <input type="email" placeholder="Email" className="w-full px-4 py-3 border rounded-lg" />
-            <input type="tel" placeholder="Phone" className="w-full px-4 py-3 border rounded-lg" />
-            <textarea placeholder="Message" rows="4" className="w-full px-4 py-3 border rounded-lg"></textarea>
-            <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-700 transition">
-              Send Message
-            </button>
-          </form>
-        </div>
-      </section>
+      <PropertyCategories />
+      <WhyChoose />
+      <RegisterCTA />
     </div>
   );
 };
