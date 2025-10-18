@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FaHome } from 'react-icons/fa';
+import RegistrationModal from './RegistrationModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
+    <>
     <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -19,7 +22,10 @@ const Navbar = () => {
             <a href="/category/all" className="text-gray-700 hover:text-primary font-medium">Properties</a>
             <a href="/buy-sell" className="text-gray-700 hover:text-primary font-medium">Buy Sell</a>
             <a href="/blogs" className="text-gray-700 hover:text-primary font-medium">Gallery</a>
-            <button className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition font-medium">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition font-medium"
+            >
               List Your Property
             </button>
           </div>
@@ -44,6 +50,8 @@ const Navbar = () => {
         </div>
       )}
     </nav>
+    <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 

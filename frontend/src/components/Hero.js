@@ -32,7 +32,7 @@ const Hero = () => {
           </p>
           
           <div className="bg-white rounded-lg p-6 max-w-4xl shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="flex flex-col gap-4">
               <div className="relative">
                 <select 
                   value={location}
@@ -51,40 +51,42 @@ const Hero = () => {
                 </select>
                 <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
               </div>
-              <div className="relative">
-                <select 
-                  value={propertyType}
-                  onChange={(e) => setPropertyType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
-                >
-                  <option value="">Property Type</option>
-                  <option value="Agricultural Land">Agricultural Land</option>
-                  <option value="Independent House">Independent House</option>
-                  <option value="Open Plot">Open Plot</option>
-                  <option value="Apartment">Apartment</option>
-                  <option value="Farmhouse">Farmhouse</option>
-                  <option value="Office Space">Office Space</option>
-                </select>
-                <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-              <div className="relative">
-                <select 
-                  value={priceRange}
-                  onChange={(e) => setPriceRange(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
-                >
-                  <option value="">Budget Range</option>
-                  <option value="0-50">Under 50 Lakhs</option>
-                  <option value="50-100">50L - 1 Cr</option>
-                  <option value="100-200">1 Cr - 2 Cr</option>
-                  <option value="200-500">2 Cr - 5 Cr</option>
-                  <option value="500+">Above 5 Cr</option>
-                </select>
-                <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative">
+                  <select 
+                    value={propertyType}
+                    onChange={(e) => setPropertyType(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
+                  >
+                    <option value="">Property Type</option>
+                    <option value="Agricultural Land">Agricultural Land</option>
+                    <option value="Independent House">Independent House</option>
+                    <option value="Open Plot">Open Plot</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Farmhouse">Farmhouse</option>
+                    <option value="Office Space">Office Space</option>
+                  </select>
+                  <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
+                <div className="relative">
+                  <select 
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
+                  >
+                    <option value="">Budget Range</option>
+                    <option value="0-50">Under 50 Lakhs</option>
+                    <option value="50-100">50L - 1 Cr</option>
+                    <option value="100-200">1 Cr - 2 Cr</option>
+                    <option value="200-500">2 Cr - 5 Cr</option>
+                    <option value="500+">Above 5 Cr</option>
+                  </select>
+                  <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
               </div>
               <button 
                 onClick={handleSearch}
-                className="bg-primary text-white px-6 py-3 rounded hover:bg-opacity-90 transition font-medium"
+                className="w-full bg-primary text-white px-6 py-3 rounded hover:bg-opacity-90 transition font-medium"
               >
                 Search
               </button>

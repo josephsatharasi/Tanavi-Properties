@@ -15,25 +15,18 @@ export const properties = [
       "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800",
       "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800"
     ],
-    description: "Experience luxury living in this stunning 4-bedroom villa located in the prestigious Jubilee Hills. This property features modern architecture, spacious rooms, and premium finishes throughout. Perfect for families seeking comfort and elegance in one of Hyderabad's most sought-after neighborhoods.",
+    description: "Prime agricultural land located in Shamshabad with excellent soil quality and water availability. This fertile land is perfect for farming, cultivation, and agricultural activities. The property has clear title, proper road access, and is ideal for both commercial and organic farming.",
     features: [
-      "Modular Kitchen",
-      "Swimming Pool",
-      "Home Theater",
-      "Gym",
-      "Garden",
-      "24/7 Security",
-      "Power Backup",
-      "Servant Quarters"
+      "Fertile Soil",
+      "Water Supply Available",
+      "Electricity Connection",
+      "Road Access",
+      "Clear Title",
+      "Boundary Wall",
+      "Suitable for Organic Farming",
+      "Good Drainage System"
     ],
-    dimensions: [
-      { room: "Master Bedroom", size: "18' x 16'" },
-      { room: "Bedroom 2", size: "14' x 12'" },
-      { room: "Bedroom 3", size: "14' x 12'" },
-      { room: "Living Room", size: "24' x 20'" },
-      { room: "Kitchen", size: "16' x 12'" },
-      { room: "Dining Area", size: "16' x 14'" }
-    ]
+    dimensions: []
   },
   {
     id: 2,
