@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHome } from 'react-icons/fa';
 import RegistrationModal from './RegistrationModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isOpen && !e.target.closest('nav')) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isOpen]);
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
@@ -41,11 +56,11 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <a href="/" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Home</a>
-            <a href="/about" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">About</a>
-            <a href="/category/all" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Properties</a>
-            <a href="/buy-sell" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
-            <a href="/blogs" className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
+            <a href="/" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Home</a>
+            <a href="/about" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">About</a>
+            <a href="/category/all" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Properties</a>
+            <a href="/buy-sell" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
+            <a href="/blogs" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
           </div>
         </div>
       )}
