@@ -51,13 +51,13 @@ const PropertyCard = ({ property }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200">
+    <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 h-full flex flex-col">
       <img src={property.image} alt={property.title} className="w-full h-48 object-cover" />
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-bold mb-1">{property.title}</h3>
         <p className="text-gray-600 text-sm mb-2">{property.location}</p>
         <p className="text-xl font-bold text-gray-900 mb-3">₹ {property.price}</p>
-        <div className="mb-4">
+        <div className="mb-4 flex-grow">
           {getPropertyDetails()}
         </div>
         <button 

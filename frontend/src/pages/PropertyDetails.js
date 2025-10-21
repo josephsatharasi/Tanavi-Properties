@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { properties } from '../data/properties';
+import ScheduleVisitModal from '../components/ScheduleVisitModal';
 
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const property = properties.find(p => p.id === parseInt(id));
   const [currentImage, setCurrentImage] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!property) return;
@@ -83,12 +85,10 @@ const PropertyDetails = () => {
                   <p className="text-gray-600">Parking</p>
                 </div>
               )}
-              {property.type === 'Agricultural Land' && (
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-primary">{property.type}</p>
-                  <p className="text-gray-600">Property Type</p>
-                </div>
-              )}
+              <div className="bg-blue-50 p-4 rounded-lg text-center">
+                <p className="text-lg font-bold text-primary">{property.type}</p>
+                <p className="text-gray-600">Property Type</p>
+              </div>
             </div>
 
             <div className="mb-8">
@@ -124,12 +124,21 @@ const PropertyDetails = () => {
               </div>
             )}
 
-            <button className="w-full bg-primary text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="w-full bg-primary text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
+            >
               Schedule a Visit
             </button>
           </div>
         </div>
       </div>
+      
+      <ScheduleVisitModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        propertyTitle={property.title}
+      />
     </div>
   );
 };
