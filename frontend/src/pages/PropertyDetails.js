@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { properties } from '../data/properties';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
 
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const property = properties.find(p => p.id === parseInt(id));
+  const [property, setProperty] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!property) return;
+    fetch(`http://localhost:5000/api/properties/${id}`)
+      .then(res => res.json())
+      .then(data => setProperty(data))
+      .catch(err => console.error('Error fetching property:', err));
+  }, [id]);
+
+  useEffect(() => {
+    if (!property || !property.images || property.images.length === 0) return;
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % property.images.length);
     }, 3000);
@@ -34,27 +40,33 @@ const PropertyDetails = () => {
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="relative h-96 overflow-hidden">
-            {property.images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${property.title} ${index + 1}`}
-                className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
-                  index === currentImage ? 'opacity-100' : 'opacity-0'
-                }`}
-              />
-            ))}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-              {property.images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImage(index)}
-                  className={`w-3 h-3 rounded-full ${
-                    index === currentImage ? 'bg-white' : 'bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
+            {property.images && property.images.length > 0 ? (
+              <>
+                {property.images.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`${property.title} ${index + 1}`}
+                    className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
+                      index === currentImage ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                ))}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                  {property.images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImage(index)}
+                      className={`w-3 h-3 rounded-full ${
+                        index === currentImage ? 'bg-white' : 'bg-white/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <img src="https://via.placeholder.com/800x400?text=No+Image" alt={property.title} className="w-full h-full object-cover" />
+            )}
           </div>
 
           <div className="p-8">
@@ -63,30 +75,26 @@ const PropertyDetails = () => {
             <p className="text-gray-600 mb-8">{property.location}</p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              {property.type !== 'Agricultural Land' && property.type !== 'Open Plot' && property.bedrooms > 0 && (
+              {property.bedrooms > 0 && (
                 <div className="bg-blue-50 p-4 rounded-lg text-center">
                   <p className="text-3xl font-bold text-primary">{property.bedrooms}</p>
                   <p className="text-gray-600">Bedrooms</p>
                 </div>
               )}
-              <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-3xl font-bold text-primary">{property.area}</p>
-                <p className="text-gray-600">Sq.ft</p>
-              </div>
-              {property.type !== 'Agricultural Land' && property.type !== 'Open Plot' && property.bathrooms > 0 && (
+              {property.area && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.area}</p>
+                  <p className="text-gray-600">Area</p>
+                </div>
+              )}
+              {property.bathrooms > 0 && (
                 <div className="bg-blue-50 p-4 rounded-lg text-center">
                   <p className="text-3xl font-bold text-primary">{property.bathrooms}</p>
                   <p className="text-gray-600">Bathrooms</p>
                 </div>
               )}
-              {property.parking > 0 && (
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <p className="text-3xl font-bold text-primary">{property.parking}</p>
-                  <p className="text-gray-600">Parking</p>
-                </div>
-              )}
               <div className="bg-blue-50 p-4 rounded-lg text-center">
-                <p className="text-lg font-bold text-primary">{property.type}</p>
+                <p className="text-lg font-bold text-primary">{property.category || property.type}</p>
                 <p className="text-gray-600">Property Type</p>
               </div>
             </div>
@@ -96,17 +104,19 @@ const PropertyDetails = () => {
               <p className="text-gray-700 leading-relaxed">{property.description}</p>
             </div>
 
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Key Features</h2>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {property.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {property.features && property.features.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Key Features</h2>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {property.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span className="text-gray-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {property.dimensions && property.dimensions.length > 0 && (
               <div className="mb-8">
@@ -137,7 +147,8 @@ const PropertyDetails = () => {
       <ScheduleVisitModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        propertyTitle={property.title}
+        propertyTitle={property?.title}
+        propertyId={property?._id}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle }) => {
+const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,12 +11,22 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle }) => {
     message: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Schedule Visit Data:', { ...formData, property: propertyTitle });
-    alert('Visit scheduled successfully! We will contact you soon.');
-    onClose();
-    setFormData({ name: '', email: '', phone: '', date: '', time: '', message: '' });
+    try {
+      const res = await fetch('http://localhost:5000/api/schedules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, propertyId, propertyTitle })
+      });
+      if (res.ok) {
+        alert('Visit scheduled successfully! We will contact you soon.');
+        onClose();
+        setFormData({ name: '', email: '', phone: '', date: '', time: '', message: '' });
+      }
+    } catch (error) {
+      alert('Error scheduling visit. Please try again.');
+    }
   };
 
   if (!isOpen) return null;

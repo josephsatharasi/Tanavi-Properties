@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import PropertyCard from '../components/PropertyCard';
-import { properties } from '../data/properties';
 
 const CategoryProperties = () => {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
+  const [properties, setProperties] = useState([]);
   
   const location = searchParams.get('location');
   const type = searchParams.get('type');
   const priceRange = searchParams.get('price');
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/properties')
+      .then(res => res.json())
+      .then(data => setProperties(data.filter(p => p.status === 'available')))
+      .catch(err => console.error('Error fetching properties:', err));
+  }, []);
   
   const categoryMap = {
     'agricultural-lands': 'Agricultural Land',
@@ -34,7 +41,7 @@ const CategoryProperties = () => {
     return parseFloat(price) / 100000;
   };
   
-  let filteredProperties = category === 'all' ? properties : properties.filter(p => p.type === categoryName);
+  let filteredProperties = category === 'all' ? properties : properties.filter(p => p.category === categoryName || p.type === categoryName);
   
   if (location) {
     filteredProperties = filteredProperties.filter(p => p.location.includes(location));
@@ -72,7 +79,7 @@ const CategoryProperties = () => {
         {filteredProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard key={property._id || property.id} property={property} />
             ))}
           </div>
         ) : (

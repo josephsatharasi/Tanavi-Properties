@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
 import PropertyCard from '../components/PropertyCard';
 import PropertyCategories from '../components/PropertyCategories';
 import WhyChoose from '../components/WhyChoose';
 import RegisterCTA from '../components/RegisterCTA';
-import { properties } from '../data/properties';
 
 const Home = () => {
+  const [properties, setProperties] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/properties')
+      .then(res => res.json())
+      .then(data => setProperties(data.filter(p => p.status === 'available')))
+      .catch(err => console.error('Error fetching properties:', err));
+  }, []);
+
   return (
     <div>
       <Hero />
@@ -16,7 +24,7 @@ const Home = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Featured Properties</h2>
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6">
             {properties.slice(0, 4).map((property) => (
-              <div key={property.id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto">
+              <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto">
                 <PropertyCard property={property} />
               </div>
             ))}

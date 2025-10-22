@@ -37,6 +37,7 @@ const Navbar = () => {
             <a href="/category/all" className="text-gray-700 hover:text-primary font-medium">Properties</a>
             <a href="/buy-sell" className="text-gray-700 hover:text-primary font-medium">Buy Sell</a>
             <a href="/blogs" className="text-gray-700 hover:text-primary font-medium">Gallery</a>
+            <a href="/admin/login" className="text-gray-700 hover:text-primary font-medium">Admin</a>
             <button 
               onClick={() => setIsModalOpen(true)}
               className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition font-medium"
@@ -61,6 +62,7 @@ const Navbar = () => {
             <a href="/category/all" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Properties</a>
             <a href="/buy-sell" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
             <a href="/blogs" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
+            <a href="/admin/login" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Admin</a>
           </div>
         </div>
       )}

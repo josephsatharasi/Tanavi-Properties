@@ -15,6 +15,8 @@ import GalleryDetail from './pages/GalleryDetail';
 import BuySell from './pages/BuySell';
 import Leadership from './pages/Leadership';
 import Careers from './pages/Careers';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -45,6 +47,8 @@ function App() {
           <Route path="/buy-sell" element={<BuySell />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
         <Footer />
         <WhatsAppButton />
