@@ -14,7 +14,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/schedules', {
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/schedules', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, propertyId, propertyTitle })

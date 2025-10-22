@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const fetchProperties = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/properties');
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/properties');
       const data = await res.json();
       setProperties(data);
     } catch (error) {
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
   const fetchSchedules = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/schedules', {
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/schedules', {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -80,14 +80,14 @@ const AdminDashboard = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        setPropertyForm({...propertyForm, images: [...propertyForm.images, `http://localhost:5000${data.url}`]});
+        setPropertyForm({...propertyForm, images: [...propertyForm.images, `https://tanavi-properties-backend.onrender.com${data.url}`]});
       } else {
         alert(`Upload failed: ${data.message || 'Unknown error'}`);
       }
@@ -108,8 +108,8 @@ const AdminDashboard = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const url = editingProperty 
-      ? `http://localhost:5000/api/properties/${editingProperty._id}`
-      : 'http://localhost:5000/api/properties';
+      ? `https://tanavi-properties-backend.onrender.com/api/properties/${editingProperty._id}`
+      : 'https://tanavi-properties-backend.onrender.com/api/properties';
     
     const body = {
       ...propertyForm,
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this property?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`http://localhost:5000/api/properties/${id}`, {
+      await fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -171,7 +171,7 @@ const AdminDashboard = () => {
   const handleScheduleStatus = async (id, status) => {
     const token = localStorage.getItem('token');
     try {
-      await fetch(`http://localhost:5000/api/schedules/${id}/status`, {
+      await fetch(`https://tanavi-properties-backend.onrender.com/api/schedules/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status })

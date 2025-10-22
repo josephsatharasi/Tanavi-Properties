@@ -12,7 +12,7 @@ const CategoryProperties = () => {
   const priceRange = searchParams.get('price');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/properties')
+    fetch('https://tanavi-properties-backend.onrender.com/api/properties')
       .then(res => res.json())
       .then(data => setProperties(data.filter(p => p.status === 'available')))
       .catch(err => console.error('Error fetching properties:', err));

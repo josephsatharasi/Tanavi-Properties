@@ -10,7 +10,7 @@ const PropertyDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/properties/${id}`)
+    fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`)
       .then(res => res.json())
       .then(data => setProperty(data))
       .catch(err => console.error('Error fetching property:', err));
