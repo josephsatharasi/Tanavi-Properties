@@ -510,7 +510,15 @@ const AdminDashboard = () => {
                   </div>
                   <form onSubmit={handleGallerySubmit} className="p-6 space-y-4">
                     <input type="text" placeholder="Title" value={galleryForm.title} onChange={(e) => setGalleryForm({...galleryForm, title: e.target.value})} className="w-full border p-2 rounded" required />
-                    <input type="text" placeholder="Category" value={galleryForm.category} onChange={(e) => setGalleryForm({...galleryForm, category: e.target.value})} className="w-full border p-2 rounded" required />
+                    <select value={galleryForm.category} onChange={(e) => setGalleryForm({...galleryForm, category: e.target.value})} className="w-full border p-2 rounded" required>
+                      <option value="">Select Category</option>
+                      <option value="Land">Land</option>
+                      <option value="House">House</option>
+                      <option value="Plot">Plot</option>
+                      <option value="Apartment">Apartment</option>
+                      <option value="Farmhouse">Farmhouse</option>
+                      <option value="Commercial">Commercial</option>
+                    </select>
                     <div>
                       <label className="block text-sm mb-1">Image</label>
                       <input type="file" accept="image/*" onChange={async (e) => {
@@ -592,7 +600,10 @@ const AdminDashboard = () => {
                   </div>
                   <form onSubmit={handleBuySellSubmit} className="p-6 space-y-4">
                     <input type="text" placeholder="Title" value={buySellForm.title} onChange={(e) => setBuySellForm({...buySellForm, title: e.target.value})} className="w-full border p-2 rounded" required />
-                    <input type="text" placeholder="Location" value={buySellForm.location} onChange={(e) => setBuySellForm({...buySellForm, location: e.target.value})} className="w-full border p-2 rounded" required />
+                    <select value={buySellForm.location} onChange={(e) => setBuySellForm({...buySellForm, location: e.target.value})} className="w-full border p-2 rounded" required>
+                      <option value="">Select Location</option>
+                      {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                    </select>
                     <input type="text" placeholder="Price" value={buySellForm.price} onChange={(e) => setBuySellForm({...buySellForm, price: e.target.value})} className="w-full border p-2 rounded" required />
                     <input type="number" placeholder="Area (sq.ft)" value={buySellForm.area} onChange={(e) => setBuySellForm({...buySellForm, area: e.target.value})} className="w-full border p-2 rounded" required />
                     <select value={buySellForm.type} onChange={(e) => setBuySellForm({...buySellForm, type: e.target.value})} className="w-full border p-2 rounded" required>
