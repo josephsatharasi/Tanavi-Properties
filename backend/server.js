@@ -18,6 +18,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/properties', require('./routes/properties'));
 app.use('/api/schedules', require('./routes/schedules'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/gallery', require('./routes/gallery'));
+app.use('/api/buysell', require('./routes/buysell'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
