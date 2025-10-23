@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const BuySell = require('../models/BuySell');
-const { protect, admin } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', protect, admin, async (req, res) => {
+router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const item = await BuySell.create(req.body);
     res.status(201).json(item);
@@ -21,7 +21,7 @@ router.post('/', protect, admin, async (req, res) => {
   }
 });
 
-router.put('/:id', protect, admin, async (req, res) => {
+router.put('/:id', protect, adminOnly, async (req, res) => {
   try {
     const item = await BuySell.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!item) return res.status(404).json({ message: 'Item not found' });
@@ -31,7 +31,7 @@ router.put('/:id', protect, admin, async (req, res) => {
   }
 });
 
-router.delete('/:id', protect, admin, async (req, res) => {
+router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const item = await BuySell.findByIdAndDelete(req.params.id);
     if (!item) return res.status(404).json({ message: 'Item not found' });
