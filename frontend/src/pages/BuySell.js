@@ -1,79 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 const BuySell = () => {
   const [activeTab, setActiveTab] = useState('sold');
+  const [properties, setProperties] = useState([]);
 
-  const soldProperties = [
-    {
-      id: 1,
-      title: 'Agricultural Land',
-      location: 'Shamshabad, Hyderabad',
-      price: '45,00,000',
-      area: 5000,
-      soldDate: 'Jan 2024',
-      image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500'
-    },
-    {
-      id: 2,
-      title: 'Independent House',
-      location: 'Gachibowli, Hyderabad',
-      price: '1.2 Cr',
-      area: 2500,
-      soldDate: 'Feb 2024',
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500'
-    },
-    {
-      id: 3,
-      title: 'Luxury Apartment',
-      location: 'Hitech City, Hyderabad',
-      price: '95,00,000',
-      area: 1800,
-      soldDate: 'Mar 2024',
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500'
-    },
-    {
-      id: 4,
-      title: 'Open Plot',
-      location: 'Kompally, Hyderabad',
-      price: '28,00,000',
-      area: 3000,
-      soldDate: 'Dec 2023',
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500'
-    }
-  ];
+  useEffect(() => {
+    fetch('https://tanavi-properties-backend.onrender.com/api/buysell')
+      .then(res => res.json())
+      .then(data => setProperties(data))
+      .catch(err => console.error(err));
+  }, []);
 
-  const boughtProperties = [
-    {
-      id: 1,
-      title: 'Farmhouse with Orchard',
-      location: 'Chevella, Hyderabad',
-      price: '2.5 Cr',
-      area: 8000,
-      boughtDate: 'Jan 2024',
-      image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500'
-    },
-    {
-      id: 2,
-      title: 'Commercial Plot',
-      location: 'Kukatpally, Hyderabad',
-      price: '1.8 Cr',
-      area: 4500,
-      boughtDate: 'Feb 2024',
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500'
-    },
-    {
-      id: 3,
-      title: 'Villa',
-      location: 'Jubilee Hills, Hyderabad',
-      price: '3.5 Cr',
-      area: 4000,
-      boughtDate: 'Mar 2024',
-      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500'
-    }
-  ];
-
-  const displayProperties = activeTab === 'sold' ? soldProperties : boughtProperties;
+  const displayProperties = properties.filter(p => p.type === activeTab);
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
@@ -106,12 +45,12 @@ const BuySell = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayProperties.map((property) => (
-            <div key={property.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
+            <div key={property._id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
               <div className="relative">
                 <img src={property.image} alt={property.title} className="w-full h-48 object-cover" />
                 <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                   <FaCheckCircle />
-                  <span>{activeTab === 'sold' ? 'Sold' : 'Bought'}</span>
+                  <span>{property.type === 'sold' ? 'Sold' : 'Bought'}</span>
                 </div>
               </div>
               <div className="p-4">
@@ -120,7 +59,7 @@ const BuySell = () => {
                 <p className="text-xl font-bold text-gray-900 mb-2">₹ {property.price}</p>
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>{property.area} sq.ft</span>
-                  <span>{property.soldDate || property.boughtDate}</span>
+                  <span>{property.date}</span>
                 </div>
               </div>
             </div>

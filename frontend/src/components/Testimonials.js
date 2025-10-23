@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const Testimonials = () => {
+  const scrollRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const testimonials = [
     {
       id: 1,
@@ -46,30 +49,68 @@ const Testimonials = () => {
     }
   ];
 
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    const cardWidth = 344;
+
+    const autoScroll = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const next = (prev + 1) % testimonials.length;
+        scrollContainer.scrollTo({
+          left: next * cardWidth,
+          behavior: 'smooth'
+        });
+        return next;
+      });
+    }, 3000);
+
+    return () => clearInterval(autoScroll);
+  }, [testimonials.length]);
+
+  const handleDotClick = (index) => {
+    setCurrentIndex(index);
+    scrollRef.current?.scrollTo({
+      left: index * 344,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <section className="py-20 bg-white overflow-hidden">
+    <section className="py-6 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-center mb-12">What Our Customers Say</h2>
-        <div className="relative">
-          <div className="flex gap-8 animate-scroll">
-            {[...testimonials, ...testimonials].map((testimonial, index) => (
-              <div 
-                key={`${testimonial.id}-${index}`} 
-                className="bg-gray-50 p-6 rounded-lg shadow-md flex-shrink-0 w-80"
-              >
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <span key={i} className="text-yellow-400">★</span>
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4 italic">"{testimonial.text}"</p>
-                <div>
-                  <p className="font-bold">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
-                </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-12">What Our Customers Say</h2>
+        <div ref={scrollRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
+          {testimonials.map((testimonial) => (
+            <div 
+              key={testimonial.id} 
+              className="bg-gray-50 p-6 rounded-lg shadow-md flex-shrink-0 w-80 snap-start"
+            >
+              <div className="flex mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <span key={i} className="text-yellow-400">★</span>
+                ))}
               </div>
-            ))}
-          </div>
+              <p className="text-gray-600 mb-4 italic">"{testimonial.text}"</p>
+              <div>
+                <p className="font-bold">{testimonial.name}</p>
+                <p className="text-sm text-gray-500">{testimonial.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center gap-2 mt-4">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`w-2 h-2 rounded-full transition ${
+                currentIndex === index ? 'bg-primary w-6' : 'bg-gray-300'
+              }`}
+              aria-label={`Go to testimonial ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

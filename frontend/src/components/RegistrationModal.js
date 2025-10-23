@@ -106,15 +106,15 @@ const RegistrationModal = ({ isOpen, onClose }) => {
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">Location *</label>
-            <input
-              type="text"
+            <textarea
               name="location"
               value={formData.location}
               onChange={handleChange}
               required
+              rows="3"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Enter property location"
-            />
+              placeholder="Enter full address (Landmark, Village, Mandal, District, State)"
+            ></textarea>
           </div>
 
           <div>

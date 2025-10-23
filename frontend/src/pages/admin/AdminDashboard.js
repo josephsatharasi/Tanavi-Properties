@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
   const [properties, setProperties] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [gallery, setGallery] = useState([]);
+  const [buySell, setBuySell] = useState([]);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
+  const [showGalleryForm, setShowGalleryForm] = useState(false);
+  const [showBuySellForm, setShowBuySellForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [editingGallery, setEditingGallery] = useState(null);
+  const [editingBuySell, setEditingBuySell] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [propertyForm, setPropertyForm] = useState({
     title: '', category: '', price: '', location: '', area: '',
     bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured'
   });
+  const [galleryForm, setGalleryForm] = useState({ title: '', category: '', image: '', description: '' });
+  const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' });
   const [uploading, setUploading] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
@@ -27,8 +37,7 @@ const AdminDashboard = () => {
       navigate('/admin/login');
       return;
     }
-    fetchProperties();
-    fetchSchedules();
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -36,8 +45,10 @@ const AdminDashboard = () => {
       const res = await fetch('https://tanavi-properties-backend.onrender.com/api/properties');
       const data = await res.json();
       setProperties(data);
+      return data;
     } catch (error) {
       console.error('Error fetching properties:', error);
+      return [];
     }
   };
 
@@ -49,8 +60,34 @@ const AdminDashboard = () => {
       });
       const data = await res.json();
       setSchedules(data);
+      return data;
     } catch (error) {
       console.error('Error fetching schedules:', error);
+      return [];
+    }
+  };
+
+  const fetchGallery = async () => {
+    try {
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/gallery');
+      const data = await res.json();
+      setGallery(data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching gallery:', error);
+      return [];
+    }
+  };
+
+  const fetchBuySell = async () => {
+    try {
+      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/buysell');
+      const data = await res.json();
+      setBuySell(data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching buy/sell:', error);
+      return [];
     }
   };
 
@@ -195,11 +232,87 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleGallerySubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const url = editingGallery ? `https://tanavi-properties-backend.onrender.com/api/gallery/${editingGallery._id}` : 'https://tanavi-properties-backend.onrender.com/api/gallery';
+    try {
+      const res = await fetch(url, {
+        method: editingGallery ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(galleryForm)
+      });
+      if (res.ok) {
+        fetchGallery();
+        setShowGalleryForm(false);
+        setEditingGallery(null);
+        setGalleryForm({ title: '', category: '', image: '', description: '' });
+        showToast(editingGallery ? 'Gallery updated!' : 'Gallery added!', 'success');
+      }
+    } catch (error) {
+      showToast('Failed to save gallery', 'error');
+    }
+  };
+
+  const handleDeleteGallery = async (id) => {
+    if (!window.confirm('Delete this gallery item?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      await fetch(`https://tanavi-properties-backend.onrender.com/api/gallery/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchGallery();
+      showToast('Gallery deleted!', 'success');
+    } catch (error) {
+      showToast('Failed to delete', 'error');
+    }
+  };
+
+  const handleBuySellSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const url = editingBuySell ? `https://tanavi-properties-backend.onrender.com/api/buysell/${editingBuySell._id}` : 'https://tanavi-properties-backend.onrender.com/api/buysell';
+    try {
+      const res = await fetch(url, {
+        method: editingBuySell ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(buySellForm)
+      });
+      if (res.ok) {
+        fetchBuySell();
+        setShowBuySellForm(false);
+        setEditingBuySell(null);
+        setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' });
+        showToast(editingBuySell ? 'Item updated!' : 'Item added!', 'success');
+      }
+    } catch (error) {
+      showToast('Failed to save', 'error');
+    }
+  };
+
+  const handleDeleteBuySell = async (id) => {
+    if (!window.confirm('Delete this item?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      await fetch(`https://tanavi-properties-backend.onrender.com/api/buysell/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchBuySell();
+      showToast('Item deleted!', 'success');
+    } catch (error) {
+      showToast('Failed to delete', 'error');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/admin/login');
   };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -230,12 +343,18 @@ const AdminDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-4 mb-6">
-          <button onClick={() => setActiveTab('properties')} className={`flex items-center gap-2 px-6 py-3 rounded ${activeTab === 'properties' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+        <div className="flex gap-4 mb-6 overflow-x-auto">
+          <button onClick={() => setActiveTab('properties')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'properties' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             <FaHome /> Properties
           </button>
-          <button onClick={() => setActiveTab('schedules')} className={`flex items-center gap-2 px-6 py-3 rounded ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+          <button onClick={() => setActiveTab('schedules')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             <FaCalendar /> Schedules
+          </button>
+          <button onClick={() => setActiveTab('gallery')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'gallery' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            Gallery
+          </button>
+          <button onClick={() => setActiveTab('buysell')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'buysell' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            Buy/Sell
           </button>
         </div>
 
@@ -364,6 +483,180 @@ const AdminDashboard = () => {
                         <button onClick={() => handleDeleteProperty(property._id)} className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition" title="Delete">
                           <FaTrash size={18} />
                         </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'gallery' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Gallery</h2>
+              <button onClick={() => { setShowGalleryForm(true); setEditingGallery(null); setGalleryForm({ title: '', category: '', image: '', description: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
+                Add Gallery Item
+              </button>
+            </div>
+
+            {showGalleryForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl">
+                  <div className="border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingGallery ? 'Edit' : 'Add'} Gallery Item</h3>
+                    <button onClick={() => { setShowGalleryForm(false); setEditingGallery(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
+                  </div>
+                  <form onSubmit={handleGallerySubmit} className="p-6 space-y-4">
+                    <input type="text" placeholder="Title" value={galleryForm.title} onChange={(e) => setGalleryForm({...galleryForm, title: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="text" placeholder="Category" value={galleryForm.category} onChange={(e) => setGalleryForm({...galleryForm, category: e.target.value})} className="w-full border p-2 rounded" required />
+                    <div>
+                      <label className="block text-sm mb-1">Image</label>
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        setUploading(true);
+                        try {
+                          const token = localStorage.getItem('token');
+                          const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (res.ok) setGalleryForm({...galleryForm, image: `https://tanavi-properties-backend.onrender.com${data.url}`});
+                        } finally {
+                          setUploading(false);
+                          e.target.value = '';
+                        }
+                      }} className="w-full border p-2 rounded" disabled={uploading} />
+                      {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+                      {galleryForm.image && <img src={galleryForm.image} alt="Preview" className="mt-2 h-32 object-cover rounded" />}
+                    </div>
+                    <textarea placeholder="Description (optional)" value={galleryForm.description} onChange={(e) => setGalleryForm({...galleryForm, description: e.target.value})} className="w-full border p-2 rounded" rows="3" />
+                    <div className="flex gap-2">
+                      <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Save</button>
+                      <button type="button" onClick={() => { setShowGalleryForm(false); setEditingGallery(null); }} className="bg-gray-400 text-white px-6 py-2 rounded">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left">Image</th>
+                    <th className="px-6 py-4 text-left">Title</th>
+                    <th className="px-6 py-4 text-left">Category</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {gallery.map(item => (
+                    <tr key={item._id} className="border-b hover:bg-blue-50">
+                      <td className="px-6 py-4"><img src={item.image} alt={item.title} className="h-16 w-16 object-cover rounded" /></td>
+                      <td className="px-6 py-4 font-medium">{item.title}</td>
+                      <td className="px-6 py-4">{item.category}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button onClick={() => { setEditingGallery(item); setGalleryForm(item); setShowGalleryForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
+                        <button onClick={() => handleDeleteGallery(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'buysell' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Buy/Sell</h2>
+              <button onClick={() => { setShowBuySellForm(true); setEditingBuySell(null); setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
+                Add Item
+              </button>
+            </div>
+
+            {showBuySellForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl">
+                  <div className="border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingBuySell ? 'Edit' : 'Add'} Buy/Sell Item</h3>
+                    <button onClick={() => { setShowBuySellForm(false); setEditingBuySell(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
+                  </div>
+                  <form onSubmit={handleBuySellSubmit} className="p-6 space-y-4">
+                    <input type="text" placeholder="Title" value={buySellForm.title} onChange={(e) => setBuySellForm({...buySellForm, title: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="text" placeholder="Location" value={buySellForm.location} onChange={(e) => setBuySellForm({...buySellForm, location: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="text" placeholder="Price" value={buySellForm.price} onChange={(e) => setBuySellForm({...buySellForm, price: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="number" placeholder="Area (sq.ft)" value={buySellForm.area} onChange={(e) => setBuySellForm({...buySellForm, area: e.target.value})} className="w-full border p-2 rounded" required />
+                    <select value={buySellForm.type} onChange={(e) => setBuySellForm({...buySellForm, type: e.target.value})} className="w-full border p-2 rounded" required>
+                      <option value="sold">Sold</option>
+                      <option value="bought">Bought</option>
+                    </select>
+                    <input type="text" placeholder="Date (e.g., Jan 2024)" value={buySellForm.date} onChange={(e) => setBuySellForm({...buySellForm, date: e.target.value})} className="w-full border p-2 rounded" required />
+                    <div>
+                      <label className="block text-sm mb-1">Image</label>
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        setUploading(true);
+                        try {
+                          const token = localStorage.getItem('token');
+                          const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (res.ok) setBuySellForm({...buySellForm, image: `https://tanavi-properties-backend.onrender.com${data.url}`});
+                        } finally {
+                          setUploading(false);
+                          e.target.value = '';
+                        }
+                      }} className="w-full border p-2 rounded" disabled={uploading} />
+                      {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+                      {buySellForm.image && <img src={buySellForm.image} alt="Preview" className="mt-2 h-32 object-cover rounded" />}
+                    </div>
+                    <div className="flex gap-2">
+                      <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Save</button>
+                      <button type="button" onClick={() => { setShowBuySellForm(false); setEditingBuySell(null); }} className="bg-gray-400 text-white px-6 py-2 rounded">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left">Image</th>
+                    <th className="px-6 py-4 text-left">Title</th>
+                    <th className="px-6 py-4 text-left">Location</th>
+                    <th className="px-6 py-4 text-left">Price</th>
+                    <th className="px-6 py-4 text-left">Type</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {buySell.map(item => (
+                    <tr key={item._id} className="border-b hover:bg-blue-50">
+                      <td className="px-6 py-4"><img src={item.image} alt={item.title} className="h-16 w-16 object-cover rounded" /></td>
+                      <td className="px-6 py-4 font-medium">{item.title}</td>
+                      <td className="px-6 py-4">{item.location}</td>
+                      <td className="px-6 py-4">₹{item.price}</td>
+                      <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.type === 'sold' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{item.type}</span></td>
+                      <td className="px-6 py-4 text-center">
+                        <button onClick={() => { setEditingBuySell(item); setBuySellForm(item); setShowBuySellForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
+                        <button onClick={() => handleDeleteBuySell(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
                       </td>
                     </tr>
                   ))}

@@ -64,17 +64,17 @@ const Navbar = () => {
       </div>
 
       {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <a href="/" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Home</a>
-            <a href="/about" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">About</a>
-            <a href="/category/all" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Properties</a>
-            <a href="/buy-sell" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
-            <a href="/blogs" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
-            <a href="/admin/login" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Admin</a>
+        <div className="md:hidden bg-white shadow-lg rounded-b-lg">
+          <div className="px-4 pt-2 pb-4 space-y-2">
+            <a href="/" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">Home</a>
+            <a href="/about" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">About</a>
+            <a href="/category/all" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">Properties</a>
+            <a href="/buy-sell" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">Buy Sell</a>
+            <a href="/blogs" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">Gallery</a>
+            <a href="/admin/login" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 hover:bg-primary hover:text-white rounded-lg transition font-medium">Admin</a>
             <button 
               onClick={() => { setIsModalOpen(true); setIsOpen(false); }}
-              className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100"
+              className="w-full text-left px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-opacity-90 transition mt-2"
             >
               List Your Property
             </button>
