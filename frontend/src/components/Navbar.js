@@ -12,8 +12,17 @@ const Navbar = () => {
         setIsOpen(false);
       }
     };
+    const handleScroll = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
     document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [isOpen]);
 
   const handleLinkClick = () => {
@@ -63,6 +72,12 @@ const Navbar = () => {
             <a href="/buy-sell" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Buy Sell</a>
             <a href="/blogs" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Gallery</a>
             <a href="/admin/login" onClick={handleLinkClick} className="block px-3 py-2 text-gray-700 hover:bg-gray-100">Admin</a>
+            <button 
+              onClick={() => { setIsModalOpen(true); setIsOpen(false); }}
+              className="w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              List Your Property
+            </button>
           </div>
         </div>
       )}

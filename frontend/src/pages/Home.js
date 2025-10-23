@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
 import PropertyCard from '../components/PropertyCard';
 import PropertyCategories from '../components/PropertyCategories';
+import TanaviHighlights from '../components/TanaviHighlights';
 import WhyChoose from '../components/WhyChoose';
+import Testimonials from '../components/Testimonials';
 import RegisterCTA from '../components/RegisterCTA';
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/properties')
+    fetch('https://tanavi-properties-backend.onrender.com/api/properties')
       .then(res => res.json())
-      .then(data => setProperties(data.filter(p => p.status === 'available')))
+      .then(data => setProperties(data.filter(p => p.section === 'featured' && p.status === 'available')))
       .catch(err => console.error('Error fetching properties:', err));
   }, []);
 
@@ -33,7 +35,9 @@ const Home = () => {
       </section>
 
       <PropertyCategories />
+      <TanaviHighlights />
       <WhyChoose />
+      <Testimonials />
       <RegisterCTA />
     </div>
   );

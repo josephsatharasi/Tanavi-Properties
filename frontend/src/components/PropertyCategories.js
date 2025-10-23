@@ -7,10 +7,10 @@ const PropertyCategories = () => {
   const navigate = useNavigate();
   
   const categories = [
-    { icon: <GiPlantSeed className="text-5xl text-primary" />, name: 'Agricultural lands', slug: 'agricultural-lands' },
+    { icon: <GiPlantSeed className="text-5xl text-primary" />, name: 'Agriculture Land', slug: 'agricultural-lands' },
     { icon: <GiHouse className="text-5xl text-primary" />, name: 'Independent house', slug: 'independent-house' },
     { icon: <FaMapMarkerAlt className="text-5xl text-primary" />, name: 'Open plots', slug: 'open-plots' },
-    { icon: <GiFarmTractor className="text-5xl text-primary" />, name: 'Farmhouses', slug: 'farmhouses' },
+    { icon: <GiHouse className="text-5xl text-primary" />, name: 'Farmhouses', slug: 'farmhouses' },
     { icon: <FaBuilding className="text-5xl text-primary" />, name: 'Apartment', slug: 'apartment' },
     { icon: <GiBriefcase className="text-5xl text-primary" />, name: 'Office space', slug: 'office-space' },
   ];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
@@ -8,11 +8,12 @@ const AdminDashboard = () => {
   const [schedules, setSchedules] = useState([]);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const navigate = useNavigate();
 
   const [propertyForm, setPropertyForm] = useState({
     title: '', category: '', price: '', location: '', area: '',
-    bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available'
+    bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured'
   });
   const [uploading, setUploading] = useState(false);
 
@@ -104,6 +105,11 @@ const AdminDashboard = () => {
     setPropertyForm({...propertyForm, images: propertyForm.images.filter((_, i) => i !== index)});
   };
 
+  const showToast = (message, type) => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+  };
+
   const handlePropertySubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
@@ -129,10 +135,12 @@ const AdminDashboard = () => {
         fetchProperties();
         setShowPropertyForm(false);
         setEditingProperty(null);
-        setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available' });
+        setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured' });
+        showToast(editingProperty ? 'Property updated successfully!' : 'Property added successfully!', 'success');
       }
     } catch (error) {
       console.error('Error saving property:', error);
+      showToast('Failed to save property', 'error');
     }
   };
 
@@ -140,13 +148,17 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this property?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`, {
+      const res = await fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchProperties();
+      if (res.ok) {
+        fetchProperties();
+        showToast('Property deleted successfully!', 'success');
+      }
     } catch (error) {
       console.error('Error deleting property:', error);
+      showToast('Failed to delete property', 'error');
     }
   };
 
@@ -163,7 +175,8 @@ const AdminDashboard = () => {
       description: property.description || '',
       features: property.features?.join(', ') || '',
       images: property.images || [],
-      status: property.status
+      status: property.status,
+      section: property.section || 'featured'
     });
     setShowPropertyForm(true);
   };
@@ -190,6 +203,23 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {toast.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fadeIn">
+          <div className={`bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 animate-scaleIn ${toast.type === 'success' ? 'border-t-4 border-green-500' : 'border-t-4 border-red-500'}`}>
+            <div className="flex flex-col items-center text-center">
+              {toast.type === 'success' ? (
+                <FaCheckCircle className="text-green-500 text-6xl mb-4 animate-bounce" />
+              ) : (
+                <FaTimesCircle className="text-red-500 text-6xl mb-4 animate-bounce" />
+              )}
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                {toast.type === 'success' ? 'Success!' : 'Error!'}
+              </h3>
+              <p className="text-gray-600 text-lg">{toast.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
@@ -213,14 +243,21 @@ const AdminDashboard = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Properties</h2>
-              <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
+              <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
                 Add Property
               </button>
             </div>
 
             {showPropertyForm && (
-              <div className="bg-white p-6 rounded shadow mb-6">
-                <h3 className="text-lg font-bold mb-4">{editingProperty ? 'Edit' : 'Add'} Property</h3>
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slideIn">
+                  <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingProperty ? 'Edit' : 'Add'} Property</h3>
+                    <button onClick={() => { setShowPropertyForm(false); setEditingProperty(null); }} className="text-gray-500 hover:text-gray-700 text-2xl">
+                      <FaTimes />
+                    </button>
+                  </div>
+                  <div className="p-6">
                 <form onSubmit={handlePropertySubmit} className="grid grid-cols-2 gap-4">
                   <input type="text" placeholder="Title" value={propertyForm.title} onChange={(e) => setPropertyForm({...propertyForm, title: e.target.value})} className="border p-2 rounded" required />
                   <select value={propertyForm.category} onChange={(e) => setPropertyForm({...propertyForm, category: e.target.value, bedrooms: '', bathrooms: ''})} className="border p-2 rounded" required>
@@ -260,6 +297,13 @@ const AdminDashboard = () => {
                     <option value="pending">Pending</option>
                     <option value="sold">Sold</option>
                   </select>
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">Display Section</label>
+                    <select value={propertyForm.section} onChange={(e) => setPropertyForm({...propertyForm, section: e.target.value})} className="border p-2 rounded w-full">
+                      <option value="featured">Featured Properties</option>
+                      <option value="highlights">Tanavi Highlights</option>
+                    </select>
+                  </div>
                   <textarea placeholder="Description" value={propertyForm.description} onChange={(e) => setPropertyForm({...propertyForm, description: e.target.value})} className="border p-2 rounded col-span-2" rows="3" />
                   <input type="text" placeholder="Features (comma separated)" value={propertyForm.features} onChange={(e) => setPropertyForm({...propertyForm, features: e.target.value})} className="border p-2 rounded col-span-2" />
                   
@@ -282,36 +326,44 @@ const AdminDashboard = () => {
                   </div>
                   
                   <div className="col-span-2 flex gap-2">
-                    <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Save</button>
-                    <button type="button" onClick={() => { setShowPropertyForm(false); setEditingProperty(null); }} className="bg-gray-400 text-white px-6 py-2 rounded">Cancel</button>
+                    <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition">Save</button>
+                    <button type="button" onClick={() => { setShowPropertyForm(false); setEditingProperty(null); }} className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded transition">Cancel</button>
                   </div>
                 </form>
+                  </div>
+                </div>
               </div>
             )}
 
-            <div className="bg-white rounded shadow overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full min-w-[800px]">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
-                    <th className="px-4 py-3 text-left">Title</th>
-                    <th className="px-4 py-3 text-left">Category</th>
-                    <th className="px-4 py-3 text-left">Price</th>
-                    <th className="px-4 py-3 text-left">Location</th>
-                    <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-left">Actions</th>
+                    <th className="px-6 py-4 text-left font-semibold">Title</th>
+                    <th className="px-6 py-4 text-left font-semibold">Category</th>
+                    <th className="px-6 py-4 text-left font-semibold">Price</th>
+                    <th className="px-6 py-4 text-left font-semibold">Location</th>
+                    <th className="px-6 py-4 text-left font-semibold">Section</th>
+                    <th className="px-6 py-4 text-left font-semibold">Status</th>
+                    <th className="px-6 py-4 text-center font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {properties.map(property => (
-                    <tr key={property._id} className="border-t">
-                      <td className="px-4 py-3">{property.title}</td>
-                      <td className="px-4 py-3">{property.category}</td>
-                      <td className="px-4 py-3">{property.price}</td>
-                      <td className="px-4 py-3">{property.location}</td>
-                      <td className="px-4 py-3"><span className={`px-2 py-1 rounded text-xs ${property.status === 'available' ? 'bg-green-100 text-green-800' : property.status === 'sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{property.status}</span></td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => handleEditProperty(property)} className="text-blue-600 mr-3">Edit</button>
-                        <button onClick={() => handleDeleteProperty(property._id)} className="text-red-600">Delete</button>
+                    <tr key={property._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
+                      <td className="px-6 py-4 font-medium">{property.title}</td>
+                      <td className="px-6 py-4 text-gray-700">{property.category}</td>
+                      <td className="px-6 py-4 text-gray-700 font-semibold">₹{property.price}</td>
+                      <td className="px-6 py-4 text-gray-700">{property.location}</td>
+                      <td className="px-6 py-4"><span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">{property.section === 'highlights' ? 'Highlights' : 'Featured'}</span></td>
+                      <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === 'available' ? 'bg-green-100 text-green-800' : property.status === 'sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{property.status}</span></td>
+                      <td className="px-6 py-4 text-center">
+                        <button onClick={() => handleEditProperty(property)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2" title="Edit">
+                          <FaEdit size={18} />
+                        </button>
+                        <button onClick={() => handleDeleteProperty(property._id)} className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition" title="Delete">
+                          <FaTrash size={18} />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -324,38 +376,38 @@ const AdminDashboard = () => {
         {activeTab === 'schedules' && (
           <div>
             <h2 className="text-xl font-bold mb-4">Manage Schedules</h2>
-            <div className="bg-white rounded shadow overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full min-w-[900px]">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
-                    <th className="px-4 py-3 text-left">Property</th>
-                    <th className="px-4 py-3 text-left">Customer</th>
-                    <th className="px-4 py-3 text-left">Contact</th>
-                    <th className="px-4 py-3 text-left">Date & Time</th>
-                    <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-left">Actions</th>
+                    <th className="px-6 py-4 text-left font-semibold">Property</th>
+                    <th className="px-6 py-4 text-left font-semibold">Customer</th>
+                    <th className="px-6 py-4 text-left font-semibold">Contact</th>
+                    <th className="px-6 py-4 text-left font-semibold">Date & Time</th>
+                    <th className="px-6 py-4 text-left font-semibold">Status</th>
+                    <th className="px-6 py-4 text-left font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {schedules.map(schedule => (
-                    <tr key={schedule._id} className="border-t">
-                      <td className="px-4 py-3">{schedule.propertyTitle}</td>
-                      <td className="px-4 py-3">{schedule.name}</td>
-                      <td className="px-4 py-3">{schedule.phone}<br/><span className="text-sm text-gray-600">{schedule.email}</span></td>
-                      <td className="px-4 py-3">{schedule.date} {schedule.time}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded text-xs ${schedule.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : schedule.status === 'approved' ? 'bg-blue-100 text-blue-800' : schedule.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <tr key={schedule._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
+                      <td className="px-6 py-4 font-medium">{schedule.propertyTitle}</td>
+                      <td className="px-6 py-4 text-gray-700">{schedule.name}</td>
+                      <td className="px-6 py-4 text-gray-700">{schedule.phone}<br/><span className="text-sm text-gray-500">{schedule.email}</span></td>
+                      <td className="px-6 py-4 text-gray-700">{schedule.date} {schedule.time}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${schedule.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : schedule.status === 'approved' ? 'bg-blue-100 text-blue-800' : schedule.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                           {schedule.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-6 py-4">
                         {schedule.status === 'pending' && (
-                          <button onClick={() => handleScheduleStatus(schedule._id, 'approved')} className="text-blue-600 mr-2">Approve</button>
+                          <button onClick={() => handleScheduleStatus(schedule._id, 'approved')} className="text-blue-600 hover:bg-blue-100 px-3 py-1 rounded transition mr-2">Approve</button>
                         )}
                         {schedule.status === 'approved' && (
-                          <button onClick={() => handleScheduleStatus(schedule._id, 'completed')} className="text-green-600 mr-2">Complete</button>
+                          <button onClick={() => handleScheduleStatus(schedule._id, 'completed')} className="text-green-600 hover:bg-green-100 px-3 py-1 rounded transition mr-2">Complete</button>
                         )}
-                        <button onClick={() => handleScheduleStatus(schedule._id, 'cancelled')} className="text-red-600">Cancel</button>
+                        <button onClick={() => handleScheduleStatus(schedule._id, 'cancelled')} className="text-red-600 hover:bg-red-100 px-3 py-1 rounded transition">Cancel</button>
                       </td>
                     </tr>
                   ))}
