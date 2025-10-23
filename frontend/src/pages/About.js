@@ -1,10 +1,11 @@
 import React from 'react';
+import { FaBullseye, FaEye, FaStar } from 'react-icons/fa';
 
 const About = () => {
   const values = [
-    { icon: "🎯", title: "Our Mission", description: "To deliver exceptional real estate projects that exceed customer expectations and create lasting value." },
-    { icon: "👁️", title: "Our Vision", description: "To be the most trusted and preferred real estate developer in Hyderabad, known for quality and innovation." },
-    { icon: "⭐", title: "Our Values", description: "Integrity, Excellence, Customer Focus, Innovation, and Sustainability guide everything we do." }
+    { icon: FaBullseye, title: "Our Mission", description: "To deliver exceptional real estate projects that exceed customer expectations and create lasting value." },
+    { icon: FaEye, title: "Our Vision", description: "To be the most trusted and preferred real estate developer in Hyderabad, known for quality and innovation." },
+    { icon: FaStar, title: "Our Values", description: "Integrity, Excellence, Customer Focus, Innovation, and Sustainability guide everything we do." }
   ];
 
   const milestones = [
@@ -16,7 +17,7 @@ const About = () => {
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
-      <div className="relative h-96 bg-gradient-to-r from-blue-900 to-blue-700 flex items-center justify-center">
+      <div className="relative h-96 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
         <div className="text-center text-white">
           <h1 className="text-6xl font-bold mb-4 animate-fade-in">About Tanavi Properties</h1>
           <p className="text-xl">Building Dreams, Creating Landmarks</p>
@@ -35,7 +36,7 @@ const About = () => {
           <div>
             <h2 className="text-4xl font-bold mb-6">
               WHO WE ARE
-              <div className="w-24 h-1 bg-red-600 mt-2"></div>
+              <div className="w-24 h-1 bg-primary mt-2"></div>
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
               <p>
@@ -54,16 +55,19 @@ const About = () => {
         <div className="mb-20">
           <h2 className="text-4xl font-bold text-center mb-12">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {values.map((value, index) => (
-              <div 
-                key={index} 
-                className="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className="text-6xl mb-4">{value.icon}</div>
-                <h3 className="text-2xl font-bold mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
-              </div>
-            ))}
+            {values.map((value, index) => {
+              const IconComponent = value.icon;
+              return (
+                <div 
+                  key={index} 
+                  className="bg-white p-8 rounded-lg shadow-lg text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
+                  <IconComponent className="text-6xl mb-4 text-primary mx-auto" />
+                  <h3 className="text-2xl font-bold mb-3">{value.title}</h3>
+                  <p className="text-gray-600">{value.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
