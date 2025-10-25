@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaRulerCombined } from 'react-icons/fa';
+import { getImageUrl } from '../utils/api';
 
 const PropertyCard = ({ property }) => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const PropertyCard = ({ property }) => {
 
   return (
     <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 h-full flex flex-col">
-      <img src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'} alt={property.title} className="w-full h-48 object-cover" />
+      <img src={getImageUrl(property.images?.[0] || property.image)} alt={property.title} className="w-full h-48 object-cover" loading="lazy" />
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-bold mb-1">{property.title}</h3>
         <p className="text-gray-600 text-sm mb-2">{property.location}</p>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
+import API_URL, { getImageUrl } from '../utils/api';
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -10,7 +11,7 @@ const PropertyDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`)
+    fetch(`${API_URL}/api/properties/${id}`)
       .then(res => res.json())
       .then(data => setProperty(data))
       .catch(err => console.error('Error fetching property:', err));
@@ -45,8 +46,9 @@ const PropertyDetails = () => {
                 {property.images.map((img, index) => (
                   <img
                     key={index}
-                    src={img}
+                    src={getImageUrl(img)}
                     alt={`${property.title} ${index + 1}`}
+                    loading="lazy"
                     className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
                       index === currentImage ? 'opacity-100' : 'opacity-0'
                     }`}

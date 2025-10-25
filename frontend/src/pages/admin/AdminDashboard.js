@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import API_URL from '../../utils/api';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
@@ -42,7 +43,7 @@ const AdminDashboard = () => {
 
   const fetchProperties = async () => {
     try {
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/properties');
+      const res = await fetch(`${API_URL}/api/properties`);
       const data = await res.json();
       setProperties(data);
       return data;
@@ -55,7 +56,7 @@ const AdminDashboard = () => {
   const fetchSchedules = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/schedules', {
+      const res = await fetch(`${API_URL}/api/schedules`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -69,7 +70,7 @@ const AdminDashboard = () => {
 
   const fetchGallery = async () => {
     try {
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/gallery');
+      const res = await fetch(`${API_URL}/api/gallery`);
       const data = await res.json();
       setGallery(data);
       return data;
@@ -81,7 +82,7 @@ const AdminDashboard = () => {
 
   const fetchBuySell = async () => {
     try {
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/buysell');
+      const res = await fetch(`${API_URL}/api/buysell`);
       const data = await res.json();
       setBuySell(data);
       return data;
@@ -118,14 +119,14 @@ const AdminDashboard = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
+      const res = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        setPropertyForm({...propertyForm, images: [...propertyForm.images, `https://tanavi-properties-backend.onrender.com${data.url}`]});
+        setPropertyForm({...propertyForm, images: [...propertyForm.images, `${API_URL}${data.url}`]});
       } else {
         alert(`Upload failed: ${data.message || 'Unknown error'}`);
       }
@@ -151,8 +152,8 @@ const AdminDashboard = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const url = editingProperty 
-      ? `https://tanavi-properties-backend.onrender.com/api/properties/${editingProperty._id}`
-      : 'https://tanavi-properties-backend.onrender.com/api/properties';
+      ? `${API_URL}/api/properties/${editingProperty._id}`
+      : `${API_URL}/api/properties`;
     
     const body = {
       ...propertyForm,
@@ -185,7 +186,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this property?')) return;
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`https://tanavi-properties-backend.onrender.com/api/properties/${id}`, {
+      const res = await fetch(`${API_URL}/api/properties/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -221,7 +222,7 @@ const AdminDashboard = () => {
   const handleScheduleStatus = async (id, status) => {
     const token = localStorage.getItem('token');
     try {
-      await fetch(`https://tanavi-properties-backend.onrender.com/api/schedules/${id}/status`, {
+      await fetch(`${API_URL}/api/schedules/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status })
@@ -235,7 +236,7 @@ const AdminDashboard = () => {
   const handleGallerySubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    const url = editingGallery ? `https://tanavi-properties-backend.onrender.com/api/gallery/${editingGallery._id}` : 'https://tanavi-properties-backend.onrender.com/api/gallery';
+    const url = editingGallery ? `${API_URL}/api/gallery/${editingGallery._id}` : `${API_URL}/api/gallery`;
     try {
       const res = await fetch(url, {
         method: editingGallery ? 'PUT' : 'POST',
@@ -258,7 +259,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this gallery item?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`https://tanavi-properties-backend.onrender.com/api/gallery/${id}`, {
+      await fetch(`${API_URL}/api/gallery/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -272,7 +273,7 @@ const AdminDashboard = () => {
   const handleBuySellSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    const url = editingBuySell ? `https://tanavi-properties-backend.onrender.com/api/buysell/${editingBuySell._id}` : 'https://tanavi-properties-backend.onrender.com/api/buysell';
+    const url = editingBuySell ? `${API_URL}/api/buysell/${editingBuySell._id}` : `${API_URL}/api/buysell`;
     try {
       const res = await fetch(url, {
         method: editingBuySell ? 'PUT' : 'POST',
@@ -295,7 +296,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this item?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`https://tanavi-properties-backend.onrender.com/api/buysell/${id}`, {
+      await fetch(`${API_URL}/api/buysell/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -529,13 +530,13 @@ const AdminDashboard = () => {
                         setUploading(true);
                         try {
                           const token = localStorage.getItem('token');
-                          const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
+                          const res = await fetch(`${API_URL}/api/upload`, {
                             method: 'POST',
                             headers: { Authorization: `Bearer ${token}` },
                             body: formData
                           });
                           const data = await res.json();
-                          if (res.ok) setGalleryForm({...galleryForm, image: `https://tanavi-properties-backend.onrender.com${data.url}`});
+                          if (res.ok) setGalleryForm({...galleryForm, image: `${API_URL}${data.url}`});
                         } finally {
                           setUploading(false);
                           e.target.value = '';
@@ -621,13 +622,13 @@ const AdminDashboard = () => {
                         setUploading(true);
                         try {
                           const token = localStorage.getItem('token');
-                          const res = await fetch('https://tanavi-properties-backend.onrender.com/api/upload', {
+                          const res = await fetch(`${API_URL}/api/upload`, {
                             method: 'POST',
                             headers: { Authorization: `Bearer ${token}` },
                             body: formData
                           });
                           const data = await res.json();
-                          if (res.ok) setBuySellForm({...buySellForm, image: `https://tanavi-properties-backend.onrender.com${data.url}`});
+                          if (res.ok) setBuySellForm({...buySellForm, image: `${API_URL}${data.url}`});
                         } finally {
                           setUploading(false);
                           e.target.value = '';

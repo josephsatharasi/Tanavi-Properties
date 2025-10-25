@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const properties = await Property.find().sort({ createdAt: -1 });
+    res.set('Cache-Control', 'public, max-age=300');
+    const properties = await Property.find().select('-__v').lean().sort({ createdAt: -1 });
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });

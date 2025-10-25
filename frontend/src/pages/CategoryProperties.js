@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import PropertyCard from '../components/PropertyCard';
+import API_URL from '../utils/api';
 
 const CategoryProperties = () => {
   const { category } = useParams();
@@ -12,7 +13,7 @@ const CategoryProperties = () => {
   const priceRange = searchParams.get('price');
 
   useEffect(() => {
-    fetch('https://tanavi-properties-backend.onrender.com/api/properties')
+    fetch(`${API_URL}/api/properties`)
       .then(res => res.json())
       .then(data => setProperties(data.filter(p => p.status === 'available')))
       .catch(err => console.error('Error fetching properties:', err));
