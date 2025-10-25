@@ -29,15 +29,20 @@ router.post('/', protect, adminOnly, upload.single('image'), async (req, res) =>
       cloudinary.uploader.upload_stream(
         { folder: 'tanavi_properties', resource_type: 'auto' },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            reject(error);
+          } else {
+            resolve(result);
+          }
         }
       ).end(req.file.buffer);
     });
 
     res.json({ url: result.secure_url });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Upload route error:', error);
+    res.status(500).json({ message: error.message, details: error.toString() });
   }
 });
 
