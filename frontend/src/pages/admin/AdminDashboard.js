@@ -126,7 +126,7 @@ const AdminDashboard = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setPropertyForm({...propertyForm, images: [...propertyForm.images, `${API_URL}${data.url}`]});
+        setPropertyForm({...propertyForm, images: [...propertyForm.images, data.url]});
       } else {
         alert(`Upload failed: ${data.message || 'Unknown error'}`);
       }
@@ -536,7 +536,7 @@ const AdminDashboard = () => {
                             body: formData
                           });
                           const data = await res.json();
-                          if (res.ok) setGalleryForm({...galleryForm, image: `${API_URL}${data.url}`});
+                          if (res.ok) setGalleryForm({...galleryForm, image: data.url});
                         } finally {
                           setUploading(false);
                           e.target.value = '';
@@ -628,7 +628,7 @@ const AdminDashboard = () => {
                             body: formData
                           });
                           const data = await res.json();
-                          if (res.ok) setBuySellForm({...buySellForm, image: `${API_URL}${data.url}`});
+                          if (res.ok) setBuySellForm({...buySellForm, image: data.url});
                         } finally {
                           setUploading(false);
                           e.target.value = '';
