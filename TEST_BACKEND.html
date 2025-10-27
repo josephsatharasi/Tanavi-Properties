@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Tanavi Properties Backend Test</h1>
+    <p>Backend URL: <strong id="backendUrl"></strong></p>
+    <button onclick="testBackend()">Test Backend Connection</button>
+    <div id="results"></div>
+
+    <script>
+        const BACKEND_URL = 'https://tanavi-properties-backend.onrender.com';
+        document.getElementById('backendUrl').textContent = BACKEND_URL;
+
+        async function testBackend() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing...</p>';
+
+            const tests = [
+                { name: 'Properties API', url: '/api/properties' },
+                { name: 'Gallery API', url: '/api/gallery' },
+                { name: 'Buy/Sell API', url: '/api/buysell' }
+            ];
+
+            let html = '';
+
+            for (const test of tests) {
+                try {
+                    const start = Date.now();
+                    const response = await fetch(BACKEND_URL + test.url);
+                    const duration = Date.now() - start;
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        html += `<div class="result success">✓ ${test.name}: OK (${duration}ms) - ${data.length} items</div>`;
+                    } else {
+                        html += `<div class="result error">✗ ${test.name}: Error ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    html += `<div class="result error">✗ ${test.name}: ${error.message}</div>`;
+                }
+            }
+
+            results.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

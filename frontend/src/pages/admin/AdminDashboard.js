@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import API_URL from '../../utils/api';
+import { compressImage } from '../../utils/imageCompressor';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
@@ -113,26 +114,51 @@ const AdminDashboard = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('image', file);
     setUploading(true);
+    
+    let uploadFile = file;
+    try {
+      uploadFile = await compressImage(file, 2);
+    } catch (err) {
+      console.log('Compression failed, using original:', err);
+    }
+
+    const formData = new FormData();
+    formData.append('image', uploadFile);
 
     try {
       const token = localStorage.getItem('token');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      
       const res = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData
+        headers: { 
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+        signal: controller.signal,
+        mode: 'cors',
+        credentials: 'omit'
       });
+      clearTimeout(timeoutId);
+      
       const data = await res.json();
       if (res.ok) {
         setPropertyForm({...propertyForm, images: [...propertyForm.images, data.url]});
+        showToast('Image uploaded successfully!', 'success');
       } else {
-        alert(`Upload failed: ${data.message || 'Unknown error'}`);
+        alert(`Upload failed: ${data.message || 'Server error'}`);
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert(`Error uploading image: ${error.message}`);
+      if (error.name === 'AbortError') {
+        alert('Upload timeout. Please check your internet connection and try again.');
+      } else if (error.message === 'Failed to fetch') {
+        alert('Cannot connect to server. Please check:\n1. Your internet connection\n2. Backend server is running\n3. Try again in a moment');
+      } else {
+        alert(`Error: ${error.message}`);
+      }
     } finally {
       setUploading(false);
       e.target.value = '';

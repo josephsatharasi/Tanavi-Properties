@@ -7,35 +7,23 @@ import WhyChoose from '../components/WhyChoose';
 import Testimonials from '../components/Testimonials';
 import RegisterCTA from '../components/RegisterCTA';
 import LoadingSpinner from '../components/LoadingSpinner';
-import API_URL from '../utils/api';
+import API_URL, { fetchWithTimeout } from '../utils/api';
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-    fetch(`${API_URL}/api/properties`, { signal: controller.signal })
-      .then(res => {
-        clearTimeout(timeoutId);
-        return res.json();
-      })
+    fetchWithTimeout(`${API_URL}/api/properties`, {}, 30000)
+      .then(res => res.json())
       .then(data => {
         setProperties(data.filter(p => p.section === 'featured' && p.status === 'available'));
         setLoading(false);
       })
       .catch(err => {
-        clearTimeout(timeoutId);
         console.error('Error fetching properties:', err);
         setLoading(false);
       });
-
-    return () => {
-      clearTimeout(timeoutId);
-      controller.abort();
-    };
   }, []);
 
   if (loading) return <LoadingSpinner />;
