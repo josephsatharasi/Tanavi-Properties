@@ -15,9 +15,7 @@ const Footer = () => {
               <li><a href="/" className="text-gray-400 hover:text-white">Home</a></li>
               <li><a href="/about" className="text-gray-400 hover:text-white">About</a></li>
               <li><a href="/projects" className="text-gray-400 hover:text-white">Projects</a></li>
-              <li><a href="/blogs" className="text-gray-400 hover:text-white">Blogs</a></li>
-              <li><a href="/careers" className="text-gray-400 hover:text-white">Careers</a></li>
-              <li><a href="/#contact" className="text-gray-400 hover:text-white">Contact</a></li>
+              <li><a href="/contact" className="text-gray-400 hover:text-white">Contact</a></li>
             </ul>
           </div>
           <div>
@@ -48,7 +46,18 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Tanavi Properties. All rights reserved.</p>
+          <p>All copyrights reserved Tanavi Properties @2025</p>
+          <p className="mt-2">
+            Powered by{' '}
+            <a 
+              href="https://www.vspazetechnologies.in/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition"
+            >
+              Vspaze Technologies
+            </a>
+          </p>
         </div>
       </div>
     </footer>

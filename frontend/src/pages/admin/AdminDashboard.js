@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import API_URL from '../../utils/api';
+import API_URL, { getImageUrl } from '../../utils/api';
 import { compressImage } from '../../utils/imageCompressor';
 
 const AdminDashboard = () => {
@@ -196,11 +196,21 @@ const AdminDashboard = () => {
         body: JSON.stringify(body)
       });
       if (res.ok) {
-        fetchProperties();
+        const updatedProperty = await res.json();
+        
+        if (editingProperty) {
+          setProperties(properties.map(p => p._id === updatedProperty._id ? updatedProperty : p));
+        } else {
+          setProperties([updatedProperty, ...properties]);
+        }
+        
         setShowPropertyForm(false);
         setEditingProperty(null);
         setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured' });
         showToast(editingProperty ? 'Property updated successfully!' : 'Property added successfully!', 'success');
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Failed to save property', 'error');
       }
     } catch (error) {
       console.error('Error saving property:', error);
@@ -217,8 +227,11 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
-        fetchProperties();
+        setProperties(properties.filter(p => p._id !== id));
         showToast('Property deleted successfully!', 'success');
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Failed to delete property', 'error');
       }
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -248,14 +261,21 @@ const AdminDashboard = () => {
   const handleScheduleStatus = async (id, status) => {
     const token = localStorage.getItem('token');
     try {
-      await fetch(`${API_URL}/api/schedules/${id}/status`, {
+      const res = await fetch(`${API_URL}/api/schedules/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status })
       });
-      fetchSchedules();
+      if (res.ok) {
+        const updatedSchedule = await res.json();
+        setSchedules(schedules.map(s => s._id === updatedSchedule._id ? updatedSchedule : s));
+        showToast('Schedule updated!', 'success');
+      } else {
+        showToast('Failed to update schedule', 'error');
+      }
     } catch (error) {
       console.error('Error updating schedule:', error);
+      showToast('Failed to update schedule', 'error');
     }
   };
 
@@ -270,11 +290,21 @@ const AdminDashboard = () => {
         body: JSON.stringify(galleryForm)
       });
       if (res.ok) {
-        fetchGallery();
+        const updatedItem = await res.json();
+        
+        if (editingGallery) {
+          setGallery(gallery.map(g => g._id === updatedItem._id ? updatedItem : g));
+        } else {
+          setGallery([updatedItem, ...gallery]);
+        }
+        
         setShowGalleryForm(false);
         setEditingGallery(null);
         setGalleryForm({ title: '', category: '', image: '', description: '' });
         showToast(editingGallery ? 'Gallery updated!' : 'Gallery added!', 'success');
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Failed to save gallery', 'error');
       }
     } catch (error) {
       showToast('Failed to save gallery', 'error');
@@ -285,12 +315,16 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this gallery item?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`${API_URL}/api/gallery/${id}`, {
+      const res = await fetch(`${API_URL}/api/gallery/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchGallery();
-      showToast('Gallery deleted!', 'success');
+      if (res.ok) {
+        setGallery(gallery.filter(g => g._id !== id));
+        showToast('Gallery deleted!', 'success');
+      } else {
+        showToast('Failed to delete', 'error');
+      }
     } catch (error) {
       showToast('Failed to delete', 'error');
     }
@@ -307,11 +341,21 @@ const AdminDashboard = () => {
         body: JSON.stringify(buySellForm)
       });
       if (res.ok) {
-        fetchBuySell();
+        const updatedItem = await res.json();
+        
+        if (editingBuySell) {
+          setBuySell(buySell.map(b => b._id === updatedItem._id ? updatedItem : b));
+        } else {
+          setBuySell([updatedItem, ...buySell]);
+        }
+        
         setShowBuySellForm(false);
         setEditingBuySell(null);
         setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' });
         showToast(editingBuySell ? 'Item updated!' : 'Item added!', 'success');
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Failed to save', 'error');
       }
     } catch (error) {
       showToast('Failed to save', 'error');
@@ -322,12 +366,16 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this item?')) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`${API_URL}/api/buysell/${id}`, {
+      const res = await fetch(`${API_URL}/api/buysell/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchBuySell();
-      showToast('Item deleted!', 'success');
+      if (res.ok) {
+        setBuySell(buySell.filter(b => b._id !== id));
+        showToast('Item deleted!', 'success');
+      } else {
+        showToast('Failed to delete', 'error');
+      }
     } catch (error) {
       showToast('Failed to delete', 'error');
     }
@@ -463,7 +511,7 @@ const AdminDashboard = () => {
                       <div className="grid grid-cols-4 gap-2">
                         {propertyForm.images.map((img, idx) => (
                           <div key={idx} className="relative">
-                            <img src={img} alt="Property" className="w-full h-20 object-cover rounded" />
+                            <img src={getImageUrl(img)} alt="Property" className="w-full h-20 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />
                             <button type="button" onClick={() => removeImage(idx)} className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>
                           </div>
                         ))}
@@ -569,7 +617,7 @@ const AdminDashboard = () => {
                         }
                       }} className="w-full border p-2 rounded" disabled={uploading} />
                       {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
-                      {galleryForm.image && <img src={galleryForm.image} alt="Preview" className="mt-2 h-32 object-cover rounded" />}
+                      {galleryForm.image && <img src={getImageUrl(galleryForm.image)} alt="Preview" className="mt-2 h-32 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />}
                     </div>
                     <textarea placeholder="Description (optional)" value={galleryForm.description} onChange={(e) => setGalleryForm({...galleryForm, description: e.target.value})} className="w-full border p-2 rounded" rows="3" />
                     <div className="flex gap-2">
@@ -594,7 +642,7 @@ const AdminDashboard = () => {
                 <tbody>
                   {gallery.map(item => (
                     <tr key={item._id} className="border-b hover:bg-blue-50">
-                      <td className="px-6 py-4"><img src={item.image} alt={item.title} className="h-16 w-16 object-cover rounded" /></td>
+                      <td className="px-6 py-4"><img src={getImageUrl(item.image)} alt={item.title} className="h-16 w-16 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} /></td>
                       <td className="px-6 py-4 font-medium">{item.title}</td>
                       <td className="px-6 py-4">{item.category}</td>
                       <td className="px-6 py-4 text-center">
@@ -661,7 +709,7 @@ const AdminDashboard = () => {
                         }
                       }} className="w-full border p-2 rounded" disabled={uploading} />
                       {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
-                      {buySellForm.image && <img src={buySellForm.image} alt="Preview" className="mt-2 h-32 object-cover rounded" />}
+                      {buySellForm.image && <img src={getImageUrl(buySellForm.image)} alt="Preview" className="mt-2 h-32 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />}
                     </div>
                     <div className="flex gap-2">
                       <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Save</button>
@@ -687,7 +735,7 @@ const AdminDashboard = () => {
                 <tbody>
                   {buySell.map(item => (
                     <tr key={item._id} className="border-b hover:bg-blue-50">
-                      <td className="px-6 py-4"><img src={item.image} alt={item.title} className="h-16 w-16 object-cover rounded" /></td>
+                      <td className="px-6 py-4"><img src={getImageUrl(item.image)} alt={item.title} className="h-16 w-16 object-cover rounded" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} /></td>
                       <td className="px-6 py-4 font-medium">{item.title}</td>
                       <td className="px-6 py-4">{item.location}</td>
                       <td className="px-6 py-4">₹{item.price}</td>

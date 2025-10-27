@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
+import { getImageUrl } from '../utils/api';
 
 const BuySell = () => {
   const [activeTab, setActiveTab] = useState('sold');
@@ -47,7 +48,7 @@ const BuySell = () => {
           {displayProperties.map((property) => (
             <div key={property._id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
               <div className="relative">
-                <img src={property.image} alt={property.title} className="w-full h-48 object-cover" />
+                <img src={getImageUrl(property.image)} alt={property.title} className="w-full h-48 object-cover" onError={(e) => e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'} />
                 <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                   <FaCheckCircle />
                   <span>{property.type === 'sold' ? 'Sold' : 'Bought'}</span>
