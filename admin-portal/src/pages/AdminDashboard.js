@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import API_URL, { getImageUrl } from '../../utils/api';
-import { compressImage } from '../../utils/imageCompressor';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaEye } from 'react-icons/fa';
+import LoadingSpinner from '../components/LoadingSpinner';
+import API_URL, { getImageUrl } from '../utils/api';
+import { compressImage } from '../utils/imageCompressor';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('properties');
@@ -661,9 +661,14 @@ const AdminDashboard = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Buy/Sell</h2>
-              <button onClick={() => { setShowBuySellForm(true); setEditingBuySell(null); setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
-                Add Item
-              </button>
+              <div className="flex gap-2">
+                <button onClick={() => navigate('/buy-sell')} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 flex items-center gap-2">
+                  <FaEye /> View Buy/Sell Page
+                </button>
+                <button onClick={() => { setShowBuySellForm(true); setEditingBuySell(null); setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                  Add Item
+                </button>
+              </div>
             </div>
 
             {showBuySellForm && (

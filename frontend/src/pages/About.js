@@ -75,21 +75,21 @@ const About = () => {
           <h2 className="text-4xl font-bold text-center mb-12">Our Journey</h2>
           <div className="relative">
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary hidden md:block"></div>
-            <div className="space-y-12">
+            <div className="space-y-8 md:space-y-12">
               {milestones.map((milestone, index) => (
                 <div 
                   key={index} 
-                  className={`flex items-center gap-8 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                  className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} md:gap-8`}
                 >
-                  <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+                  <div className={`w-full md:flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                     <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                       <h3 className="text-3xl font-bold text-primary mb-2">{milestone.year}</h3>
                       <h4 className="text-xl font-bold mb-2">{milestone.event}</h4>
                       <p className="text-gray-600">{milestone.description}</p>
                     </div>
                   </div>
-                  <div className="hidden md:block w-8 h-8 bg-primary rounded-full border-4 border-white shadow-lg z-10"></div>
-                  <div className="flex-1"></div>
+                  <div className="hidden md:block w-8 h-8 bg-primary rounded-full border-4 border-white shadow-lg z-10 flex-shrink-0"></div>
+                  <div className="hidden md:block md:flex-1"></div>
                 </div>
               ))}
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaEnvelope } from 'react-icons/fa';
+import API_URL from '../utils/api';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -12,7 +13,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -22,18 +23,17 @@ const AdminLogin = () => {
 
       if (res.ok) {
         if (data.user.role !== 'admin') {
-          setError('Admin access required. Only admin users can login here.');
+          setError('Admin access required.');
           return;
         }
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/admin/dashboard');
+        navigate('/dashboard');
       } else {
-        setError(data.message || 'Invalid email or password');
+        setError(data.message || 'Invalid credentials');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Cannot connect to server. Make sure backend is running on port 5000.');
+      setError('Cannot connect to server');
     }
   };
 
@@ -41,8 +41,8 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Admin Login</h1>
-          <p className="text-gray-600 mt-2">Tanavi Properties Dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-800">Admin Portal</h1>
+          <p className="text-gray-600 mt-2">Tanavi Properties</p>
         </div>
 
         {error && (
@@ -61,7 +61,6 @@ const AdminLogin = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                 className="w-full px-4 py-3 focus:outline-none"
-                placeholder="admin@example.com"
                 required
               />
             </div>
@@ -76,7 +75,6 @@ const AdminLogin = () => {
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                 className="w-full px-4 py-3 focus:outline-none"
-                placeholder="••••••••"
                 required
               />
             </div>
@@ -89,10 +87,6 @@ const AdminLogin = () => {
             Login
           </button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Default Admin: admin@tanavi.com / admin123</p>
-        </div>
       </div>
     </div>
   );

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { FaCheckCircle } from 'react-icons/fa';
-import { getImageUrl } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
+import API_URL, { getImageUrl } from '../utils/api';
 
 const BuySell = () => {
   const [activeTab, setActiveTab] = useState('sold');
   const [properties, setProperties] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('https://tanavi-properties-backend.onrender.com/api/buysell')
+    fetch(`${API_URL}/api/buysell`)
       .then(res => res.json())
       .then(data => setProperties(data))
       .catch(err => console.error(err));
@@ -16,17 +18,25 @@ const BuySell = () => {
   const displayProperties = properties.filter(p => p.type === activeTab);
 
   return (
-    <div className="pt-16 min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
+          <button onClick={() => navigate('/dashboard')} className="text-blue-600 hover:text-blue-700">
+            <FaArrowLeft size={20} />
+          </button>
+          <h1 className="text-2xl font-bold">Buy & Sell Properties</h1>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-5xl font-bold text-center mb-4">Buy & Sell</h1>
-        <p className="text-center text-gray-600 mb-12">Our successful property transactions</p>
+        <p className="text-center text-gray-600 mb-12">View all successful property transactions</p>
 
         <div className="flex justify-center gap-4 mb-12">
           <button
             onClick={() => setActiveTab('sold')}
             className={`px-8 py-3 rounded-lg font-semibold transition ${
               activeTab === 'sold'
-                ? 'bg-primary text-white'
+                ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
@@ -36,7 +46,7 @@ const BuySell = () => {
             onClick={() => setActiveTab('bought')}
             className={`px-8 py-3 rounded-lg font-semibold transition ${
               activeTab === 'bought'
-                ? 'bg-primary text-white'
+                ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >

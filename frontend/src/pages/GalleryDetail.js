@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import API_URL from '../utils/api';
 
 const GalleryDetail = () => {
   const { id } = useParams();
@@ -9,7 +10,7 @@ const GalleryDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://tanavi-properties-backend.onrender.com/api/gallery/${id}`)
+    fetch(`${API_URL}/api/gallery/${id}`)
       .then(res => res.json())
       .then(data => {
         setItem(data);

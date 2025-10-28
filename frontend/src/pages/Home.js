@@ -47,6 +47,25 @@ const Home = () => {
 
       <PropertyCategories />
       <TanaviHighlights />
+      
+      <section className="py-6 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200" 
+              alt="Tanavi Properties Banner" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 flex items-center justify-center">
+              <div className="text-center text-white px-4">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">Building Your Dreams</h2>
+                <p className="text-lg md:text-xl">Experience luxury living with Tanavi Properties</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <WhyChoose />
       <Testimonials />
       <RegisterCTA />

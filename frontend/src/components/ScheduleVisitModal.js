@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import API_URL from '../utils/api';
 
 const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://tanavi-properties-backend.onrender.com/api/schedules', {
+      const res = await fetch(`${API_URL}/api/schedules`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, propertyId, propertyTitle })
