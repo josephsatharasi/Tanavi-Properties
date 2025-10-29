@@ -15,7 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchProperties = () => {
-      fetchWithTimeout(`${API_URL}/api/properties`, {}, 30000)
+      fetchWithTimeout(`${API_URL}/api/properties?t=${Date.now()}`, { cache: 'no-store' }, 30000)
         .then(res => res.json())
         .then(data => {
           setProperties(data.filter(p => p.section === 'featured' && p.status === 'available'));
@@ -28,7 +28,7 @@ const Home = () => {
     };
 
     fetchProperties();
-    const interval = setInterval(fetchProperties, 30000);
+    const interval = setInterval(fetchProperties, 5000);
     return () => clearInterval(interval);
   }, []);
 

@@ -14,14 +14,14 @@ const CategoryProperties = () => {
 
   useEffect(() => {
     const fetchProperties = () => {
-      fetch(`${API_URL}/api/properties`)
+      fetch(`${API_URL}/api/properties?t=${Date.now()}`, { cache: 'no-store' })
         .then(res => res.json())
         .then(data => setProperties(data.filter(p => p.status === 'available')))
         .catch(err => console.error('Error fetching properties:', err));
     };
 
     fetchProperties();
-    const interval = setInterval(fetchProperties, 30000);
+    const interval = setInterval(fetchProperties, 5000);
     return () => clearInterval(interval);
   }, []);
   
