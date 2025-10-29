@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaCheckCircle } from 'react-icons/fa';
 
 const RegistrationModal = ({ isOpen, onClose }) => {
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,8 +20,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    alert('Registration submitted successfully! We will contact you soon.');
-    onClose();
+    setShowSuccess(true);
     setFormData({
       name: '',
       email: '',
@@ -32,7 +32,34 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     });
   };
 
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
+
+  if (showSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center animate-scale-in">
+          <div className="mb-6">
+            <FaCheckCircle className="text-green-500 text-7xl mx-auto animate-bounce" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Success!</h2>
+          <p className="text-gray-600 text-lg mb-6">
+            Registration submitted successfully! We will contact you soon.
+          </p>
+          <button
+            onClick={handleSuccessClose}
+            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-opacity-90 transition font-medium text-lg"
+          >
+            Got it!
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">

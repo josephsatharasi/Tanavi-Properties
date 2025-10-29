@@ -63,7 +63,7 @@ const Navbar = () => {
       </div>
 
       {isOpen && (
-        <div className="md:hidden bg-white/70 backdrop-blur-lg shadow-lg rounded-b-lg">
+        <div className="md:hidden bg-green-50/60 backdrop-blur-lg shadow-lg rounded-b-lg">
           <div className="px-4 pt-2 pb-4 space-y-2">
             <a href="/" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">Home</a>
             <button 
