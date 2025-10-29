@@ -53,6 +53,8 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               value={formData.name}
               onChange={handleChange}
               required
+              pattern="[A-Za-z\s]+"
+              title="Name should only contain letters"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
               placeholder="Enter your full name"
             />
@@ -66,6 +68,8 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               value={formData.email}
               onChange={handleChange}
               required
+              pattern="[a-zA-Z0-9._%+-]+@gmail\.com$"
+              title="Email must be a valid Gmail address (e.g., example@gmail.com)"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
               placeholder="Enter your email"
             />
@@ -80,6 +84,8 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               onChange={handleChange}
               required
               pattern="[0-9]{10}"
+              maxLength="10"
+              title="Phone number must be exactly 10 digits"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
               placeholder="Enter 10-digit phone number"
             />
@@ -142,19 +148,12 @@ const RegistrationModal = ({ isOpen, onClose }) => {
             ></textarea>
           </div>
 
-          <div className="flex gap-4 pt-4">
+          <div className="pt-4">
             <button
               type="submit"
-              className="flex-1 bg-primary text-white py-3 rounded hover:bg-opacity-90 transition font-medium"
+              className="w-full bg-primary text-white py-3 rounded hover:bg-opacity-90 transition font-medium"
             >
               Submit Registration
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-700 py-3 rounded hover:bg-gray-300 transition font-medium"
-            >
-              Cancel
             </button>
           </div>
         </form>

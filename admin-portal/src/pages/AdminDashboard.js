@@ -26,7 +26,7 @@ const AdminDashboard = () => {
     bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured'
   });
   const [galleryForm, setGalleryForm] = useState({ title: '', category: '', image: '', description: '' });
-  const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' });
+  const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' });
   const [uploading, setUploading] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
@@ -661,7 +661,7 @@ const AdminDashboard = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Buy/Sell</h2>
-              <button onClick={() => { setShowBuySellForm(true); setEditingBuySell(null); setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sold', date: '', image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+              <button onClick={() => { setShowBuySellForm(true); setEditingBuySell(null); setBuySellForm({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 Add Item
               </button>
             </div>
@@ -682,8 +682,8 @@ const AdminDashboard = () => {
                     <input type="text" placeholder="Price" value={buySellForm.price} onChange={(e) => setBuySellForm({...buySellForm, price: e.target.value})} className="w-full border p-2 rounded" required />
                     <input type="number" placeholder="Area (sq.ft)" value={buySellForm.area} onChange={(e) => setBuySellForm({...buySellForm, area: e.target.value})} className="w-full border p-2 rounded" required />
                     <select value={buySellForm.type} onChange={(e) => setBuySellForm({...buySellForm, type: e.target.value})} className="w-full border p-2 rounded" required>
-                      <option value="sold">Sold</option>
-                      <option value="bought">Bought</option>
+                      <option value="sale">Sale</option>
+                      <option value="buy">Buy</option>
                     </select>
                     <input type="text" placeholder="Date (e.g., Jan 2024)" value={buySellForm.date} onChange={(e) => setBuySellForm({...buySellForm, date: e.target.value})} className="w-full border p-2 rounded" required />
                     <div>
@@ -739,7 +739,7 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 font-medium">{item.title}</td>
                       <td className="px-6 py-4">{item.location}</td>
                       <td className="px-6 py-4">₹{item.price}</td>
-                      <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.type === 'sold' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{item.type}</span></td>
+                      <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${(item.type === 'sold' || item.type === 'sale') ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{(item.type === 'sold' || item.type === 'sale') ? 'Sale' : 'Buy'}</span></td>
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => { setEditingBuySell(item); setBuySellForm(item); setShowBuySellForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
                         <button onClick={() => handleDeleteBuySell(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>

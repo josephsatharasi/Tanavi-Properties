@@ -5,7 +5,7 @@ const buySellSchema = new mongoose.Schema({
   location: { type: String, required: true },
   price: { type: String, required: true },
   area: { type: Number, required: true },
-  type: { type: String, enum: ['sold', 'bought'], required: true },
+  type: { type: String, enum: ['sale', 'buy', 'sold', 'bought'], required: true },
   date: { type: String, required: true },
   image: { type: String, required: true }
 }, { timestamps: true });

@@ -4,7 +4,7 @@ import API_URL, { getImageUrl } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const BuySell = () => {
-  const [activeTab, setActiveTab] = useState('sold');
+  const [activeTab, setActiveTab] = useState('sale');
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,7 @@ const BuySell = () => {
       });
   }, []);
 
-  const displayProperties = properties.filter(p => p.type === activeTab);
+  const displayProperties = properties.filter(p => p.type === activeTab || (activeTab === 'sale' && p.type === 'sold') || (activeTab === 'buy' && p.type === 'bought'));
 
   if (loading) return <LoadingSpinner />;
 
@@ -35,24 +35,24 @@ const BuySell = () => {
 
         <div className="flex justify-center gap-4 mb-12">
           <button
-            onClick={() => setActiveTab('sold')}
+            onClick={() => setActiveTab('sale')}
             className={`px-8 py-3 rounded-lg font-semibold transition ${
-              activeTab === 'sold'
+              activeTab === 'sale'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Sold Properties
+            Sale Properties
           </button>
           <button
-            onClick={() => setActiveTab('bought')}
+            onClick={() => setActiveTab('buy')}
             className={`px-8 py-3 rounded-lg font-semibold transition ${
-              activeTab === 'bought'
+              activeTab === 'buy'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Bought Properties
+            Buy Properties
           </button>
         </div>
 
@@ -71,7 +71,7 @@ const BuySell = () => {
                   />
                   <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                     <FaCheckCircle />
-                    <span>{property.type === 'sold' ? 'Sold' : 'Bought'}</span>
+                    <span>{(property.type === 'sold' || property.type === 'sale') ? 'Sale' : 'Buy'}</span>
                   </div>
                 </div>
                 <div className="p-4">

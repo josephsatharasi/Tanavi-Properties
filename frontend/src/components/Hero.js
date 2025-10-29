@@ -31,7 +31,7 @@ const Hero = () => {
             Trusted platform for Agricultural Lands, Homes,<br />Open Plots, Flats & Farmhouses.
           </p>
           
-          <div className="bg-white rounded-lg p-6 max-w-4xl shadow-lg">
+          <div className="bg-white/80 backdrop-blur-lg rounded-lg p-6 max-w-4xl shadow-lg">
             <div className="flex flex-col gap-4">
               <div className="relative">
                 <select 

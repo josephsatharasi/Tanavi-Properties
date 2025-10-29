@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FaShare } from 'react-icons/fa';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL, { getImageUrl } from '../utils/api';
@@ -11,6 +12,7 @@ const PropertyDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -26,6 +28,44 @@ const PropertyDetails = () => {
       });
   }, [id]);
 
+  const handleShare = () => {
+    const url = window.location.href;
+    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
+    
+    if (navigator.share) {
+      navigator.share({ title: property.title, text, url })
+        .catch(() => setShowShareMenu(true));
+    } else {
+      setShowShareMenu(true);
+    }
+  };
+
+  const shareToWhatsApp = () => {
+    const url = window.location.href;
+    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToFacebook = () => {
+    const url = window.location.href;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToTwitter = () => {
+    const url = window.location.href;
+    const text = `Check out this property: ${property.title}`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copied to clipboard!');
+    setShowShareMenu(false);
+  };
+
   useEffect(() => {
     if (!property || !property.images || property.images.length === 0) return;
     const interval = setInterval(() => {
@@ -40,15 +80,44 @@ const PropertyDetails = () => {
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <button 
-          onClick={() => {
-            navigate('/');
-            setTimeout(() => window.scrollTo(0, 0), 0);
-          }} 
-          className="mb-6 text-primary hover:underline flex items-center gap-2"
-        >
-          ← Back to Properties
-        </button>
+        <div className="flex justify-between items-center mb-6">
+          <button 
+            onClick={() => {
+              navigate('/');
+              setTimeout(() => window.scrollTo(0, 0), 0);
+            }} 
+            className="text-primary hover:underline flex items-center gap-2"
+          >
+            ← Back to Properties
+          </button>
+          <div className="relative">
+            <button 
+              onClick={handleShare}
+              className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition"
+            >
+              <FaShare /> Share
+            </button>
+            {showShareMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10 py-2">
+                <button onClick={shareToWhatsApp} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+                  <span className="text-green-500">📱</span> WhatsApp
+                </button>
+                <button onClick={shareToFacebook} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+                  <span className="text-blue-600">📘</span> Facebook
+                </button>
+                <button onClick={shareToTwitter} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+                  <span className="text-blue-400">🐦</span> Twitter
+                </button>
+                <button onClick={copyLink} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+                  <span>🔗</span> Copy Link
+                </button>
+                <button onClick={() => setShowShareMenu(false)} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
+                  ✕ Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="relative h-96 overflow-hidden">

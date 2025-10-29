@@ -85,18 +85,18 @@ const Testimonials = () => {
           {testimonials.map((testimonial) => (
             <div 
               key={testimonial.id} 
-              className="bg-gray-50 p-6 rounded-lg shadow-md flex-shrink-0 w-80 snap-start"
+              className="bg-white border-2 border-gray-200 p-8 rounded-lg shadow-lg flex-shrink-0 w-80 snap-start flex flex-col items-center text-center"
             >
-              <div className="flex mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-4">
+                {testimonial.name.charAt(0)}
+              </div>
+              <p className="font-bold text-lg mb-2">{testimonial.name}</p>
+              <div className="flex mb-3">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <span key={i} className="text-yellow-400">★</span>
+                  <span key={i} className="text-yellow-400 text-xl">★</span>
                 ))}
               </div>
-              <p className="text-gray-600 mb-4 italic">"{testimonial.text}"</p>
-              <div>
-                <p className="font-bold">{testimonial.name}</p>
-                <p className="text-sm text-gray-500">{testimonial.role}</p>
-              </div>
+              <p className="text-gray-600 italic">"{testimonial.text}"</p>
             </div>
           ))}
         </div>

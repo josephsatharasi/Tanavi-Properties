@@ -1,10 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowRight, FaShare } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 
 const HighlightCard = ({ property }) => {
   const navigate = useNavigate();
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  const handleShare = (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/property/${property._id || property.id}`;
+    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
+    
+    if (navigator.share) {
+      navigator.share({ title: property.title, text, url })
+        .catch(() => setShowShareMenu(true));
+    } else {
+      setShowShareMenu(true);
+    }
+  };
+
+  const shareToWhatsApp = (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/property/${property._id || property.id}`;
+    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToFacebook = (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/property/${property._id || property.id}`;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const copyLink = (e) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/property/${property._id || property.id}`;
+    navigator.clipboard.writeText(url);
+    alert('Link copied to clipboard!');
+    setShowShareMenu(false);
+  };
 
   return (
     <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 h-full">
@@ -28,16 +65,43 @@ const HighlightCard = ({ property }) => {
           <span className="text-sm">{property.location}</span>
         </div>
         
-        <button 
-          onClick={() => {
-            navigate(`/property/${property._id || property.id}`);
-            window.scrollTo(0, 0);
-          }}
-          className="flex items-center justify-between w-full text-primary font-semibold group-hover:text-secondary transition-colors"
-        >
-          <span>View Details</span>
-          <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
-        </button>
+        <div className="flex items-center justify-between gap-2">
+          <button 
+            onClick={() => {
+              navigate(`/property/${property._id || property.id}`);
+              window.scrollTo(0, 0);
+            }}
+            className="flex items-center gap-2 text-primary font-semibold group-hover:text-secondary transition-colors"
+          >
+            <span>View Details</span>
+            <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+          </button>
+          <div className="relative">
+            <button 
+              onClick={handleShare}
+              className="p-2 text-primary hover:bg-primary hover:text-white rounded-full transition"
+              title="Share"
+            >
+              <FaShare />
+            </button>
+            {showShareMenu && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl z-10 py-2">
+                <button onClick={shareToWhatsApp} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
+                  📱 WhatsApp
+                </button>
+                <button onClick={shareToFacebook} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
+                  📘 Facebook
+                </button>
+                <button onClick={copyLink} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
+                  🔗 Copy Link
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); setShowShareMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500 text-sm">
+                  ✕ Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

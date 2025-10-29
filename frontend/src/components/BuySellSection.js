@@ -3,7 +3,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 import API_URL, { getImageUrl } from '../utils/api';
 
 const BuySellSection = () => {
-  const [activeTab, setActiveTab] = useState('sold');
+  const [activeTab, setActiveTab] = useState('sale');
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +20,7 @@ const BuySellSection = () => {
       });
   }, []);
 
-  const displayProperties = properties.filter(p => p.type === activeTab);
+  const displayProperties = properties.filter(p => p.type === activeTab || (activeTab === 'sale' && p.type === 'sold') || (activeTab === 'buy' && p.type === 'bought'));
 
   return (
     <section className="py-12 bg-gray-50">
@@ -32,24 +32,24 @@ const BuySellSection = () => {
 
         <div className="flex justify-center gap-4 mb-8">
           <button
-            onClick={() => setActiveTab('sold')}
+            onClick={() => setActiveTab('sale')}
             className={`px-6 py-2 rounded-lg font-semibold transition ${
-              activeTab === 'sold'
+              activeTab === 'sale'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Sold Properties
+            Sale Properties
           </button>
           <button
-            onClick={() => setActiveTab('bought')}
+            onClick={() => setActiveTab('buy')}
             className={`px-6 py-2 rounded-lg font-semibold transition ${
-              activeTab === 'bought'
+              activeTab === 'buy'
                 ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            Bought Properties
+            Buy Properties
           </button>
         </div>
 
@@ -70,7 +70,7 @@ const BuySellSection = () => {
                   />
                   <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                     <FaCheckCircle />
-                    <span>{property.type === 'sold' ? 'Sold' : 'Bought'}</span>
+                    <span>{(property.type === 'sold' || property.type === 'sale') ? 'Sale' : 'Buy'}</span>
                   </div>
                 </div>
                 <div className="p-4">

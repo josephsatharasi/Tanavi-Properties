@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaBullseye, FaEye, FaStar } from 'react-icons/fa';
 
 const About = () => {
+  useEffect(() => {
+    document.body.classList.add('allow-screenshot');
+    return () => document.body.classList.remove('allow-screenshot');
+  }, []);
   const values = [
     { icon: FaBullseye, title: "Our Mission", description: "To deliver exceptional real estate projects that exceed customer expectations and create lasting value." },
     { icon: FaEye, title: "Our Vision", description: "To be the most trusted and preferred real estate developer in Hyderabad, known for quality and innovation." },
