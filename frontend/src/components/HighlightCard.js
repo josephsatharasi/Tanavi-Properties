@@ -10,7 +10,7 @@ const HighlightCard = ({ property }) => {
   const handleShare = (e) => {
     e.stopPropagation();
     const url = `${window.location.origin}/property/${property._id || property.id}`;
-    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
+    const text = `🏡 Tanavi Properties\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
     
     if (navigator.share) {
       navigator.share({ title: property.title, text, url })
@@ -23,7 +23,7 @@ const HighlightCard = ({ property }) => {
   const shareToWhatsApp = (e) => {
     e.stopPropagation();
     const url = `${window.location.origin}/property/${property._id || property.id}`;
-    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}\n${url}`;
+    const text = `🏡 *Tanavi Properties*\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\n${url}\n\nYour trusted partner in finding the perfect property!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     setShowShareMenu(false);
   };
