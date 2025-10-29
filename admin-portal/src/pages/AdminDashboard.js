@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (!token || user.role !== 'admin') {
-      navigate('/admin/login');
+      navigate('/');
       return;
     }
     Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell()]).then(() => setLoading(false));
@@ -384,7 +384,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/admin/login');
+    navigate('/');
   };
 
   if (loading) return <LoadingSpinner />;

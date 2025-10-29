@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL, { getImageUrl } from '../utils/api';
 
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_URL}/api/properties/${id}`)
       .then(res => res.json())
-      .then(data => setProperty(data))
-      .catch(err => console.error('Error fetching property:', err));
+      .then(data => {
+        setProperty(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching property:', err);
+        setLoading(false);
+      });
   }, [id]);
 
   useEffect(() => {
@@ -25,9 +34,8 @@ const PropertyDetails = () => {
     return () => clearInterval(interval);
   }, [property]);
 
-  if (!property) {
-    return <div className="pt-20 text-center">Property not found</div>;
-  }
+  if (loading) return <LoadingSpinner />;
+  if (!property) return <div className="pt-20 text-center">Property not found</div>;
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
