@@ -52,7 +52,7 @@ const HighlightCard = ({ property }) => {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
           loading="lazy" 
         />
-        <div className="absolute top-4 right-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+        <div className="absolute top-4 right-4 bg-white/50 backdrop-blur-sm text-gray-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
           ₹ {property.price}
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
