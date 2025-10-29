@@ -46,17 +46,6 @@ const Footer = () => {
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>All copyrights reserved Tanavi Properties @2025</p>
-          <p className="mt-2">
-            Powered by{' '}
-            <a 
-              href="https://www.vspazetechnologies.in/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 transition"
-            >
-              Vspaze Technologies
-            </a>
-          </p>
         </div>
       </div>
     </footer>

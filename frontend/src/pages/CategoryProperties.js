@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import PropertyCard from '../components/PropertyCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL from '../utils/api';
 
 const CategoryProperties = () => {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
   const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   const location = searchParams.get('location');
   const type = searchParams.get('type');
@@ -16,8 +18,14 @@ const CategoryProperties = () => {
     const fetchProperties = () => {
       fetch(`${API_URL}/api/properties?t=${Date.now()}`, { cache: 'no-store' })
         .then(res => res.json())
-        .then(data => setProperties(data.filter(p => p.status === 'available')))
-        .catch(err => console.error('Error fetching properties:', err));
+        .then(data => {
+          setProperties(data.filter(p => p.status === 'available'));
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching properties:', err);
+          setLoading(false);
+        });
     };
 
     fetchProperties();
@@ -69,6 +77,8 @@ const CategoryProperties = () => {
       return true;
     });
   }
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">

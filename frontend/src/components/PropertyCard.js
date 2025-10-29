@@ -58,7 +58,7 @@ const PropertyCard = ({ property }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 h-full flex flex-col">
+    <div className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 border border-gray-200 h-full flex flex-col">
       <img src={getImageUrl(property.images?.[0] || property.image)} alt={property.title} className="w-full h-48 object-cover" loading="lazy" />
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-bold mb-1">{property.title}</h3>
@@ -68,7 +68,10 @@ const PropertyCard = ({ property }) => {
           {getPropertyDetails()}
         </div>
         <button 
-          onClick={() => navigate(`/property/${property._id || property.id}`)}
+          onClick={() => {
+            navigate(`/property/${property._id || property.id}`);
+            window.scrollTo(0, 0);
+          }}
           className="w-full bg-primary text-white py-2 rounded hover:bg-opacity-90 transition"
         >
           View Details

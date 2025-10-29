@@ -8,6 +8,7 @@ import About from './pages/About';
 import PropertyDetails from './pages/PropertyDetails';
 import CategoryProperties from './pages/CategoryProperties';
 import Blogs from './pages/Blogs';
+import BuySell from './pages/BuySell';
 import GalleryDetail from './pages/GalleryDetail';
 import Leadership from './pages/Leadership';
 import Contact from './pages/Contact';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/property/:id" element={<PropertyDetails />} />
           <Route path="/category/:category" element={<CategoryProperties />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/buy-sell" element={<BuySell />} />
           <Route path="/gallery/:id" element={<GalleryDetail />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
