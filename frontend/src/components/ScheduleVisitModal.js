@@ -42,11 +42,11 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
               <FaTimes size={24} />
             </button>
           </div>
-          <p className="text-gray-600 mb-6">{propertyTitle}</p>
+          <p className="text-gray-600 mb-6 capitalize">{propertyTitle}</p>
           
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Name *</label>
+              <label className="block text-gray-700 mb-2">Name <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 required
@@ -57,7 +57,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Email *</label>
+              <label className="block text-gray-700 mb-2">Email <span className="text-red-500">*</span></label>
               <input
                 type="email"
                 required
@@ -68,7 +68,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Phone *</label>
+              <label className="block text-gray-700 mb-2">Phone <span className="text-red-500">*</span></label>
               <input
                 type="tel"
                 required
@@ -79,7 +79,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Preferred Date *</label>
+              <label className="block text-gray-700 mb-2">Preferred Date <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 required
@@ -90,7 +90,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
             </div>
             
             <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Preferred Time *</label>
+              <label className="block text-gray-700 mb-2">Preferred Time <span className="text-red-500">*</span></label>
               <input
                 type="time"
                 required

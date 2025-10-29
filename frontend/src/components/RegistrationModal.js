@@ -46,7 +46,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Full Name *</label>
+            <label className="block text-gray-700 font-medium mb-2">Full Name <span className="text-red-500">*</span></label>
             <input
               type="text"
               name="name"
@@ -59,7 +59,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Email *</label>
+            <label className="block text-gray-700 font-medium mb-2">Email <span className="text-red-500">*</span></label>
             <input
               type="email"
               name="email"
@@ -72,7 +72,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Phone Number *</label>
+            <label className="block text-gray-700 font-medium mb-2">Phone Number <span className="text-red-500">*</span></label>
             <input
               type="tel"
               name="phone"
@@ -86,7 +86,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Property Type *</label>
+            <label className="block text-gray-700 font-medium mb-2">Property Type <span className="text-red-500">*</span></label>
             <select
               name="propertyType"
               value={formData.propertyType}
@@ -105,7 +105,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Location *</label>
+            <label className="block text-gray-700 font-medium mb-2">Location <span className="text-red-500">*</span></label>
             <textarea
               name="location"
               value={formData.location}
@@ -118,7 +118,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Expected Price *</label>
+            <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
             <input
               type="text"
               name="price"
