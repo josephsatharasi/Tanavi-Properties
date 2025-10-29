@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import RegistrationModal from './RegistrationModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bounce, setBounce] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
+
+  const handleMenuClick = () => {
+    setBounce(true);
+    setTimeout(() => {
+      setIsOpen(!isOpen);
+      setBounce(false);
+    }, 300);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -54,8 +67,8 @@ const Navbar = () => {
             <a href="/about" className="text-gray-700 hover:text-primary font-medium">About</a>
           </div>
 
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden active:animate-pulse">
-            <svg className="h-6 w-6 transition-transform duration-200 active:scale-95" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button onClick={handleMenuClick} className="md:hidden">
+            <svg className={`h-6 w-6 ${bounce ? 'animate-bounce' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -65,17 +78,17 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-green-50/60 backdrop-blur-lg shadow-lg rounded-b-lg">
           <div className="px-4 pt-2 pb-4 space-y-2">
-            <a href="/" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">Home</a>
+            <a href="/" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Home</a>
             <button 
               onClick={() => { setIsModalOpen(true); setIsOpen(false); }}
-              className="w-full text-left px-4 py-3 bg-primary/90 text-white rounded-lg font-medium transition"
+              className="w-full text-left px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg font-medium transition"
             >
               List Your Property
             </button>
-            <a href="/category/all" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">Properties</a>
-            <a href="/blogs" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">Gallery</a>
-            <a href="/buy-sell" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">Buy & Sell</a>
-            <a href="/about" onClick={handleLinkClick} className="block px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg transition font-medium">About</a>
+            <a href="/category/all" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Properties</a>
+            <a href="/blogs" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/blogs') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Gallery</a>
+            <a href="/buy-sell" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/buy-sell') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Buy & Sell</a>
+            <a href="/about" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/about') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>About</a>
           </div>
         </div>
       )}

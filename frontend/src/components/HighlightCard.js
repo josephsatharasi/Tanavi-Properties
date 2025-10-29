@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaArrowRight, FaShare } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 
 const HighlightCard = ({ property }) => {
@@ -82,7 +82,13 @@ const HighlightCard = ({ property }) => {
               className="p-2 text-primary hover:bg-primary hover:text-white rounded-full transition"
               title="Share"
             >
-              <FaShare />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
             </button>
             {showShareMenu && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl z-10 py-2">

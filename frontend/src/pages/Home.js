@@ -12,6 +12,23 @@ import API_URL, { fetchWithTimeout } from '../utils/api';
 const Home = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleSections, setVisibleSections] = useState({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({ ...prev, [entry.target.id]: true }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [loading]);
 
   useEffect(() => {
     const fetchProperties = () => {
@@ -38,12 +55,12 @@ const Home = () => {
     <div>
       <Hero />
       
-      <section id="properties" className="py-6 md:py-8 bg-white">
+      <section id="properties" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Featured Properties</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-fade-in">Featured Properties</h2>
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6">
-            {properties.slice(0, 8).map((property) => (
-              <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto">
+            {properties.slice(0, 8).map((property, index) => (
+              <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                 <PropertyCard property={property} />
               </div>
             ))}
@@ -54,18 +71,18 @@ const Home = () => {
       <PropertyCategories />
       <TanaviHighlights />
       
-      <section className="py-6 md:py-8 bg-white">
+      <section id="banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.banner ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+          <div className="relative h-64 md:h-80 rounded-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500">
             <img 
               src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200" 
               alt="Tanavi Properties Banner" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 flex items-center justify-center">
-              <div className="text-center text-white px-4">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">Building Your Dreams</h2>
-                <p className="text-lg md:text-xl">Experience luxury living with Tanavi Properties</p>
+              <div className="text-center text-white px-4 animate-fade-in">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-slide-down">Building Your Dreams</h2>
+                <p className="text-lg md:text-xl animate-slide-up" style={{ animationDelay: '200ms' }}>Experience luxury living with Tanavi Properties</p>
               </div>
             </div>
           </div>

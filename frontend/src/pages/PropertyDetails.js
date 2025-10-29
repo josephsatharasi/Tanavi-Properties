@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaShare } from 'react-icons/fa';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL, { getImageUrl } from '../utils/api';
@@ -95,7 +94,14 @@ const PropertyDetails = () => {
               onClick={handleShare}
               className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition"
             >
-              <FaShare /> Share
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              Share
             </button>
             {showShareMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10 py-2">

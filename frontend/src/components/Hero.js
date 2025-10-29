@@ -24,14 +24,14 @@ const Hero = () => {
     }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
         <div className="text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-down">
             Find Your Dream Property<br />with Tanavi Properties
           </h1>
-          <p className="text-lg md:text-xl mb-8">
+          <p className="text-lg md:text-xl mb-8 animate-fade-in" style={{ animationDelay: '300ms' }}>
             Trusted platform for Agricultural Lands, Homes,<br />Open Plots, Flats & Farmhouses.
           </p>
           
-          <div className="bg-white/80 backdrop-blur-lg rounded-lg p-6 max-w-4xl shadow-lg">
+          <div className="bg-white/80 backdrop-blur-lg rounded-lg p-6 max-w-4xl shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '500ms' }}>
             <div className="flex flex-col gap-4">
               <div className="relative">
                 <select 

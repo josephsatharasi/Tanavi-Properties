@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import Home from './pages/Home';
 import About from './pages/About';
 import PropertyDetails from './pages/PropertyDetails';
@@ -50,6 +51,7 @@ function App() {
         </Routes>
         <Footer />
         <WhatsAppButton />
+        <ScrollToTopButton />
       </div>
     </Router>
   );

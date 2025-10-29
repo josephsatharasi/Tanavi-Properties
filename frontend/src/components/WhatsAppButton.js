@@ -1,20 +1,33 @@
 import React from 'react';
 
 const WhatsAppButton = () => {
-  const phoneNumber = "919876543210"; // Replace with actual WhatsApp number
+  const [isAtBottom, setIsAtBottom] = React.useState(false);
+  const phoneNumber = "919876543210";
   const message = "Hi, I'm interested in Tanavi Properties. Can you help me?";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const clientHeight = window.innerHeight;
+      setIsAtBottom(scrollHeight - scrollTop - clientHeight < 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 z-50"
+      className={`fixed right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-24' : 'bottom-6'}`}
       aria-label="Chat on WhatsApp"
     >
       <svg
-        className="w-8 h-8"
+        className="w-6 h-6"
         fill="currentColor"
         viewBox="0 0 24 24"
       >

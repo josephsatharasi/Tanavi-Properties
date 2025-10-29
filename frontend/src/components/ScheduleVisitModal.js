@@ -112,7 +112,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
             
             <button
               type="submit"
-              className="w-full bg-primary text-white py-3 rounded hover:bg-opacity-90 transition font-semibold"
+              className="w-full bg-primary text-white py-3 rounded font-semibold"
             >
               Schedule Visit
             </button>
