@@ -49,7 +49,29 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return (
+    <div>
+      <div className="pt-16 min-h-[500px] bg-gray-200 animate-pulse" />
+      <section className="py-6 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-10 bg-gray-200 rounded w-64 mb-6 animate-pulse" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200 animate-pulse">
+                <div className="w-full h-48 bg-gray-200" />
+                <div className="p-4 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                  <div className="h-6 bg-gray-200 rounded w-1/3" />
+                  <div className="h-10 bg-gray-200 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 
   return (
     <div>

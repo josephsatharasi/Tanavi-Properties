@@ -45,7 +45,7 @@ const PropertyCategories = () => {
             <div 
               key={index} 
               onClick={() => handleCategoryClick(category.slug)}
-              className={`flex flex-col items-center justify-center p-6 border-2 border-gray-300 rounded-lg hover:shadow-xl hover:border-primary hover:scale-110 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`flex flex-col items-center justify-center p-6 border-2 border-gray-300 rounded-lg hover:shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="hover:rotate-12 transition-transform duration-300">

@@ -36,20 +36,20 @@ const BuySell = () => {
         <div className="flex justify-center gap-4 mb-12">
           <button
             onClick={() => setActiveTab('sale')}
-            className={`px-8 py-3 rounded-lg font-semibold transition ${
+            className={`px-8 py-3 rounded-lg font-semibold transition border-2 ${
               activeTab === 'sale'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-primary/20 text-primary border-primary hover:bg-primary hover:text-white'
             }`}
           >
             Sale Properties
           </button>
           <button
             onClick={() => setActiveTab('buy')}
-            className={`px-8 py-3 rounded-lg font-semibold transition ${
+            className={`px-8 py-3 rounded-lg font-semibold transition border-2 ${
               activeTab === 'buy'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-primary/20 text-primary border-primary hover:bg-primary hover:text-white'
             }`}
           >
             Buy Properties

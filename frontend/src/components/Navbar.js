@@ -11,13 +11,7 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const handleMenuClick = () => {
-    setBounce(true);
-    setTimeout(() => {
-      setIsOpen(!isOpen);
-      setBounce(false);
-    }, 300);
-  };
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -57,7 +51,7 @@ const Navbar = () => {
             <a href="/" className="text-gray-700 hover:text-primary font-medium">Home</a>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition font-medium"
+              className="bg-primary/20 text-primary border-2 border-primary px-6 py-2 rounded hover:bg-primary hover:text-white transition font-medium"
             >
               List Your Property
             </button>
@@ -67,10 +61,10 @@ const Navbar = () => {
             <a href="/about" className="text-gray-700 hover:text-primary font-medium">About</a>
           </div>
 
-          <button onClick={handleMenuClick} className="md:hidden">
-            <svg className={`h-6 w-6 ${bounce ? 'animate-bounce' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden relative w-6 h-6 self-center">
+            <span className={`absolute top-1 left-0 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? 'rotate-45 top-2.5' : ''}`}></span>
+            <span className={`absolute top-2.5 left-0 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`absolute top-4 left-0 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? '-rotate-45 top-2.5' : ''}`}></span>
           </button>
         </div>
       </div>
