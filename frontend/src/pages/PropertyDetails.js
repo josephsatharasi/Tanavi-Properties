@@ -41,7 +41,10 @@ const PropertyDetails = () => {
     <div className="pt-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button 
-          onClick={() => navigate('/')} 
+          onClick={() => {
+            navigate('/');
+            setTimeout(() => window.scrollTo(0, 0), 0);
+          }} 
           className="mb-6 text-primary hover:underline flex items-center gap-2"
         >
           ← Back to Properties

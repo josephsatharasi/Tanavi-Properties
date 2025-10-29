@@ -29,7 +29,10 @@ const HighlightCard = ({ property }) => {
         </div>
         
         <button 
-          onClick={() => navigate(`/property/${property._id || property.id}`)}
+          onClick={() => {
+            navigate(`/property/${property._id || property.id}`);
+            window.scrollTo(0, 0);
+          }}
           className="flex items-center justify-between w-full text-primary font-semibold group-hover:text-secondary transition-colors"
         >
           <span>View Details</span>
