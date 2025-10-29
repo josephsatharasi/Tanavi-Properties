@@ -13,10 +13,16 @@ const CategoryProperties = () => {
   const priceRange = searchParams.get('price');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/properties`)
-      .then(res => res.json())
-      .then(data => setProperties(data.filter(p => p.status === 'available')))
-      .catch(err => console.error('Error fetching properties:', err));
+    const fetchProperties = () => {
+      fetch(`${API_URL}/api/properties`)
+        .then(res => res.json())
+        .then(data => setProperties(data.filter(p => p.status === 'available')))
+        .catch(err => console.error('Error fetching properties:', err));
+    };
+
+    fetchProperties();
+    const interval = setInterval(fetchProperties, 30000);
+    return () => clearInterval(interval);
   }, []);
   
   const categoryMap = {

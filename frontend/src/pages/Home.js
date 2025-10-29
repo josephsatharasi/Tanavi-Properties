@@ -14,16 +14,22 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWithTimeout(`${API_URL}/api/properties`, {}, 30000)
-      .then(res => res.json())
-      .then(data => {
-        setProperties(data.filter(p => p.section === 'featured' && p.status === 'available'));
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching properties:', err);
-        setLoading(false);
-      });
+    const fetchProperties = () => {
+      fetchWithTimeout(`${API_URL}/api/properties`, {}, 30000)
+        .then(res => res.json())
+        .then(data => {
+          setProperties(data.filter(p => p.section === 'featured' && p.status === 'available'));
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching properties:', err);
+          setLoading(false);
+        });
+    };
+
+    fetchProperties();
+    const interval = setInterval(fetchProperties, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return <LoadingSpinner />;
