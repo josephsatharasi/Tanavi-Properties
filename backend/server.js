@@ -71,6 +71,7 @@ app.use('/api/schedules', require('./routes/schedules'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/buysell', require('./routes/buysell'));
+app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api', require('./routes/keepalive'));
 
 // 404 handler

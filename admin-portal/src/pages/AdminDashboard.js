@@ -11,12 +11,15 @@ const AdminDashboard = () => {
   const [schedules, setSchedules] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [buySell, setBuySell] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [showGalleryForm, setShowGalleryForm] = useState(false);
   const [showBuySellForm, setShowBuySellForm] = useState(false);
+  const [showTestimonialForm, setShowTestimonialForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [editingGallery, setEditingGallery] = useState(null);
   const [editingBuySell, setEditingBuySell] = useState(null);
+  const [editingTestimonial, setEditingTestimonial] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -27,6 +30,7 @@ const AdminDashboard = () => {
   });
   const [galleryForm, setGalleryForm] = useState({ title: '', category: '', image: '', description: '' });
   const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' });
+  const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', text: '', rating: 5, image: '' });
   const [uploading, setUploading] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
@@ -39,7 +43,7 @@ const AdminDashboard = () => {
       navigate('/');
       return;
     }
-    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell()]).then(() => setLoading(false));
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -89,6 +93,19 @@ const AdminDashboard = () => {
       return data;
     } catch (error) {
       console.error('Error fetching buy/sell:', error);
+      return [];
+    }
+  };
+
+  const fetchTestimonials = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/testimonials`);
+      const data = await res.json();
+      setTestimonials(Array.isArray(data) ? data : []);
+      return data;
+    } catch (error) {
+      console.error('Error fetching testimonials:', error);
+      setTestimonials([]);
       return [];
     }
   };
@@ -381,6 +398,55 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleTestimonialSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const url = editingTestimonial ? `${API_URL}/api/testimonials/${editingTestimonial._id}` : `${API_URL}/api/testimonials`;
+    try {
+      const res = await fetch(url, {
+        method: editingTestimonial ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(testimonialForm)
+      });
+      if (res.ok) {
+        const updatedItem = await res.json();
+        if (editingTestimonial) {
+          setTestimonials(testimonials.map(t => t._id === updatedItem._id ? updatedItem : t));
+        } else {
+          setTestimonials([updatedItem, ...testimonials]);
+        }
+        setShowTestimonialForm(false);
+        setEditingTestimonial(null);
+        setTestimonialForm({ name: '', role: '', text: '', rating: 5, image: '' });
+        showToast(editingTestimonial ? 'Testimonial updated!' : 'Testimonial added!', 'success');
+      } else {
+        const error = await res.json();
+        showToast(error.message || 'Failed to save', 'error');
+      }
+    } catch (error) {
+      showToast('Failed to save', 'error');
+    }
+  };
+
+  const handleDeleteTestimonial = async (id) => {
+    if (!window.confirm('Delete this testimonial?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/testimonials/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setTestimonials(testimonials.filter(t => t._id !== id));
+        showToast('Testimonial deleted!', 'success');
+      } else {
+        showToast('Failed to delete', 'error');
+      }
+    } catch (error) {
+      showToast('Failed to delete', 'error');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -430,6 +496,9 @@ const AdminDashboard = () => {
           </button>
           <button onClick={() => setActiveTab('buysell')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'buysell' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             Buy/Sell
+          </button>
+          <button onClick={() => setActiveTab('testimonials')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'testimonials' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            Testimonials
           </button>
         </div>
 
@@ -743,6 +812,99 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => { setEditingBuySell(item); setBuySellForm(item); setShowBuySellForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
                         <button onClick={() => handleDeleteBuySell(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'testimonials' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Testimonials</h2>
+              <button onClick={() => { setShowTestimonialForm(true); setEditingTestimonial(null); setTestimonialForm({ name: '', role: '', text: '', rating: 5, image: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Add Testimonial
+              </button>
+            </div>
+
+            {showTestimonialForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl">
+                  <div className="border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingTestimonial ? 'Edit' : 'Add'} Testimonial</h3>
+                    <button onClick={() => { setShowTestimonialForm(false); setEditingTestimonial(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
+                  </div>
+                  <form onSubmit={handleTestimonialSubmit} className="p-6 space-y-4">
+                    <input type="text" placeholder="Customer Name" value={testimonialForm.name} onChange={(e) => setTestimonialForm({...testimonialForm, name: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="text" placeholder="Role (e.g., Villa Owner)" value={testimonialForm.role} onChange={(e) => setTestimonialForm({...testimonialForm, role: e.target.value})} className="w-full border p-2 rounded" required />
+                    <textarea placeholder="Testimonial Text" value={testimonialForm.text} onChange={(e) => setTestimonialForm({...testimonialForm, text: e.target.value})} className="w-full border p-2 rounded" rows="4" required />
+                    <select value={testimonialForm.rating} onChange={(e) => setTestimonialForm({...testimonialForm, rating: Number(e.target.value)})} className="w-full border p-2 rounded" required>
+                      <option value="5">5 Stars</option>
+                      <option value="4">4 Stars</option>
+                      <option value="3">3 Stars</option>
+                      <option value="2">2 Stars</option>
+                      <option value="1">1 Star</option>
+                    </select>
+                    <div>
+                      <label className="block text-sm mb-1">Customer Image</label>
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        setUploading(true);
+                        try {
+                          const token = localStorage.getItem('token');
+                          const res = await fetch(`${API_URL}/api/upload`, {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (res.ok) setTestimonialForm({...testimonialForm, image: data.url});
+                        } finally {
+                          setUploading(false);
+                          e.target.value = '';
+                        }
+                      }} className="w-full border p-2 rounded" disabled={uploading} />
+                      {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+                      {testimonialForm.image && <img src={getImageUrl(testimonialForm.image)} alt="Preview" className="mt-2 h-20 w-20 rounded-full object-cover" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />}
+                    </div>
+                    <div className="flex gap-2">
+                      <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Save</button>
+                      <button type="button" onClick={() => { setShowTestimonialForm(false); setEditingTestimonial(null); }} className="bg-gray-400 text-white px-6 py-2 rounded">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left">Image</th>
+                    <th className="px-6 py-4 text-left">Name</th>
+                    <th className="px-6 py-4 text-left">Role</th>
+                    <th className="px-6 py-4 text-left">Rating</th>
+                    <th className="px-6 py-4 text-left">Testimonial</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testimonials.map(item => (
+                    <tr key={item._id} className="border-b hover:bg-blue-50">
+                      <td className="px-6 py-4"><img src={getImageUrl(item.image)} alt={item.name} className="h-12 w-12 rounded-full object-cover" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} /></td>
+                      <td className="px-6 py-4 font-medium">{item.name}</td>
+                      <td className="px-6 py-4">{item.role}</td>
+                      <td className="px-6 py-4">{[...Array(item.rating)].map((_, i) => <span key={i} className="text-yellow-400">★</span>)}</td>
+                      <td className="px-6 py-4 max-w-xs truncate">{item.text}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button onClick={() => { setEditingTestimonial(item); setTestimonialForm(item); setShowTestimonialForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
+                        <button onClick={() => handleDeleteTestimonial(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
                       </td>
                     </tr>
                   ))}

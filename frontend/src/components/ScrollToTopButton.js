@@ -9,7 +9,7 @@ const ScrollToTopButton = () => {
       const scrolled = window.scrollY;
       const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercentage = (scrolled / windowHeight) * 100;
-      setIsVisible(scrollPercentage > 20);
+      setIsVisible(scrollPercentage > 10);
     };
 
     window.addEventListener('scroll', toggleVisibility);
