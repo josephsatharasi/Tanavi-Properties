@@ -86,7 +86,7 @@ const Hero = () => {
               </div>
               <button 
                 onClick={handleSearch}
-                className="w-full bg-primary/20 text-primary border-2 border-primary px-6 py-3 rounded hover:bg-primary hover:text-white transition font-medium"
+                className="w-full bg-primary text-white px-6 py-3 rounded hover:opacity-90 transition font-medium"
               >
                 Search
               </button>

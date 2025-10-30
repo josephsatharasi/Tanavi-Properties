@@ -72,7 +72,7 @@ const PropertyCard = ({ property }) => {
             navigate(`/property/${property._id || property.id}`);
             window.scrollTo(0, 0);
           }}
-          className="w-full bg-primary/20 text-primary border-2 border-primary py-2 rounded hover:bg-primary hover:text-white transition"
+          className="w-full bg-primary text-white py-2 rounded hover:opacity-90 transition"
         >
           View Details
         </button>

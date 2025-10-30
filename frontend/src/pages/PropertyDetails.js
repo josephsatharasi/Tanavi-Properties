@@ -11,8 +11,6 @@ const PropertyDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
-
   useEffect(() => {
     setLoading(true);
     fetch(`${API_URL}/api/properties/${id}`)
@@ -27,42 +25,20 @@ const PropertyDetails = () => {
       });
   }, [id]);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     const url = window.location.href;
-    const text = `🏡 Tanavi Properties\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
+    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
     
     if (navigator.share) {
-      navigator.share({ title: property.title, text, url })
-        .catch(() => setShowShareMenu(true));
+      try {
+        await navigator.share({ title: property.title, text, url });
+      } catch (err) {
+        console.log('Share cancelled');
+      }
     } else {
-      setShowShareMenu(true);
+      navigator.clipboard.writeText(url);
+      alert('Link copied to clipboard!');
     }
-  };
-
-  const shareToWhatsApp = () => {
-    const url = window.location.href;
-    const text = `🏡 *Tanavi Properties*\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\n${url}\n\nYour trusted partner in finding the perfect property!`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToFacebook = () => {
-    const url = window.location.href;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToTwitter = () => {
-    const url = window.location.href;
-    const text = `Check out this property: ${property.title}`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
-    setShowShareMenu(false);
   };
 
   useEffect(() => {
@@ -89,40 +65,19 @@ const PropertyDetails = () => {
           >
             ← Back to Properties
           </button>
-          <div className="relative">
-            <button 
-              onClick={handleShare}
-              className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded hover:bg-opacity-90 transition"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="18" cy="5" r="3"/>
-                <circle cx="6" cy="12" r="3"/>
-                <circle cx="18" cy="19" r="3"/>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-              </svg>
-              Share
-            </button>
-            {showShareMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10 py-2">
-                <button onClick={shareToWhatsApp} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
-                  <span className="text-green-500">📱</span> WhatsApp
-                </button>
-                <button onClick={shareToFacebook} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
-                  <span className="text-blue-600">📘</span> Facebook
-                </button>
-                <button onClick={shareToTwitter} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
-                  <span className="text-blue-400">🐦</span> Twitter
-                </button>
-                <button onClick={copyLink} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
-                  <span>🔗</span> Copy Link
-                </button>
-                <button onClick={() => setShowShareMenu(false)} className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
-                  ✕ Close
-                </button>
-              </div>
-            )}
-          </div>
+          <button 
+            onClick={handleShare}
+            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded hover:opacity-90 transition"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            Share
+          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">

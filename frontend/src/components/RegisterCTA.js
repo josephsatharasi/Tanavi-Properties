@@ -15,7 +15,7 @@ const RegisterCTA = () => {
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="mt-6 md:mt-0 bg-primary/20 text-primary border-2 border-primary px-8 py-3 rounded hover:bg-primary hover:text-white transition font-medium text-lg"
+            className="mt-6 md:mt-0 bg-primary text-white px-8 py-3 rounded hover:opacity-90 transition font-medium text-lg"
           >
             Register Now
           </button>

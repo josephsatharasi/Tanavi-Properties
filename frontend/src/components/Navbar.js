@@ -47,18 +47,18 @@ const Navbar = () => {
             <span className="text-xl font-bold"><span className="text-gray-900">TANAVI</span> <span className="text-gray-600">Properties</span></span>
           </a>
           
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-gray-700 hover:text-primary font-medium">Home</a>
+          <div className="hidden md:flex items-center space-x-8 relative">
+            <a href="/" className={`px-4 py-2 font-medium transition ${isActive('/') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Home</a>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary/20 text-primary border-2 border-primary px-6 py-2 rounded hover:bg-primary hover:text-white transition font-medium"
+              className="px-4 py-2 text-gray-700 hover:text-primary font-medium transition"
             >
               List Your Property
             </button>
-            <a href="/category/all" className="text-gray-700 hover:text-primary font-medium">Properties</a>
-            <a href="/blogs" className="text-gray-700 hover:text-primary font-medium">Gallery</a>
-            <a href="/buy-sell" className="text-gray-700 hover:text-primary font-medium">Buy & Sell</a>
-            <a href="/about" className="text-gray-700 hover:text-primary font-medium">About</a>
+            <a href="/category/all" className={`px-4 py-2 font-medium transition ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Properties</a>
+            <a href="/blogs" className={`px-4 py-2 font-medium transition ${isActive('/blogs') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Gallery</a>
+            <a href="/buy-sell" className={`px-4 py-2 font-medium transition ${isActive('/buy-sell') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Buy & Sell</a>
+            <a href="/about" className={`px-4 py-2 font-medium transition ${isActive('/about') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>About</a>
           </div>
 
           <button onClick={() => setIsOpen(!isOpen)} className="md:hidden relative w-6 h-6 self-center">
@@ -75,7 +75,7 @@ const Navbar = () => {
             <a href="/" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Home</a>
             <button 
               onClick={() => { setIsModalOpen(true); setIsOpen(false); }}
-              className="w-full text-left px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg font-medium transition"
+              className="w-full text-left px-4 py-3 text-white bg-primary rounded-lg font-medium transition hover:opacity-90"
             >
               List Your Property
             </button>

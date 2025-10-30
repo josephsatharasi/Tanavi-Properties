@@ -679,13 +679,13 @@ const AdminDashboard = () => {
                       <option value="">Select Location</option>
                       {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
                     </select>
-                    <input type="text" placeholder="Price" value={buySellForm.price} onChange={(e) => setBuySellForm({...buySellForm, price: e.target.value})} className="w-full border p-2 rounded" required />
-                    <input type="number" placeholder="Area (sq.ft)" value={buySellForm.area} onChange={(e) => setBuySellForm({...buySellForm, area: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="number" inputMode="numeric" placeholder="Price" value={buySellForm.price} onChange={(e) => setBuySellForm({...buySellForm, price: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="number" inputMode="numeric" placeholder="Area (sq.ft)" value={buySellForm.area} onChange={(e) => setBuySellForm({...buySellForm, area: e.target.value})} className="w-full border p-2 rounded" required />
                     <select value={buySellForm.type} onChange={(e) => setBuySellForm({...buySellForm, type: e.target.value})} className="w-full border p-2 rounded" required>
                       <option value="sale">Sale</option>
                       <option value="buy">Buy</option>
                     </select>
-                    <input type="text" placeholder="Date (e.g., Jan 2024)" value={buySellForm.date} onChange={(e) => setBuySellForm({...buySellForm, date: e.target.value})} className="w-full border p-2 rounded" required />
+                    <input type="date" placeholder="Date" value={buySellForm.date} onChange={(e) => setBuySellForm({...buySellForm, date: e.target.value})} className="w-full border p-2 rounded" required />
                     <div>
                       <label className="block text-sm mb-1">Image</label>
                       <input type="file" accept="image/*" onChange={async (e) => {
