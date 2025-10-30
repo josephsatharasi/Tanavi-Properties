@@ -61,16 +61,12 @@ const Navbar = () => {
             <a href="/about" className={`px-4 py-2 font-medium transition ${isActive('/about') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>About</a>
           </div>
 
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden flex items-center justify-center w-10 h-10">
-            {isOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden flex items-center justify-center w-10 h-10 self-center">
+            <div className="relative w-6 h-6">
+              <span className={`absolute left-0 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? 'top-3 rotate-45' : 'top-1'}`}></span>
+              <span className={`absolute left-0 top-3 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+              <span className={`absolute left-0 w-6 h-0.5 bg-gray-900 transition-all duration-300 ${isOpen ? 'top-3 -rotate-45' : 'top-5'}`}></span>
+            </div>
           </button>
         </div>
       </div>

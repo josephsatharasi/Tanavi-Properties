@@ -91,9 +91,9 @@ const Testimonials = () => {
           {testimonials.map((testimonial) => (
             <div 
               key={testimonial.id} 
-              className="bg-white border-2 border-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl flex-shrink-0 w-80 snap-center flex flex-col items-center text-center transition-all duration-500 hover:scale-105 hover:border-primary"
+              className="bg-white border border-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl flex-shrink-0 w-80 snap-center flex flex-col items-center text-center transition-all duration-500 hover:scale-105 hover:border-primary"
             >
-              <img src={testimonial.image} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-4 border-primary" />
+              <img src={testimonial.image} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-black" />
               <p className="font-bold text-lg mb-2">{testimonial.name}</p>
               <div className="flex mb-3">
                 {[...Array(testimonial.rating)].map((_, i) => (
