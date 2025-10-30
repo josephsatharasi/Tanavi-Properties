@@ -50,10 +50,13 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-6 md:py-12 bg-white">
+    <section className="py-6 md:py-12 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">What Our Customers Say</h2>
-        <div ref={scrollRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide px-8 md:px-0">
+        <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-100 to-transparent z-10 pointer-events-none md:hidden"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-100 to-transparent z-10 pointer-events-none md:hidden"></div>
+        <div ref={scrollRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide px-4 md:px-0">
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial._id || index} 
@@ -69,6 +72,7 @@ const Testimonials = () => {
               <p className="text-gray-600 italic">"{testimonial.text}"</p>
             </div>
           ))}
+        </div>
         </div>
         <div className="flex justify-center gap-2 mt-4">
           {testimonials.map((_, index) => (
