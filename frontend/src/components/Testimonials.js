@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import API_URL, { getImageUrl } from '../utils/api';
 
 const Testimonials = () => {
   const scrollRef = useRef(null);
@@ -9,7 +10,7 @@ const Testimonials = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch('https://tanavi-properties.onrender.com/api/testimonials');
+        const res = await fetch(`${API_URL}/api/testimonials`);
         const data = await res.json();
         setTestimonials(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -58,7 +59,7 @@ const Testimonials = () => {
               key={testimonial._id || index} 
               className="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl flex-shrink-0 w-80 snap-center flex flex-col items-center text-center transition-all duration-500 hover:scale-105"
             >
-              <img src={testimonial.image.startsWith('http') ? testimonial.image : `https://tanavi-properties.onrender.com${testimonial.image}`} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-black" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />
+              <img src={getImageUrl(testimonial.image)} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-black" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />
               <p className="font-bold text-lg mb-2">{testimonial.name}</p>
               <div className="flex mb-3">
                 {[...Array(testimonial.rating)].map((_, i) => (
