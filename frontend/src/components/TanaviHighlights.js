@@ -8,7 +8,10 @@ const TanaviHighlights = () => {
   useEffect(() => {
     fetch(`${API_URL}/api/properties`)
       .then(res => res.json())
-      .then(data => setProperties(data.filter(p => p.section === 'highlights' && p.status === 'available')))
+      .then(data => setProperties(data.filter(p => {
+        const sections = p.sections || [p.section];
+        return sections.includes('highlights') && p.status === 'available';
+      })))
       .catch(err => console.error('Error fetching properties:', err));
   }, []);
 

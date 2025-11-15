@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaExclamationCircle } from 'react-icons/fa';
+import { FaChevronDown, FaExclamationCircle, FaSearch } from 'react-icons/fa';
 import API_URL from '../utils/api';
 
-const Hero = () => {
+const Hero = ({ searchQuery, setSearchQuery }) => {
   const navigate = useNavigate();
   const [location, setLocation] = useState('');
   const [propertyType, setPropertyType] = useState('');
@@ -34,6 +34,8 @@ const Hero = () => {
     navigate(`/category/all?${params.toString()}`);
   };
 
+
+
   return (
     <section id="home" className="pt-16 min-h-[500px] flex items-center relative" style={{
       backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200)',
@@ -57,8 +59,22 @@ const Hero = () => {
             Trusted platform for Agricultural Lands, Homes,<br />Open Plots, Flats & Farmhouses.
           </p>
           
-          <div className="bg-white/80 backdrop-blur-lg rounded-lg p-6 max-w-4xl shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '500ms' }}>
-            <div className="flex flex-col gap-4">
+          <div className="space-y-4 max-w-4xl">
+            <div className="bg-white/90 backdrop-blur-lg rounded-lg p-4 shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '400ms' }}>
+              <div className="relative">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                <input
+                  type="text"
+                  placeholder="Search by property name or location..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+                />
+              </div>
+            </div>
+            
+            <div className="bg-white/90 backdrop-blur-lg rounded-lg p-6 shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '500ms' }}>
+              <div className="flex flex-col gap-4">
               <div className="relative">
                 <select 
                   value={location}
@@ -111,6 +127,7 @@ const Hero = () => {
               >
                 Search
               </button>
+              </div>
             </div>
           </div>
         </div>

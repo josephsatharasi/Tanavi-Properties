@@ -44,13 +44,19 @@ const About = () => {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
               <p>
-                Founded in 2009 by visionary entrepreneurs with a passion for excellence, Tanavi Properties was born out of a commitment to create spaces that elevate urban living. With a deep dedication to design excellence and engineering precision, we have grown into a name synonymous with quality and trust in Hyderabad's real estate landscape.
+                Founded in 2015 by Mr. Balraj Sinthigari, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform connecting people to their dream properties — seamlessly, transparently, and with integrity.
               </p>
               <p>
-                As one of the <strong>best builders in Hyderabad</strong> for gated community projects, our developments stand as testimony to thoughtful planning, contemporary aesthetics, and uncompromising quality.
+                We specialize in Agriculture Lands, Open Plots, Independent Houses, Farmhouses, Apartments, and Commercial Spaces, helping buyers and sellers make confident and informed real estate decisions across diverse locations.
               </p>
               <p>
-                Over the years, Tanavi Properties has shaped some of the city's most iconic neighborhoods and continues to set benchmarks in luxury residential and commercial development. With a strong presence in Gachibowli, Jubilee Hills, and beyond, we are proud to be recognized as a leading <strong>construction company in Hyderabad</strong>, delivering homes that inspire and endure.
+                Beyond property listings, we deliver end-to-end real estate solutions — including farmhouse development, civil engineering, interior design, precast structures, and fencing services. Every project is managed by experienced professionals dedicated to quality, precision, and customer satisfaction.
+              </p>
+              <p>
+                With the support of trusted legal and financial partners and a network of skilled technical experts, Tanavi Properties ensures that every transaction is secure, transparent, and rewarding. Our commitment to eco-friendly development further reflects our responsibility toward sustainable growth.
+              </p>
+              <p>
+                Driven by trust, transparency, and innovation, Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, turning real-estate aspirations into long-term success. We enable customers and investors to unlock opportunities that shape their future with confidence.
               </p>
             </div>
           </div>

@@ -14,19 +14,21 @@ import GalleryDetail from './pages/GalleryDetail';
 import Leadership from './pages/Leadership';
 import Contact from './pages/Contact';
 import Careers from './pages/Careers';
+import CallLog from './pages/CallLog';
+import ChoiceCategoryProperties from './pages/ChoiceCategoryProperties';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  useEffect(() => {
     if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
+      window.history.scrollRestoration = 'auto';
     }
   }, []);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   
   return null;
 }
@@ -48,6 +50,8 @@ function App() {
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/call-log" element={<CallLog />} />
+          <Route path="/choice-category/:category" element={<ChoiceCategoryProperties />} />
         </Routes>
         <Footer />
         <WhatsAppButton />

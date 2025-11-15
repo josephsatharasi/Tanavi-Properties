@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes, FaCheckCircle } from 'react-icons/fa';
 
-const RegistrationModal = ({ isOpen, onClose }) => {
+const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -10,11 +10,27 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     propertyType: '',
     location: '',
     price: '',
-    description: ''
+    description: '',
+    userType: '',
+    images: []
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (formData.images.length + files.length > 3) {
+      alert('Maximum 3 images allowed');
+      return;
+    }
+    const newImages = files.map(file => URL.createObjectURL(file));
+    setFormData({ ...formData, images: [...formData.images, ...newImages] });
+  };
+
+  const removeImage = (index) => {
+    setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) });
   };
 
   const handleSubmit = (e) => {
@@ -28,7 +44,9 @@ const RegistrationModal = ({ isOpen, onClose }) => {
       propertyType: '',
       location: '',
       price: '',
-      description: ''
+      description: '',
+      userType: '',
+      images: []
     });
   };
 
@@ -118,6 +136,23 @@ const RegistrationModal = ({ isOpen, onClose }) => {
             />
           </div>
 
+          {modalType === 'list' && (
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">You are <span className="text-red-500">*</span></label>
+              <select
+                name="userType"
+                value={formData.userType}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+              >
+                <option value="">Select</option>
+                <option value="Owner">Owner</option>
+                <option value="Agent">Agent</option>
+              </select>
+            </div>
+          )}
+
           <div>
             <label className="block text-gray-700 font-medium mb-2">Property Type <span className="text-red-500">*</span></label>
             <select
@@ -174,6 +209,36 @@ const RegistrationModal = ({ isOpen, onClose }) => {
               placeholder="Describe your property (optional)"
             ></textarea>
           </div>
+
+          {modalType === 'list' && (
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Property Images (Max 3)</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                disabled={formData.images.length >= 3}
+                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+              />
+              {formData.images.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img src={img} alt={`Preview ${index + 1}`} className="w-full h-24 object-cover rounded" />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="pt-4">
             <button

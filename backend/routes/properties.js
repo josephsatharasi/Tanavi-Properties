@@ -25,7 +25,8 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', protect, adminOnly, async (req, res) => {
   try {
-    const property = await Property.create(req.body);
+    const { section, ...data } = req.body;
+    const property = await Property.create(data);
     res.status(201).json(property);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,7 +35,8 @@ router.post('/', protect, adminOnly, async (req, res) => {
 
 router.put('/:id', protect, adminOnly, async (req, res) => {
   try {
-    const property = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { section, ...data } = req.body;
+    const property = await Property.findByIdAndUpdate(req.params.id, data, { new: true });
     if (!property) return res.status(404).json({ message: 'Property not found' });
     res.json(property);
   } catch (error) {

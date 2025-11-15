@@ -89,7 +89,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
-    <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} modalType="list" />
     </>
   );
 };

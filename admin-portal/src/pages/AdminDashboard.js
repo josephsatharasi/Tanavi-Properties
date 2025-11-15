@@ -26,7 +26,7 @@ const AdminDashboard = () => {
 
   const [propertyForm, setPropertyForm] = useState({
     title: '', category: '', price: '', location: '', area: '',
-    bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured'
+    bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', sections: ['featured']
   });
   const [galleryForm, setGalleryForm] = useState({ title: '', category: '', image: '', description: '' });
   const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' });
@@ -198,13 +198,15 @@ const AdminDashboard = () => {
       ? `${API_URL}/api/properties/${editingProperty._id}`
       : `${API_URL}/api/properties`;
     
+    const { section, ...formData } = propertyForm;
     const body = {
-      ...propertyForm,
+      ...formData,
       features: propertyForm.features.split(',').map(f => f.trim()).filter(f => f),
       images: propertyForm.images,
       bedrooms: propertyForm.bedrooms ? Number(propertyForm.bedrooms) : undefined,
       bathrooms: propertyForm.bathrooms ? Number(propertyForm.bathrooms) : undefined
     };
+    console.log('Sending sections:', body.sections);
 
     try {
       const res = await fetch(url, {
@@ -214,6 +216,7 @@ const AdminDashboard = () => {
       });
       if (res.ok) {
         const updatedProperty = await res.json();
+        console.log('Saved property:', updatedProperty);
         
         if (editingProperty) {
           setProperties(properties.map(p => p._id === updatedProperty._id ? updatedProperty : p));
@@ -223,7 +226,7 @@ const AdminDashboard = () => {
         
         setShowPropertyForm(false);
         setEditingProperty(null);
-        setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured' });
+        setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', sections: ['featured'] });
         showToast(editingProperty ? 'Property updated successfully!' : 'Property added successfully!', 'success');
       } else {
         const error = await res.json();
@@ -270,7 +273,7 @@ const AdminDashboard = () => {
       features: property.features?.join(', ') || '',
       images: property.images || [],
       status: property.status,
-      section: property.section || 'featured'
+      sections: property.sections || property.section ? [property.section] : ['featured']
     });
     setShowPropertyForm(true);
   };
@@ -506,7 +509,7 @@ const AdminDashboard = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Properties</h2>
-              <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', section: 'featured' }); }} className="bg-green-600 text-white px-4 py-2 rounded">
+              <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', sections: ['featured'] }); }} className="bg-green-600 text-white px-4 py-2 rounded">
                 Add Property
               </button>
             </div>
@@ -560,12 +563,26 @@ const AdminDashboard = () => {
                     <option value="pending">Pending</option>
                     <option value="sold">Sold</option>
                   </select>
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Display Section</label>
-                    <select value={propertyForm.section} onChange={(e) => setPropertyForm({...propertyForm, section: e.target.value})} className="border p-2 rounded w-full">
-                      <option value="featured">Featured Properties</option>
-                      <option value="highlights">Tanavi Highlights</option>
-                    </select>
+                  <div className="col-span-2">
+                    <label className="block text-sm text-gray-600 mb-2">Display Sections (Select up to 3)</label>
+                    <div className="flex gap-4">
+                      {['featured', 'highlights', 'choice'].map(sec => (
+                        <label key={sec} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={propertyForm.sections.includes(sec)}
+                            onChange={(e) => {
+                              const newSections = e.target.checked
+                                ? [...propertyForm.sections, sec].slice(0, 3)
+                                : propertyForm.sections.filter(s => s !== sec);
+                              setPropertyForm({...propertyForm, sections: newSections});
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="capitalize">{sec === 'choice' ? 'Choice Property' : sec}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <textarea placeholder="Description" value={propertyForm.description} onChange={(e) => setPropertyForm({...propertyForm, description: e.target.value})} className="border p-2 rounded col-span-2" rows="3" />
                   <input type="text" placeholder="Features (comma separated)" value={propertyForm.features} onChange={(e) => setPropertyForm({...propertyForm, features: e.target.value})} className="border p-2 rounded col-span-2" />
@@ -618,7 +635,15 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 text-gray-700">{property.category}</td>
                       <td className="px-6 py-4 text-gray-700 font-semibold">₹{property.price}</td>
                       <td className="px-6 py-4 text-gray-700">{property.location}</td>
-                      <td className="px-6 py-4"><span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">{property.section === 'highlights' ? 'Highlights' : 'Featured'}</span></td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {(property.sections && property.sections.length > 0 ? property.sections : [property.section || 'featured']).map((sec, i) => (
+                            <span key={i} className="px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                              {sec === 'choice' ? 'Choice' : sec === 'highlights' ? 'Highlights' : 'Featured'}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
                       <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === 'available' ? 'bg-green-100 text-green-800' : property.status === 'sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{property.status}</span></td>
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => handleEditProperty(property)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2" title="Edit">
