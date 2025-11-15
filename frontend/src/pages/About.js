@@ -1,10 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBullseye, FaEye, FaStar } from 'react-icons/fa';
+import carousel1 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_7e3d7ae3.jpg';
+import carousel2 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_9582503a.jpg';
 
 const About = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   useEffect(() => {
     document.body.classList.add('allow-screenshot');
     return () => document.body.classList.remove('allow-screenshot');
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % 2);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
   const values = [
     { icon: FaBullseye, title: "Our Mission", description: "To deliver exceptional real estate projects that exceed customer expectations and create lasting value." },
@@ -78,6 +89,29 @@ const About = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        <div className="mb-20">
+          <div className="relative max-w-4xl mx-auto">
+            <div className="overflow-hidden rounded-lg shadow-2xl">
+              <div className="relative h-96">
+                <img 
+                  src={currentSlide === 0 ? carousel1 : carousel2}
+                  alt={`Slide ${currentSlide + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex justify-center gap-2 mt-6">
+              {[0, 1].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all ${currentSlide === index ? 'bg-primary w-8' : 'bg-gray-300'}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
