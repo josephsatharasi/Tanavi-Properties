@@ -44,6 +44,20 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
+router.post('/user-listing', async (req, res) => {
+  try {
+    const userListing = {
+      ...req.body,
+      status: 'pending',
+      sections: ['user-submitted']
+    };
+    const property = await Property.create(userListing);
+    res.status(201).json({ message: 'Property submitted for review', property });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const property = await Property.findByIdAndDelete(req.params.id);

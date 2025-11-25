@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes, FaCheckCircle } from 'react-icons/fa';
+import API_URL, { getImageUrl } from '../utils/api';
+import { compressImage } from '../utils/imageCompressor';
 
 const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -12,42 +14,155 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     price: '',
     description: '',
     userType: '',
-    images: []
+    images: [],
+    video: ''
   });
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (formData.images.length + files.length > 3) {
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (formData.images.length >= 3) {
       alert('Maximum 3 images allowed');
       return;
     }
-    const newImages = files.map(file => URL.createObjectURL(file));
-    setFormData({ ...formData, images: [...formData.images, ...newImages] });
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      e.target.value = '';
+      return;
+    }
+
+    setUploading(true);
+    let uploadFile = file;
+    try {
+      uploadFile = await compressImage(file, 2);
+    } catch (err) {
+      console.log('Compression failed, using original:', err);
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('image', uploadFile);
+
+    try {
+      const res = await fetch(`${API_URL}/api/upload/public`, {
+        method: 'POST',
+        body: formDataUpload
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setFormData({...formData, images: [...formData.images, data.url]});
+      } else {
+        alert(`Upload failed: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleVideoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = async function() {
+      window.URL.revokeObjectURL(video.src);
+      if (video.duration > 30) {
+        alert('Video must be 30 seconds or less');
+        e.target.value = '';
+        return;
+      }
+
+      if (file.size > 50 * 1024 * 1024) {
+        alert('Video size must be less than 50MB');
+        e.target.value = '';
+        return;
+      }
+
+      setUploading(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append('video', file);
+
+      try {
+        const res = await fetch(`${API_URL}/api/upload/public/video`, {
+          method: 'POST',
+          body: formDataUpload
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+          setFormData({...formData, video: data.url});
+        } else {
+          alert(`Upload failed: ${data.message}`);
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      } finally {
+        setUploading(false);
+        e.target.value = '';
+      }
+    };
+    video.src = URL.createObjectURL(file);
   };
 
   const removeImage = (index) => {
     setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setShowSuccess(true);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      propertyType: '',
-      location: '',
-      price: '',
-      description: '',
-      userType: '',
-      images: []
-    });
+    
+    const submitData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      title: `${formData.propertyType} in ${formData.location.split(',')[0]}`,
+      category: formData.propertyType,
+      location: formData.location,
+      price: formData.price,
+      description: formData.description,
+      images: formData.images,
+      video: formData.video
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/api/properties/user-listing`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submitData)
+      });
+      
+      if (res.ok) {
+        setShowSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          propertyType: '',
+          location: '',
+          price: '',
+          description: '',
+          userType: '',
+          images: [],
+          video: ''
+        });
+      } else {
+        const error = await res.json();
+        alert(error.message || 'Failed to submit');
+      }
+    } catch (error) {
+      alert('Failed to submit property');
+    }
   };
 
   const handleSuccessClose = () => {
@@ -211,33 +326,59 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           </div>
 
           {modalType === 'list' && (
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">Property Images (Max 3)</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                disabled={formData.images.length >= 3}
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              />
-              {formData.images.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mt-3">
-                  {formData.images.map((img, index) => (
-                    <div key={index} className="relative">
-                      <img src={img} alt={`Preview ${index + 1}`} className="w-full h-24 object-cover rounded" />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Images (Max 3)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  disabled={formData.images.length >= 3 || uploading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+                />
+                {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+                {formData.images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-3">
+                    {formData.images.map((img, index) => (
+                      <div key={index} className="relative">
+                        <img src={getImageUrl(img)} alt={`Preview ${index + 1}`} className="w-full h-24 object-cover rounded" />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Video (Max 30 seconds)</label>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                  disabled={uploading || formData.video}
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+                />
+                {uploading && <p className="text-sm text-blue-600 mt-1">Uploading video...</p>}
+                {formData.video && (
+                  <div className="mt-3 relative">
+                    <video src={getImageUrl(formData.video)} controls className="w-full max-h-40 rounded" />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({...formData, video: ''})}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded px-3 py-1 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
 
           <div className="pt-4">

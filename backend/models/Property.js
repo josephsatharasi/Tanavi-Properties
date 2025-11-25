@@ -12,7 +12,7 @@ const propertySchema = new mongoose.Schema({
   features: [String],
   images: [String],
   status: { type: String, enum: ['available', 'sold', 'pending'], default: 'available', index: true },
-  sections: { type: [String], enum: ['featured', 'highlights', 'choice'] },
+  sections: { type: [String], enum: ['featured', 'highlights', 'choice', 'user-submitted'] },
   createdAt: { type: Date, default: Date.now }
 }, { strict: true });
 

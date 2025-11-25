@@ -16,6 +16,7 @@ import Contact from './pages/Contact';
 import Careers from './pages/Careers';
 import CallLog from './pages/CallLog';
 import ChoiceCategoryProperties from './pages/ChoiceCategoryProperties';
+import ListProperty from './pages/ListProperty';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -52,6 +53,7 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/call-log" element={<CallLog />} />
           <Route path="/choice-category/:category" element={<ChoiceCategoryProperties />} />
+          <Route path="/list-property" element={<ListProperty />} />
         </Routes>
         <Footer />
         <WhatsAppButton />

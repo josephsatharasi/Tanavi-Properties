@@ -147,6 +147,13 @@ const PropertyDetails = () => {
               <p className="text-gray-700 leading-relaxed">{property.description}</p>
             </div>
 
+            {property.video && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Property Video</h2>
+                <video src={getImageUrl(property.video)} controls className="w-full rounded-lg" />
+              </div>
+            )}
+
             {property.features && property.features.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-4">Key Features</h2>
