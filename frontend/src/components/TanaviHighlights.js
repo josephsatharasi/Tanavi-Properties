@@ -24,7 +24,7 @@ const TanaviHighlights = () => {
         ) : (
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6">
             {properties.slice(0, 8).map((property) => (
-              <div key={property._id} className="flex-shrink-0 w-[85%] snap-start md:w-auto">
+              <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto">
                 <HighlightCard property={property} />
               </div>
             ))}

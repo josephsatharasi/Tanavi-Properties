@@ -93,13 +93,13 @@ const About = () => {
         </div>
 
         <div className="mb-20">
-          <div className="relative max-w-4xl mx-auto">
+          <div className="relative max-w-4xl mx-auto px-4">
             <div className="overflow-hidden rounded-lg shadow-2xl">
               <div className="relative h-96">
                 <img 
                   src={currentSlide === 0 ? carousel1 : carousel2}
                   alt={`Slide ${currentSlide + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>

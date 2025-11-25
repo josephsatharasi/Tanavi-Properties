@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaPhone } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import Hero from '../components/Hero';
 import PropertyCard from '../components/PropertyCard';
 import PropertyCategories from '../components/PropertyCategories';
@@ -81,14 +81,6 @@ const Home = () => {
 
   return (
     <div>
-      <a
-        href="tel:1234567890"
-        className="fixed bottom-4 right-20 md:right-24 bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-50"
-        title="Call Owner"
-      >
-        <FaPhone className="text-2xl transform scale-x-[-1]" />
-      </a>
-      
       <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       
       <section id="properties" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
