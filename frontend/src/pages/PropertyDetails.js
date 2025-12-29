@@ -11,6 +11,14 @@ const PropertyDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getAreaUnit = (type) => {
+    if (type === 'Agricultural Land' || type === 'Farmhouse') return 'Acres/Guntas';
+    if (type === 'Open Plot') return 'Sq Yards';
+    if (type === 'Independent House' || type === 'Apartment' || type === 'Office Space') return 'SFT';
+    return '';
+  };
+
   useEffect(() => {
     setLoading(true);
     fetch(`${API_URL}/api/properties/${id}`)
@@ -28,10 +36,24 @@ const PropertyDetails = () => {
   const handleShare = async () => {
     const url = window.location.href;
     const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
+    const imageUrl = property.images?.[0] ? getImageUrl(property.images[0]) : null;
     
     if (navigator.share) {
       try {
-        await navigator.share({ title: property.title, text, url });
+        const shareData = { title: property.title, text, url };
+        if (imageUrl && navigator.canShare) {
+          try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const file = new File([blob], 'property.jpg', { type: blob.type });
+            if (navigator.canShare({ files: [file] })) {
+              shareData.files = [file];
+            }
+          } catch (err) {
+            console.log('Could not share image:', err);
+          }
+        }
+        await navigator.share(shareData);
       } catch (err) {
         console.log('Share cancelled');
       }
@@ -57,10 +79,7 @@ const PropertyDetails = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <button 
-            onClick={() => {
-              navigate('/');
-              setTimeout(() => window.scrollTo(0, 0), 0);
-            }} 
+            onClick={() => navigate(-1)} 
             className="text-primary hover:underline flex items-center gap-2"
           >
             ← Back to Properties
@@ -113,7 +132,14 @@ const PropertyDetails = () => {
           </div>
 
           <div className="p-8">
-            <h1 className="text-4xl font-bold mb-4">{property.title}</h1>
+            <div className="flex justify-between items-start mb-4">
+              <h1 className="text-4xl font-bold">{property.title}</h1>
+              {property.propertyCode && (
+                <div className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm">
+                  ID: {property.propertyCode}
+                </div>
+              )}
+            </div>
             <p className="text-2xl text-primary font-bold mb-6">₹{property.price}</p>
             <p className="text-gray-600 mb-8">{property.location}</p>
 
@@ -127,7 +153,7 @@ const PropertyDetails = () => {
               {property.area && (
                 <div className="bg-blue-50 p-4 rounded-lg text-center">
                   <p className="text-3xl font-bold text-primary">{property.area}</p>
-                  <p className="text-gray-600">Area</p>
+                  <p className="text-gray-600">{getAreaUnit(property.category || property.type)}</p>
                 </div>
               )}
               {property.bathrooms > 0 && (
@@ -186,7 +212,7 @@ const PropertyDetails = () => {
 
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="w-full bg-primary text-white py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
+              className="w-full bg-primary text-white py-4 rounded-lg text-lg font-semibold hover:opacity-90 transition"
             >
               Schedule a Visit
             </button>
@@ -199,6 +225,7 @@ const PropertyDetails = () => {
         onClose={() => setIsModalOpen(false)} 
         propertyTitle={property?.title}
         propertyId={property?._id}
+        propertyCode={property?.propertyCode}
       />
     </div>
   );

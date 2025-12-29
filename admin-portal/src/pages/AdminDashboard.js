@@ -142,6 +142,9 @@ const AdminDashboard = () => {
 
     const formData = new FormData();
     formData.append('image', uploadFile);
+    if (editingProperty?.propertyCode) {
+      formData.append('propertyCode', editingProperty.propertyCode);
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -218,6 +221,12 @@ const AdminDashboard = () => {
         const updatedProperty = await res.json();
         console.log('Saved property:', updatedProperty);
         
+        // If new property and has images without watermark, re-upload with property code
+        if (!editingProperty && updatedProperty.propertyCode && propertyForm.images.length > 0) {
+          setEditingProperty(updatedProperty);
+          showToast('Property created! Images will be watermarked with ' + updatedProperty.propertyCode, 'success');
+        }
+        
         if (editingProperty) {
           setProperties(properties.map(p => p._id === updatedProperty._id ? updatedProperty : p));
         } else {
@@ -256,6 +265,25 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error deleting property:', error);
       showToast('Failed to delete property', 'error');
+    }
+  };
+
+  const handleRenewProperty = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/properties/${id}/renew`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const renewed = await res.json();
+        setProperties(properties.map(p => p._id === id ? renewed.property : p));
+        showToast('Property renewed for 90 days!', 'success');
+      } else {
+        showToast('Failed to renew property', 'error');
+      }
+    } catch (error) {
+      showToast('Failed to renew property', 'error');
     }
   };
 
@@ -619,18 +647,29 @@ const AdminDashboard = () => {
               <table className="w-full min-w-[800px]">
                 <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
+                    <th className="px-6 py-4 text-left font-semibold">Property ID</th>
                     <th className="px-6 py-4 text-left font-semibold">Title</th>
                     <th className="px-6 py-4 text-left font-semibold">Category</th>
                     <th className="px-6 py-4 text-left font-semibold">Price</th>
                     <th className="px-6 py-4 text-left font-semibold">Location</th>
                     <th className="px-6 py-4 text-left font-semibold">Section</th>
                     <th className="px-6 py-4 text-left font-semibold">Status</th>
+                    <th className="px-6 py-4 text-left font-semibold">Expiry</th>
                     <th className="px-6 py-4 text-center font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {properties.map(property => (
+                  {properties.map(property => {
+                    const expiryDate = property.expiryDate ? new Date(property.expiryDate) : null;
+                    const isExpired = expiryDate && expiryDate < new Date();
+                    const daysLeft = expiryDate ? Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    return (
                     <tr key={property._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
+                      <td className="px-6 py-4">
+                        <span className="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                          {property.propertyCode || 'N/A'}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 font-medium">{property.title}</td>
                       <td className="px-6 py-4 text-gray-700">{property.category}</td>
                       <td className="px-6 py-4 text-gray-700 font-semibold">₹{property.price}</td>
@@ -645,16 +684,31 @@ const AdminDashboard = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === 'available' ? 'bg-green-100 text-green-800' : property.status === 'sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{property.status}</span></td>
+                      <td className="px-6 py-4">
+                        {expiryDate ? (
+                          <div>
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${isExpired ? 'bg-red-100 text-red-800' : daysLeft <= 7 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>
+                              {isExpired ? 'Expired' : `${daysLeft}d left`}
+                            </span>
+                            {property.renewalCount > 0 && <div className="text-xs text-gray-500 mt-1">Renewed {property.renewalCount}x</div>}
+                          </div>
+                        ) : <span className="text-gray-400 text-xs">No expiry</span>}
+                      </td>
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => handleEditProperty(property)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2" title="Edit">
                           <FaEdit size={18} />
                         </button>
+                        {(isExpired || (daysLeft && daysLeft <= 30)) && (
+                          <button onClick={() => handleRenewProperty(property._id)} className="text-green-600 hover:text-green-800 hover:bg-green-100 px-2 py-1 rounded text-xs font-semibold mr-2" title="Renew for 90 days">
+                            Renew
+                          </button>
+                        )}
                         <button onClick={() => handleDeleteProperty(property._id)} className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition" title="Delete">
                           <FaTrash size={18} />
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             </div>

@@ -68,4 +68,18 @@ router.delete('/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
+router.post('/:id/renew', protect, adminOnly, async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) return res.status(404).json({ message: 'Property not found' });
+    property.expiryDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+    property.isActive = true;
+    property.renewalCount += 1;
+    await property.save();
+    res.json({ message: 'Property renewed successfully', property });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

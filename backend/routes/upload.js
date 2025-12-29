@@ -53,12 +53,43 @@ router.post('/', protect, adminOnly, upload.single('image'), async (req, res) =>
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
+    const { propertyCode } = req.body;
+    const watermarkText = propertyCode ? `Tanavi Properties - ${propertyCode}` : 'Tanavi Properties';
+
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { 
           folder: 'tanavi_properties', 
           resource_type: 'auto',
-          timeout: 60000
+          timeout: 60000,
+          transformation: [
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 40,
+                font_weight: 'bold',
+                text: watermarkText
+              },
+              gravity: 'south_east',
+              x: 20,
+              y: 20,
+              opacity: 70,
+              color: 'white'
+            },
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 40,
+                font_weight: 'bold',
+                text: watermarkText
+              },
+              gravity: 'south_east',
+              x: 21,
+              y: 21,
+              opacity: 50,
+              color: 'black'
+            }
+          ]
         },
         (error, result) => {
           if (error) {
@@ -88,12 +119,43 @@ router.post('/video', protect, adminOnly, videoUpload.single('video'), async (re
       return res.status(400).json({ message: 'No video uploaded' });
     }
 
+    const { propertyCode } = req.body;
+    const watermarkText = propertyCode ? `Tanavi Properties - ${propertyCode}` : 'Tanavi Properties';
+
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { 
           folder: 'tanavi_properties/videos', 
           resource_type: 'video',
-          timeout: 120000
+          timeout: 120000,
+          transformation: [
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 50,
+                font_weight: 'bold',
+                text: watermarkText
+              },
+              gravity: 'south_east',
+              x: 30,
+              y: 30,
+              opacity: 70,
+              color: 'white'
+            },
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 50,
+                font_weight: 'bold',
+                text: watermarkText
+              },
+              gravity: 'south_east',
+              x: 31,
+              y: 31,
+              opacity: 50,
+              color: 'black'
+            }
+          ]
         },
         (error, result) => {
           if (error) {
@@ -128,7 +190,35 @@ router.post('/public', upload.single('image'), async (req, res) => {
         { 
           folder: 'tanavi_properties/user_listings', 
           resource_type: 'auto',
-          timeout: 60000
+          timeout: 60000,
+          transformation: [
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 40,
+                font_weight: 'bold',
+                text: 'Tanavi Properties'
+              },
+              gravity: 'south_east',
+              x: 20,
+              y: 20,
+              opacity: 70,
+              color: 'white'
+            },
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 40,
+                font_weight: 'bold',
+                text: 'Tanavi Properties'
+              },
+              gravity: 'south_east',
+              x: 21,
+              y: 21,
+              opacity: 50,
+              color: 'black'
+            }
+          ]
         },
         (error, result) => {
           if (error) reject(error);
@@ -162,7 +252,35 @@ router.post('/public/video', videoUpload.single('video'), async (req, res) => {
         { 
           folder: 'tanavi_properties/user_listings/videos', 
           resource_type: 'video',
-          timeout: 120000
+          timeout: 120000,
+          transformation: [
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 50,
+                font_weight: 'bold',
+                text: 'Tanavi Properties'
+              },
+              gravity: 'south_east',
+              x: 30,
+              y: 30,
+              opacity: 70,
+              color: 'white'
+            },
+            {
+              overlay: {
+                font_family: 'Arial',
+                font_size: 50,
+                font_weight: 'bold',
+                text: 'Tanavi Properties'
+              },
+              gravity: 'south_east',
+              x: 31,
+              y: 31,
+              opacity: 50,
+              color: 'black'
+            }
+          ]
         },
         (error, result) => {
           if (error) reject(error);

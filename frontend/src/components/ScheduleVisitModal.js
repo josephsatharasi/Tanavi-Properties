@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import API_URL from '../utils/api';
 
-const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
+const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, propertyCode }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -42,7 +42,15 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId }) => {
               <FaTimes size={24} />
             </button>
           </div>
-          <p className="text-gray-600 mb-6 capitalize">{propertyTitle}</p>
+          <div className="mb-6">
+            <p className="text-gray-600 capitalize font-medium">{propertyTitle}</p>
+            {propertyCode && (
+              <div className="mt-2 inline-block bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                Property ID: {propertyCode}
+              </div>
+            )}
+            <p className="text-sm text-gray-500 mt-2">Reference this Property ID when contacting us</p>
+          </div>
           
           <form onSubmit={handleSubmit}>
             <div className="mb-4">

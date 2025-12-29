@@ -91,14 +91,14 @@ const Contact = () => {
                   <FaPhone className="text-primary text-2xl mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-gray-600">+91 XXXXX XXXXX</p>
+                    <p className="text-gray-600">+91 90639 07346</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <FaEnvelope className="text-primary text-2xl mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-gray-600">info@tanaviproperties.com</p>
+                    <p className="text-gray-600">support@tanaviproperties.com</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -112,7 +112,7 @@ const Contact = () => {
                   <FaWhatsapp className="text-primary text-2xl mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">WhatsApp</h3>
-                    <p className="text-gray-600">+91 XXXXX XXXXX</p>
+                    <p className="text-gray-600">+91 90639 07346</p>
                   </div>
                 </div>
               </div>

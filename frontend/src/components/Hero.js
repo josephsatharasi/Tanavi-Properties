@@ -22,7 +22,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
   }, []);
 
   const handleSearch = () => {
-    if (!location && !propertyType && !priceRange) {
+    if (!location && !propertyType && !priceRange && !searchQuery) {
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 3000);
       return;
@@ -31,6 +31,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
     if (location) params.append('location', location);
     if (propertyType) params.append('type', propertyType);
     if (priceRange) params.append('price', priceRange);
+    if (searchQuery) params.append('search', searchQuery);
     navigate(`/category/all?${params.toString()}`);
   };
 
@@ -68,6 +69,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
                   placeholder="Search by property name or location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
                 />
               </div>

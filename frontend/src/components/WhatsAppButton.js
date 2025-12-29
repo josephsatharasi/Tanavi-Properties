@@ -2,7 +2,7 @@ import React from 'react';
 
 const WhatsAppButton = () => {
   const [isAtBottom, setIsAtBottom] = React.useState(false);
-  const phoneNumber = "919876543210";
+  const phoneNumber = "919063907346";
   const message = "Hi, I'm interested in Tanavi Properties. Can you help me?";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

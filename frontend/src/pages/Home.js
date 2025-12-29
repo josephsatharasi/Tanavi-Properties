@@ -40,7 +40,9 @@ const Home = () => {
         .then(data => {
           setProperties(data.filter(p => {
             const sections = p.sections || [p.section];
-            return sections.includes('featured') && p.status === 'available';
+            const isNotExpired = !p.expiryDate || new Date(p.expiryDate) > new Date();
+            const isActiveProperty = p.isActive !== false;
+            return sections.includes('featured') && p.status === 'available' && isNotExpired && isActiveProperty;
           }));
           setLoading(false);
         })

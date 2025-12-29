@@ -13,13 +13,19 @@ const CategoryProperties = () => {
   const location = searchParams.get('location');
   const type = searchParams.get('type');
   const priceRange = searchParams.get('price');
+  const searchQuery = searchParams.get('search');
 
   useEffect(() => {
     const fetchProperties = () => {
       fetch(`${API_URL}/api/properties?t=${Date.now()}`, { cache: 'no-store' })
         .then(res => res.json())
         .then(data => {
-          setProperties(data.filter(p => p.status === 'available'));
+          const activeProps = data.filter(p => {
+            const isNotExpired = !p.expiryDate || new Date(p.expiryDate) > new Date();
+            const isActiveProperty = p.isActive !== false;
+            return p.status === 'available' && isNotExpired && isActiveProperty;
+          });
+          setProperties(activeProps);
           setLoading(false);
         })
         .catch(err => {
@@ -58,6 +64,13 @@ const CategoryProperties = () => {
   
   let filteredProperties = category === 'all' ? properties : properties.filter(p => p.category === categoryName || p.type === categoryName);
   
+  if (searchQuery) {
+    filteredProperties = filteredProperties.filter(p => 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.location.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+  
   if (location) {
     filteredProperties = filteredProperties.filter(p => p.location.includes(location));
   }
@@ -84,8 +97,9 @@ const CategoryProperties = () => {
     <div className="pt-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl font-bold mb-4">{categoryName}</h1>
-        {(location || type || priceRange) && (
+        {(location || type || priceRange || searchQuery) && (
           <div className="mb-4 flex gap-2 flex-wrap">
+            {searchQuery && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Search: {searchQuery}</span>}
             {location && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Location: {location}</span>}
             {type && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Type: {type}</span>}
             {priceRange && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Budget: {priceRange === '500+' ? 'Above 5 Cr' : priceRange.split('-').join('L - ') + (priceRange.includes('-') ? 'L' : '')}</span>}

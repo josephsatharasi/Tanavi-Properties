@@ -220,9 +220,10 @@ const ListProperty = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Property Images</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading} />
+              <label className="block text-gray-700 mb-2">Property Images (Max 5 images)</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading || formData.images.length >= 5} />
               {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+              {formData.images.length >= 5 && <p className="text-sm text-red-600 mt-1">Maximum 5 images allowed</p>}
               {formData.images.length > 0 && (
                 <div className="grid grid-cols-4 gap-2 mt-3">
                   {formData.images.map((img, idx) => (

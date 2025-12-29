@@ -19,8 +19,10 @@ import CallLog from './pages/CallLog';
 import ChoiceCategoryProperties from './pages/ChoiceCategoryProperties';
 import ListProperty from './pages/ListProperty';
 
+const scrollPositions = {};
+
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const location = useLocation();
   
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -29,8 +31,17 @@ function ScrollToTop() {
   }, []);
   
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [pathname]);
+    const savedPosition = scrollPositions[location.key];
+    if (savedPosition !== undefined) {
+      setTimeout(() => window.scrollTo(0, savedPosition), 0);
+    } else {
+      window.scrollTo(0, 0);
+    }
+
+    return () => {
+      scrollPositions[location.key] = window.scrollY;
+    };
+  }, [location]);
   
   return null;
 }

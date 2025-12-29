@@ -27,8 +27,8 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (formData.images.length >= 3) {
-      alert('Maximum 3 images allowed');
+    if (formData.images.length >= 5) {
+      alert('Maximum 5 images allowed');
       return;
     }
 
@@ -328,12 +328,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           {modalType === 'list' && (
             <>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Property Images (Max 3)</label>
+                <label className="block text-gray-700 font-medium mb-2">Property Images (Max 5)</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  disabled={formData.images.length >= 3 || uploading}
+                  disabled={formData.images.length >= 5 || uploading}
                   className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
                 />
                 {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}

@@ -34,7 +34,6 @@ const Navbar = () => {
 
   const handleLinkClick = () => {
     setIsOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
