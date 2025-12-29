@@ -28,8 +28,10 @@ const ChoiceProperties = () => {
               <div 
                 key={index}
                 onClick={() => navigate(`/choice-category/${property.title}`)}
-                className="group relative bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer"
+                className="group relative bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = property.color.includes('green') ? '#22c55e' : property.color.includes('blue') ? '#3b82f6' : property.color.includes('orange') ? '#f97316' : property.color.includes('purple') ? '#a855f7' : property.color.includes('teal') ? '#14b8a6' : '#ef4444'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${property.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                 

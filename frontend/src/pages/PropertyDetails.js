@@ -26,6 +26,22 @@ const PropertyDetails = () => {
       .then(data => {
         setProperty(data);
         setLoading(false);
+        
+        // Update meta tags for sharing
+        if (data) {
+          const imageUrl = data.images?.[0] ? getImageUrl(data.images[0]) : '';
+          const propertyId = data.propertyCode ? `[${data.propertyCode}]` : '';
+          
+          document.title = `${propertyId} ${data.title} - Tanavi Properties`;
+          
+          // Update or create meta tags
+          updateMetaTag('og:title', `${propertyId} ${data.title}`);
+          updateMetaTag('og:description', `${data.title} - ₹${data.price} at ${data.location}`);
+          updateMetaTag('og:image', imageUrl);
+          updateMetaTag('og:url', window.location.href);
+          updateMetaTag('twitter:card', 'summary_large_image');
+          updateMetaTag('twitter:image', imageUrl);
+        }
       })
       .catch(err => {
         console.error('Error fetching property:', err);
@@ -33,29 +49,39 @@ const PropertyDetails = () => {
       });
   }, [id]);
 
+  const updateMetaTag = (property, content) => {
+    let element = document.querySelector(`meta[property="${property}"]`) || 
+                  document.querySelector(`meta[name="${property}"]`);
+    
+    if (!element) {
+      element = document.createElement('meta');
+      if (property.startsWith('og:') || property.startsWith('twitter:')) {
+        element.setAttribute('property', property);
+      } else {
+        element.setAttribute('name', property);
+      }
+      document.head.appendChild(element);
+    }
+    element.setAttribute('content', content);
+  };
+
   const handleShare = async () => {
     const url = window.location.href;
-    const text = `Check out this property: ${property.title} - ₹${property.price} at ${property.location}`;
-    const imageUrl = property.images?.[0] ? getImageUrl(property.images[0]) : null;
+    const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
+    const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
     
     if (navigator.share) {
       try {
-        const shareData = { title: property.title, text, url };
-        if (imageUrl && navigator.canShare) {
-          try {
-            const response = await fetch(imageUrl);
-            const blob = await response.blob();
-            const file = new File([blob], 'property.jpg', { type: blob.type });
-            if (navigator.canShare({ files: [file] })) {
-              shareData.files = [file];
-            }
-          } catch (err) {
-            console.log('Could not share image:', err);
-          }
-        }
-        await navigator.share(shareData);
+        await navigator.share({
+          title: `${propertyId} ${property.title}`,
+          text: text,
+          url: url
+        });
       } catch (err) {
-        console.log('Share cancelled');
+        if (err.name !== 'AbortError') {
+          navigator.clipboard.writeText(url);
+          alert('Link copied to clipboard!');
+        }
       }
     } else {
       navigator.clipboard.writeText(url);

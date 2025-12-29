@@ -33,6 +33,21 @@ propertySchema.pre('save', async function(next) {
   next();
 });
 
+propertySchema.pre('findOneAndUpdate', async function(next) {
+  const update = this.getUpdate();
+  if (update && !update.propertyCode) {
+    const doc = await this.model.findOne(this.getQuery());
+    if (doc && !doc.propertyCode) {
+      const prefix = 'TP';
+      const year = new Date().getFullYear().toString().slice(-2);
+      const count = await mongoose.model('Property').countDocuments();
+      update.propertyCode = `${prefix}${year}${String(count + 1).padStart(4, '0')}`;
+      this.setUpdate(update);
+    }
+  }
+  next();
+});
+
 propertySchema.index({ status: 1, sections: 1 });
 propertySchema.index({ category: 1, status: 1 });
 

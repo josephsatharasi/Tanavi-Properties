@@ -23,7 +23,12 @@ npm install
 node scripts/createAdmin.js
 ```
 
-4. Start backend server:
+4. Generate property codes for existing properties:
+```bash
+node scripts/generatePropertyCodes.js
+```
+
+5. Start backend server:
 ```bash
 npm start
 ```
@@ -76,11 +81,12 @@ Frontend runs on: http://localhost:3000
 ## Admin Dashboard Features
 
 ### Properties Management
-- View all properties in table format
-- Add new properties with form
+- View all properties in table format with unique Property IDs
+- Add new properties with form (auto-generates Property ID)
 - Edit existing properties
 - Delete properties
 - Set property status (available/pending/sold)
+- Property ID format: TP250001, TP250002, etc.
 
 ### Schedule Management
 - View all customer visit schedules
@@ -88,6 +94,28 @@ Frontend runs on: http://localhost:3000
 - Mark approved schedules as completed
 - Cancel schedules
 - View customer contact information
+
+## Property ID System
+
+Every property gets a unique ID (e.g., TP250001) for easy reference:
+- **Format**: TP + Year + Sequential Number
+- **Display**: Property cards, details page, schedule modal, admin dashboard
+- **Watermark**: Automatically added to all property images
+- **Purpose**: Easy customer communication and property tracking
+
+### Generate Property IDs
+For existing properties without IDs:
+```bash
+cd backend
+node scripts/generatePropertyCodes.js
+```
+
+### Test Property IDs
+Verify all properties have codes:
+```bash
+cd backend
+node scripts/testPropertyCodes.js
+```
 
 ## Environment Variables
 
