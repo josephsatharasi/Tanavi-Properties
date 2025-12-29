@@ -92,7 +92,8 @@ const Home = () => {
           <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6">
             {properties.filter(p => 
               p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-              p.location.toLowerCase().includes(searchQuery.toLowerCase())
+              p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              (p.propertyCode && p.propertyCode.toLowerCase().includes(searchQuery.toLowerCase()))
             ).slice(0, 8).map((property, index) => (
               <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
                 <PropertyCard property={property} />

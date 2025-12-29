@@ -67,7 +67,8 @@ const CategoryProperties = () => {
   if (searchQuery) {
     filteredProperties = filteredProperties.filter(p => 
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.location.toLowerCase().includes(searchQuery.toLowerCase())
+      p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.propertyCode && p.propertyCode.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }
   

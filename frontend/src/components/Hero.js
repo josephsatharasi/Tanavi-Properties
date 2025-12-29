@@ -66,7 +66,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
                 <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
                 <input
                   type="text"
-                  placeholder="Search by property name or location..."
+                  placeholder="Search by property name, location or ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}

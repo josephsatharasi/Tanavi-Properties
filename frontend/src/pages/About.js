@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaBullseye, FaEye, FaStar } from 'react-icons/fa';
+import { FaBullseye, FaEye, FaStar, FaHome, FaUser, FaChartLine, FaSmile } from 'react-icons/fa';
 import carousel1 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_7e3d7ae3.jpg';
 import carousel2 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_9582503a.jpg';
 
@@ -24,10 +24,48 @@ const About = () => {
   ];
 
   const milestones = [
-    { year: "2009", event: "Company Founded", description: "Tanavi Properties established with a vision to transform Hyderabad's skyline" },
-    { year: "2015", event: "10+ Projects Delivered", description: "Successfully delivered over 10 residential projects across Hyderabad" },
-    { year: "2020", event: "50+ Projects Milestone", description: "Reached the milestone of 50 completed projects with 500+ happy families" },
-    { year: "2024", event: "Industry Leader", description: "Recognized as one of the top builders in Hyderabad with multiple ongoing projects" }
+    { 
+      year: "2015", 
+      title: "Company Establishment",
+      icon: FaHome,
+      points: [
+        "Foundation of Trust & Transparency",
+        "Started with a clear vision to provide genuine real estate guidance",
+        "Focused on ethical transactions and customer-first service"
+      ]
+    },
+    { 
+      year: "", 
+      title: "Customer-Centric Approach",
+      icon: FaUser,
+      points: [
+        "Understanding Needs & Delivering Value",
+        "Personalized assistance for every buyer",
+        "Clear communication, proper documentation guidance",
+        "Steady brand growth powered by customer referrals"
+      ]
+    },
+    { 
+      year: "", 
+      title: "Growth in the Right Direction",
+      icon: FaChartLine,
+      points: [
+        "Strengthening due diligence and property verification",
+        "Implemented digital support and improved responsiveness",
+        "Increased customer trust through reliable project offerings"
+      ]
+    },
+    { 
+      year: "", 
+      title: "Thousands of Happy Customers",
+      icon: FaSmile,
+      points: [
+        "Converting Dreams into Smiles",
+        "Delivered safe, secure, and profitable property options",
+        "Built strong credibility through honesty and clarity",
+        "Helped thousands of families achieve ownership with confidence"
+      ]
+    }
   ];
 
   return (
@@ -117,25 +155,30 @@ const About = () => {
 
         <div className="mb-20">
           <h2 className="text-4xl font-bold text-center mb-12">Our Journey</h2>
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary hidden md:block"></div>
-            <div className="space-y-8 md:space-y-12">
-              {milestones.map((milestone, index) => (
-                <div 
-                  key={index} 
-                  className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} md:gap-8`}
-                >
-                  <div className={`w-full md:flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                    <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                      <h3 className="text-3xl font-bold text-primary mb-2">{milestone.year}</h3>
-                      <h4 className="text-xl font-bold mb-2">{milestone.event}</h4>
-                      <p className="text-gray-600">{milestone.description}</p>
-                    </div>
+          <div className="relative max-w-2xl mx-auto">
+            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gray-300"></div>
+            <div className="space-y-8">
+              {milestones.map((milestone, index) => {
+                const IconComponent = milestone.icon;
+                return (
+                <div key={index} className="relative pl-20">
+                  <div className="absolute left-0 w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                    <IconComponent className="text-white text-2xl" />
                   </div>
-                  <div className="hidden md:block w-8 h-8 bg-primary rounded-full border-4 border-white shadow-lg z-10 flex-shrink-0"></div>
-                  <div className="hidden md:block md:flex-1"></div>
+                  <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                    {milestone.year && <h3 className="text-2xl font-bold text-gray-800 mb-2">{milestone.year}</h3>}
+                    <h4 className="text-xl font-bold text-gray-800 mb-3">{milestone.title}</h4>
+                    <ul className="space-y-2">
+                      {milestone.points.map((point, i) => (
+                        <li key={i} className="text-gray-700 flex items-start">
+                          <span className="text-primary mr-2">•</span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         </div>
