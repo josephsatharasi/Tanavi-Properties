@@ -6,13 +6,20 @@ const AdminChat = () => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
+  const pollIntervalRef = useRef(null);
 
   useEffect(() => {
     fetchChats();
-    const interval = setInterval(fetchChats, 3000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    pollIntervalRef.current = setInterval(fetchChats, 3000);
+    
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -22,18 +29,44 @@ const AdminChat = () => {
   const fetchChats = async () => {
     try {
       const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Authentication required');
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(`${API_URL}/api/chat/all`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
+      
+      if (!res.ok) {
+        if (res.status === 401) {
+          setError('Session expired. Please login again.');
+        } else {
+          setError('Failed to fetch chats');
+        }
+        setLoading(false);
+        return;
+      }
+      
       const data = await res.json();
       setChats(Array.isArray(data) ? data : []);
+      setError('');
+      
       if (selectedChat) {
         const updated = data.find(c => c.userId === selectedChat.userId);
         if (updated) setSelectedChat(updated);
       }
     } catch (error) {
       console.error('Error fetching chats:', error);
+      setError('Network error. Please check your connection.');
       setChats([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,20 +74,31 @@ const AdminChat = () => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedChat) return;
 
+    const messageText = newMessage.trim();
+    setNewMessage('');
+
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${API_URL}/api/chat/message`, {
+      
+      const res = await fetch(`${API_URL}/api/chat/message`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ userId: selectedChat.userId, sender: 'admin', text: newMessage })
+        body: JSON.stringify({ userId: selectedChat.userId, sender: 'admin', text: messageText })
       });
-      setNewMessage('');
-      fetchChats();
+      
+      if (!res.ok) {
+        throw new Error('Failed to send message');
+      }
+      
+      await fetchChats();
+      setError('');
     } catch (error) {
       console.error('Error sending message:', error);
+      setError('Failed to send message. Please try again.');
+      setNewMessage(messageText);
     }
   };
 
@@ -63,7 +107,10 @@ const AdminChat = () => {
       const token = localStorage.getItem('token');
       await fetch(`${API_URL}/api/chat/read/${userId}`, {
         method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       fetchChats();
     } catch (error) {
@@ -71,27 +118,42 @@ const AdminChat = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-[600px] bg-white rounded-lg shadow-lg items-center justify-center">
+        <p className="text-gray-500">Loading chats...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="w-1/3 border-r overflow-y-auto">
         <div className="p-4 bg-blue-600 text-white font-bold">User Chats</div>
-        {chats.map(chat => (
-          <div
-            key={chat.userId}
-            onClick={() => { setSelectedChat(chat); markAsRead(chat.userId); }}
-            className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${selectedChat?.userId === chat.userId ? 'bg-blue-50' : ''}`}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-bold">{chat.username}</p>
-                <p className="text-sm text-gray-600 truncate">{chat.messages[chat.messages.length - 1]?.text}</p>
+        {error && <p className="text-red-500 text-sm p-4">{error}</p>}
+        {chats.length === 0 ? (
+          <p className="text-gray-500 text-center p-4">No chats yet</p>
+        ) : (
+          chats.map(chat => (
+            <div
+              key={chat.userId}
+              onClick={() => { setSelectedChat(chat); markAsRead(chat.userId); }}
+              className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${selectedChat?.userId === chat.userId ? 'bg-blue-50' : ''}`}
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="font-bold">{chat.username}</p>
+                  <p className="text-sm text-gray-600 truncate">
+                    {chat.messages.length > 0 ? chat.messages[chat.messages.length - 1]?.text : 'No messages'}
+                  </p>
+                </div>
+                {chat.unreadCount > 0 && (
+                  <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">{chat.unreadCount}</span>
+                )}
               </div>
-              {chat.unreadCount > 0 && (
-                <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">{chat.unreadCount}</span>
-              )}
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       <div className="flex-1 flex flex-col">
@@ -101,14 +163,18 @@ const AdminChat = () => {
               Chat with {selectedChat.username}
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {selectedChat.messages.map((msg, idx) => (
-                <div key={idx} className={`flex ${msg.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[70%] p-3 rounded-lg ${msg.sender === 'admin' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
-                    <p className="text-sm">{msg.text}</p>
-                    <span className="text-xs opacity-70">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+              {selectedChat.messages.length === 0 ? (
+                <p className="text-gray-500 text-center mt-4">No messages yet</p>
+              ) : (
+                selectedChat.messages.map((msg, idx) => (
+                  <div key={idx} className={`flex ${msg.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[70%] p-3 rounded-lg ${msg.sender === 'admin' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
+                      <p className="text-sm">{msg.text}</p>
+                      <span className="text-xs opacity-70">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
             <form onSubmit={handleSendMessage} className="p-4 border-t flex gap-2">

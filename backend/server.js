@@ -65,6 +65,12 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/properties', require('./routes/properties'));
 app.use('/api/schedules', require('./routes/schedules'));
@@ -72,8 +78,8 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/buysell', require('./routes/buysell'));
 app.use('/api/testimonials', require('./routes/testimonials'));
-app.use('/api/share', require('./routes/share'));
 app.use('/api/chat', require('./routes/chat'));
+app.use('/api/share', require('./routes/share'));
 app.use('/api', require('./routes/keepalive'));
 
 // 404 handler
@@ -95,5 +101,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV || 'development');
 });
-
-app.use('/api/chat', require('./routes/chat'));
