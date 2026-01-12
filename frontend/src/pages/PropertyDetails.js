@@ -66,9 +66,10 @@ const PropertyDetails = () => {
   };
 
   const handleShare = async () => {
-    const shareUrl = `${API_URL.replace('/api', '')}/api/share/${property._id}`;
+    const backendUrl = API_URL.replace('/api', '');
+    const shareUrl = `${backendUrl}/api/share/${property._id}`;
     const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
-    const text = `Check out this property: ${propertyId} ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
+    const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!`;
     
     if (navigator.share) {
       try {
