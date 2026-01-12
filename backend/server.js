@@ -73,6 +73,7 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/buysell', require('./routes/buysell'));
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/share', require('./routes/share'));
+app.use('/api/chat', require('./routes/chat'));
 app.use('/api', require('./routes/keepalive'));
 
 // 404 handler
@@ -94,3 +95,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV || 'development');
 });
+
+app.use('/api/chat', require('./routes/chat'));

@@ -66,27 +66,27 @@ router.post('/', protect, adminOnly, upload.single('image'), async (req, res) =>
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 40,
+                font_size: 16,
                 font_weight: 'bold',
                 text: watermarkText
               },
               gravity: 'south_east',
-              x: 20,
-              y: 20,
-              opacity: 70,
+              x: 10,
+              y: 10,
+              opacity: 80,
               color: 'white'
             },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 40,
+                font_size: 16,
                 font_weight: 'bold',
                 text: watermarkText
               },
               gravity: 'south_east',
-              x: 21,
-              y: 21,
-              opacity: 50,
+              x: 11,
+              y: 11,
+              opacity: 60,
               color: 'black'
             }
           ]
@@ -132,27 +132,27 @@ router.post('/video', protect, adminOnly, videoUpload.single('video'), async (re
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 20,
                 font_weight: 'bold',
                 text: watermarkText
               },
               gravity: 'south_east',
-              x: 30,
-              y: 30,
-              opacity: 70,
+              x: 15,
+              y: 15,
+              opacity: 80,
               color: 'white'
             },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 20,
                 font_weight: 'bold',
                 text: watermarkText
               },
               gravity: 'south_east',
-              x: 31,
-              y: 31,
-              opacity: 50,
+              x: 16,
+              y: 16,
+              opacity: 60,
               color: 'black'
             }
           ]
@@ -195,27 +195,27 @@ router.post('/public', upload.single('image'), async (req, res) => {
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 40,
+                font_size: 16,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
               gravity: 'south_east',
-              x: 20,
-              y: 20,
-              opacity: 70,
+              x: 10,
+              y: 10,
+              opacity: 80,
               color: 'white'
             },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 40,
+                font_size: 16,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
               gravity: 'south_east',
-              x: 21,
-              y: 21,
-              opacity: 50,
+              x: 11,
+              y: 11,
+              opacity: 60,
               color: 'black'
             }
           ]
@@ -257,27 +257,27 @@ router.post('/public/video', videoUpload.single('video'), async (req, res) => {
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 20,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
               gravity: 'south_east',
-              x: 30,
-              y: 30,
-              opacity: 70,
+              x: 15,
+              y: 15,
+              opacity: 80,
               color: 'white'
             },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 20,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
               gravity: 'south_east',
-              x: 31,
-              y: 31,
-              opacity: 50,
+              x: 16,
+              y: 16,
+              opacity: 60,
               color: 'black'
             }
           ]

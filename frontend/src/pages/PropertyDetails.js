@@ -66,25 +66,25 @@ const PropertyDetails = () => {
   };
 
   const handleShare = async () => {
-    const url = window.location.href;
+    const shareUrl = `${API_URL.replace('/api', '')}/api/share/${property._id}`;
     const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
-    const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
+    const text = `Check out this property: ${propertyId} ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
     
     if (navigator.share) {
       try {
         await navigator.share({
           title: `${propertyId} ${property.title}`,
           text: text,
-          url: url
+          url: shareUrl
         });
       } catch (err) {
         if (err.name !== 'AbortError') {
-          navigator.clipboard.writeText(url);
+          navigator.clipboard.writeText(shareUrl);
           alert('Link copied to clipboard!');
         }
       }
     } else {
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(shareUrl);
       alert('Link copied to clipboard!');
     }
   };
@@ -132,7 +132,7 @@ const PropertyDetails = () => {
                 {property.images.map((img, index) => (
                   <img
                     key={index}
-                    src={getImageUrl(img)}
+                    src={getImageUrl(img, property.propertyCode)}
                     alt={`${property.title} ${index + 1}`}
                     loading="lazy"
                     className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments } from 'react-icons/fa';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AdminChat from '../components/AdminChat';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
 
@@ -531,7 +532,12 @@ const AdminDashboard = () => {
           <button onClick={() => setActiveTab('testimonials')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'testimonials' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             Testimonials
           </button>
+          <button onClick={() => setActiveTab('chat')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'chat' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            <FaComments /> Live Chat
+          </button>
         </div>
+
+        {activeTab === 'chat' && <AdminChat />}
 
         {activeTab === 'properties' && (
           <div>

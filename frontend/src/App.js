@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 import CallButton from './components/CallButton';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import ChatWidget from './components/ChatWidget';
 import Home from './pages/Home';
 import About from './pages/About';
 import PropertyDetails from './pages/PropertyDetails';
@@ -71,6 +72,7 @@ function App() {
         <WhatsAppButton />
         <CallButton />
         <ScrollToTopButton />
+        <ChatWidget />
       </div>
     </Router>
   );
