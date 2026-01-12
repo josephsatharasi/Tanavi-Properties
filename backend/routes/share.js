@@ -28,11 +28,8 @@ router.get('/:id', async (req, res) => {
   <meta property="og:title" content="${propertyId} ${property.title}">
   <meta property="og:description" content="${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!">
   <meta property="og:image" content="${imageUrl}">
-  <meta property="og:image:secure_url" content="${imageUrl}">
-  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="${property.title}">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">

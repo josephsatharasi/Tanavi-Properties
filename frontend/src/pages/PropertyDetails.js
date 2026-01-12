@@ -66,8 +66,7 @@ const PropertyDetails = () => {
   };
 
   const handleShare = async () => {
-    const backendUrl = API_URL.replace('/api', '');
-    const shareUrl = `${backendUrl}/api/share/${property._id}`;
+    const shareUrl = `${API_URL}/api/share/${property._id}`;
     const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
     const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!`;
     
