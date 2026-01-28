@@ -9,11 +9,59 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     name: '',
     email: '',
     phone: '',
-    propertyType: '',
-    location: '',
-    price: '',
-    description: '',
     userType: '',
+    propertyType: '',
+    // Agricultural Land
+    acres: '',
+    guntas: '',
+    // Independent House/Villa
+    plotArea: '',
+    totalFloors: '',
+    portions: '',
+    bedrooms: '',
+    washrooms: '',
+    furnishingStatus: '',
+    buildingAge: '',
+    // Open Plot
+    plotAreaYards: '',
+    // Apartment
+    flatType: '',
+    buildupArea: '',
+    floorDetails: '',
+    propertyAge: '',
+    washroomDetails: '',
+    // Farmhouse
+    farmhouseArea: '',
+    farmhouseGuntas: '',
+    swimmingPool: '',
+    anyConstruction: '',
+    garden: '',
+    // Commercial
+    commercialPropertyType: '',
+    transactionType: '',
+    builtupAreaCommercial: '',
+    floor: '',
+    plugPlay: '',
+    workStations: '',
+    cabins: '',
+    conferenceHall: '',
+    pantry: '',
+    landArea: '',
+    landAreaUnit: '',
+    // Common fields
+    expectedPrice: '',
+    propertyFacing: '',
+    roadType: '',
+    road: '',
+    propertyUnder: '',
+    boundaryType: '',
+    bore: '',
+    anyPTCase: '',
+    propertyLocation: '',
+    revenueRegistration: '',
+    propertyCity: '',
+    district: '',
+    state: '',
     images: [],
     video: ''
   });
@@ -22,6 +70,607 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const renderPropertyTypeFields = () => {
+    switch (formData.propertyType) {
+      case 'Agricultural Land':
+        return (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Acres <span className="text-red-500">*</span></label>
+                <input type="number" name="acres" value={formData.acres} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="12" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Guntas</label>
+                <input type="number" name="guntas" value={formData.guntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="06" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Cr - Lakhs - Thousands" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+                <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="East">East</option>
+                  <option value="West">West</option>
+                  <option value="North">North</option>
+                  <option value="South">South</option>
+                  <option value="Corner">Corner</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway">Highway</option>
+                  <option value="BT Road">BT Road</option>
+                  <option value="Matti Road">Matti Road</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Boundary Type</label>
+                <select name="boundaryType" value={formData.boundaryType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Compound Wall">Compound Wall</option>
+                  <option value="Precast Compound">Precast Compound</option>
+                  <option value="Fencing">Fencing</option>
+                  <option value="Open">Open</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Bore</label>
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Any PT Case</label>
+              <select name="anyPTCase" value={formData.anyPTCase} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      case 'Independent House':
+        return (
+          <>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Villa / House Details <span className="text-red-500">*</span></label>
+              <div className="grid grid-cols-2 gap-4">
+                <input type="text" name="plotArea" value={formData.plotArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Plot Area: 200 Sq Yards" />
+                <input type="number" name="totalFloors" value={formData.totalFloors} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total Floors: 3" />
+                <input type="number" name="portions" value={formData.portions} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Portions: 3" />
+                <input type="number" name="bedrooms" value={formData.bedrooms} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Bedrooms: 5" />
+                <input type="number" name="washrooms" value={formData.washrooms} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Washrooms: 8" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Furnishing Status</label>
+                <select name="furnishingStatus" value={formData.furnishingStatus} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Unfurnished">Unfurnished</option>
+                  <option value="Semi-Furnished">Semi-Furnished</option>
+                  <option value="Fully Furnished">Fully Furnished</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Building Age</label>
+                <input type="text" name="buildingAge" value={formData.buildingAge} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="New or Number of Years old" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Cr - Lakhs - Thousands" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Bore</label>
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway - Commercial">Highway - Commercial</option>
+                  <option value="Semi Commercial">Semi Commercial</option>
+                  <option value="Residential">Residential</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+              <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                <option value="">Select</option>
+                <option value="East">East</option>
+                <option value="West">West</option>
+                <option value="North">North</option>
+                <option value="South">South</option>
+                <option value="Corner">Corner</option>
+              </select>
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      case 'Open Plot':
+        return (
+          <>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Plot Area <span className="text-red-500">*</span></label>
+              <input type="text" name="plotAreaYards" value={formData.plotAreaYards} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="200 Sq Yards" />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Cr - Lakhs - Thousands" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Bore</label>
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway">Highway</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Semi Commercial">Semi Commercial</option>
+                  <option value="Residential">Residential</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+              <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                <option value="">Select</option>
+                <option value="East">East</option>
+                <option value="West">West</option>
+                <option value="North">North</option>
+                <option value="South">South</option>
+                <option value="Corner">Corner</option>
+              </select>
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      case 'Apartment':
+        return (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Flat Type <span className="text-red-500">*</span></label>
+                <input type="text" name="flatType" value={formData.flatType} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Triple Bed Room" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Buildup Area <span className="text-red-500">*</span></label>
+                <input type="text" name="buildupArea" value={formData.buildupArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="1280 SFT" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Cr - Lakhs - Thousands" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Floor Details</label>
+                <input type="text" name="floorDetails" value={formData.floorDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2nd Floor" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Age</label>
+                <input type="text" name="propertyAge" value={formData.propertyAge} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="New / 6 years" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Furnishing Status</label>
+                <select name="furnishingStatus" value={formData.furnishingStatus} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Unfurnished">Unfurnished</option>
+                  <option value="Semi-Furnished">Semi-Furnished</option>
+                  <option value="Fully Furnished">Fully Furnished</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
+                <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway">Highway</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Semi Commercial">Semi Commercial</option>
+                  <option value="Residential">Residential</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+                <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="East">East</option>
+                  <option value="West">West</option>
+                  <option value="North">North</option>
+                  <option value="South">South</option>
+                  <option value="Corner">Corner</option>
+                </select>
+              </div>
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      case 'Farmhouse':
+        return (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Farmhouse Area (Acres) <span className="text-red-500">*</span></label>
+                <input type="number" name="farmhouseArea" value={formData.farmhouseArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="12" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Guntas</label>
+                <input type="number" name="farmhouseGuntas" value={formData.farmhouseGuntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="06" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Cr - Lakhs - Thousands" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway">Highway</option>
+                  <option value="BT Road">BT Road</option>
+                  <option value="Matti Road">Matti Road</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+                <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="East">East</option>
+                  <option value="West">West</option>
+                  <option value="North">North</option>
+                  <option value="South">South</option>
+                  <option value="Corner">Corner</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Boundary Type</label>
+                <select name="boundaryType" value={formData.boundaryType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Compound Wall">Compound Wall</option>
+                  <option value="Precast Compound">Precast Compound</option>
+                  <option value="Fencing">Fencing</option>
+                  <option value="Open">Open</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Any PT Case</label>
+                <select name="anyPTCase" value={formData.anyPTCase} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Bore</label>
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Swimming Pool</label>
+                <select name="swimmingPool" value={formData.swimmingPool} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Any Construction</label>
+                <select name="anyConstruction" value={formData.anyConstruction} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
+                <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Garden</label>
+              <input type="text" name="garden" value={formData.garden} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Yes" />
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      case 'Commercial Space':
+        return (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Commercial Property Type <span className="text-red-500">*</span></label>
+                <select name="commercialPropertyType" value={formData.commercialPropertyType} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Office Space">Office Space</option>
+                  <option value="Commercial Open Space">Commercial Open Space</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Transaction Type <span className="text-red-500">*</span></label>
+                <select name="transactionType" value={formData.transactionType} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Lease">Lease</option>
+                  <option value="Sale">Sale</option>
+                </select>
+              </div>
+            </div>
+            {formData.commercialPropertyType === 'Office Space' && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Built-up Area <span className="text-red-500">*</span></label>
+                    <input type="text" name="builtupAreaCommercial" value={formData.builtupAreaCommercial} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="5000 Sq. Ft" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Floor</label>
+                    <input type="text" name="floor" value={formData.floor} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2nd Floor (of 5 Floors)" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Plug & Play</label>
+                    <select name="plugPlay" value={formData.plugPlay} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Work Stations</label>
+                    <input type="number" name="workStations" value={formData.workStations} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="25" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Cabins</label>
+                    <input type="number" name="cabins" value={formData.cabins} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="8" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Conference Hall</label>
+                    <input type="number" name="conferenceHall" value={formData.conferenceHall} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Pantry</label>
+                    <input type="number" name="pantry" value={formData.pantry} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="1" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
+                  <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+                </div>
+              </>
+            )}
+            {formData.commercialPropertyType === 'Commercial Open Space' && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Land Area <span className="text-red-500">*</span></label>
+                    <input type="text" name="landArea" value={formData.landArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="8,000" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Unit</label>
+                    <select name="landAreaUnit" value={formData.landAreaUnit} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                      <option value="">Select</option>
+                      <option value="Sq. Ft">Sq. Ft</option>
+                      <option value="Sq. Yards">Sq. Yards</option>
+                      <option value="Acres">Acres</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Bore</label>
+                    <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Boundary Type</label>
+                    <select name="boundaryType" value={formData.boundaryType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                      <option value="">Select</option>
+                      <option value="Compound Wall">Compound Wall</option>
+                      <option value="Precast Compound">Precast Compound</option>
+                      <option value="Fencing">Fencing</option>
+                      <option value="Open">Open</option>
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder={formData.transactionType === 'Sale' ? 'Cr - Lakhs - Thousands' : '₹75 per Sq. Ft'} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road Type</label>
+                <select name="roadType" value={formData.roadType} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Highway">Highway</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Semi Commercial">Semi Commercial</option>
+                  <option value="Residential">Residential</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Road</label>
+                <input type="text" name="road" value={formData.road} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="60 Feet Road" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Under</label>
+                <select name="propertyUnder" value={formData.propertyUnder} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="GHMC">GHMC</option>
+                  <option value="Municipal Corporation">Municipal Corporation</option>
+                  <option value="Municipality">Municipality</option>
+                  <option value="Gram Panchayat">Gram Panchayat</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Facing</label>
+                <select name="propertyFacing" value={formData.propertyFacing} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="East">East</option>
+                  <option value="West">West</option>
+                  <option value="North">North</option>
+                  <option value="South">South</option>
+                  <option value="Corner">Corner</option>
+                </select>
+              </div>
+            </div>
+            {renderLocationFields()}
+          </>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
+  const renderLocationFields = () => (
+    <>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Property Location <span className="text-red-500">*</span></label>
+          <input type="text" name="propertyLocation" value={formData.propertyLocation} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Ranipet" />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Revenue Registration / Sub Registrar <span className="text-red-500">*</span></label>
+          <input type="text" name="revenueRegistration" value={formData.revenueRegistration} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Midjil" />
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Property City <span className="text-red-500">*</span></label>
+          <input type="text" name="propertyCity" value={formData.propertyCity} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Jadcherla" />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">District <span className="text-red-500">*</span></label>
+          <input type="text" name="district" value={formData.district} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Mahabubnagar" />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">State <span className="text-red-500">*</span></label>
+          <input type="text" name="state" value={formData.state} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Telangana" />
+        </div>
+      </div>
+    </>
+  );
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -122,15 +771,62 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (formData.userType === 'Agent') {
+      alert('Only property owners can submit listings.');
+      return;
+    }
+    
     const submitData = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      title: `${formData.propertyType} in ${formData.location.split(',')[0]}`,
+      userType: formData.userType,
+      propertyType: formData.propertyType,
+      title: `${formData.propertyType} in ${formData.propertyLocation}`,
       category: formData.propertyType,
-      location: formData.location,
-      price: formData.price,
-      description: formData.description,
+      location: `${formData.propertyLocation}, ${formData.propertyCity}, ${formData.district}, ${formData.state}`,
+      price: formData.expectedPrice,
+      description: JSON.stringify({
+        acres: formData.acres,
+        guntas: formData.guntas,
+        plotArea: formData.plotArea,
+        totalFloors: formData.totalFloors,
+        portions: formData.portions,
+        bedrooms: formData.bedrooms,
+        washrooms: formData.washrooms,
+        furnishingStatus: formData.furnishingStatus,
+        buildingAge: formData.buildingAge,
+        plotAreaYards: formData.plotAreaYards,
+        flatType: formData.flatType,
+        buildupArea: formData.buildupArea,
+        floorDetails: formData.floorDetails,
+        propertyAge: formData.propertyAge,
+        washroomDetails: formData.washroomDetails,
+        farmhouseArea: formData.farmhouseArea,
+        farmhouseGuntas: formData.farmhouseGuntas,
+        swimmingPool: formData.swimmingPool,
+        anyConstruction: formData.anyConstruction,
+        garden: formData.garden,
+        commercialPropertyType: formData.commercialPropertyType,
+        transactionType: formData.transactionType,
+        builtupAreaCommercial: formData.builtupAreaCommercial,
+        floor: formData.floor,
+        plugPlay: formData.plugPlay,
+        workStations: formData.workStations,
+        cabins: formData.cabins,
+        conferenceHall: formData.conferenceHall,
+        pantry: formData.pantry,
+        landArea: formData.landArea,
+        landAreaUnit: formData.landAreaUnit,
+        propertyFacing: formData.propertyFacing,
+        roadType: formData.roadType,
+        road: formData.road,
+        propertyUnder: formData.propertyUnder,
+        boundaryType: formData.boundaryType,
+        bore: formData.bore,
+        anyPTCase: formData.anyPTCase,
+        revenueRegistration: formData.revenueRegistration
+      }),
       images: formData.images,
       video: formData.video
     };
@@ -148,11 +844,52 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           name: '',
           email: '',
           phone: '',
-          propertyType: '',
-          location: '',
-          price: '',
-          description: '',
           userType: '',
+          propertyType: '',
+          acres: '',
+          guntas: '',
+          plotArea: '',
+          totalFloors: '',
+          portions: '',
+          bedrooms: '',
+          washrooms: '',
+          furnishingStatus: '',
+          buildingAge: '',
+          plotAreaYards: '',
+          flatType: '',
+          buildupArea: '',
+          floorDetails: '',
+          propertyAge: '',
+          washroomDetails: '',
+          farmhouseArea: '',
+          farmhouseGuntas: '',
+          swimmingPool: '',
+          anyConstruction: '',
+          garden: '',
+          commercialPropertyType: '',
+          transactionType: '',
+          builtupAreaCommercial: '',
+          floor: '',
+          plugPlay: '',
+          workStations: '',
+          cabins: '',
+          conferenceHall: '',
+          pantry: '',
+          landArea: '',
+          landAreaUnit: '',
+          expectedPrice: '',
+          propertyFacing: '',
+          roadType: '',
+          road: '',
+          propertyUnder: '',
+          boundaryType: '',
+          bore: '',
+          anyPTCase: '',
+          propertyLocation: '',
+          revenueRegistration: '',
+          propertyCity: '',
+          district: '',
+          state: '',
           images: [],
           video: ''
         });
@@ -251,22 +988,25 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             />
           </div>
 
-          {modalType === 'list' && (
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">You are <span className="text-red-500">*</span></label>
-              <select
-                name="userType"
-                value={formData.userType}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              >
-                <option value="">Select</option>
-                <option value="Owner">Owner</option>
-                <option value="Agent">Agent</option>
-              </select>
-            </div>
-          )}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">You are <span className="text-red-500">*</span></label>
+            <select
+              name="userType"
+              value={formData.userType}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+            >
+              <option value="">Select</option>
+              <option value="Owner">Owner</option>
+              <option value="Agent">Agent</option>
+            </select>
+            {formData.userType === 'Agent' && (
+              <div className="mt-3 p-4 bg-red-50 border border-red-200 rounded">
+                <p className="text-red-700 font-medium">Currently, Tanavi Properties accepts property listings only from direct owners. If you are an agent or broker, please contact Tanavi Properties.</p>
+              </div>
+            )}
+          </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">Property Type <span className="text-red-500">*</span></label>
@@ -275,55 +1015,25 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               value={formData.propertyType}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+              disabled={formData.userType === 'Agent'}
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary disabled:bg-gray-100"
             >
               <option value="">Select Property Type</option>
               <option value="Agricultural Land">Agricultural Land</option>
               <option value="Independent House">Independent House</option>
-              <option value="Open Plot">Open Plot</option>
               <option value="Apartment">Apartment</option>
+              <option value="Open Plot">Open Plot</option>
               <option value="Farmhouse">Farmhouse</option>
-              <option value="Office Space">Office Space</option>
+              <option value="Commercial Space">Commercial Space</option>
             </select>
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Location <span className="text-red-500">*</span></label>
-            <textarea
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-              rows="3"
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Enter full address (Landmark, Village, Mandal, District, State)"
-            ></textarea>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-            <input
-              type="text"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Enter expected price"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">Property Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Describe your property (optional)"
-            ></textarea>
-          </div>
+          {/* Dynamic Property Type Fields */}
+          {formData.propertyType && formData.userType === 'Owner' && (
+            <div className="space-y-4">
+              {renderPropertyTypeFields()}
+            </div>
+          )}
 
           {modalType === 'list' && (
             <>

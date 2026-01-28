@@ -134,7 +134,7 @@ const ChatWidget = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full shadow-lg hover:opacity-90 transition z-50"
+          className="fixed bottom-6 right-20 bg-primary text-white p-4 rounded-full shadow-lg hover:opacity-90 transition z-50"
           aria-label="Open chat"
         >
           <FaComments className="text-2xl" />
@@ -142,7 +142,7 @@ const ChatWidget = () => {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
+        <div className="fixed bottom-6 right-20 w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
           <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
             <h3 className="font-bold">Chat with Tanavi Properties</h3>
             <button onClick={() => setIsOpen(false)} aria-label="Close chat">

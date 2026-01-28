@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaFacebook, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -7,7 +8,25 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">Tanavi Properties</h3>
-            <p className="text-gray-400">Your trusted partner in finding the perfect property in Hyderabad.</p>
+            <p className="text-gray-400 mb-4">Your trusted partner in finding the perfect property in Hyderabad.</p>
+            <div className="flex space-x-4">
+              <a 
+                href="https://www.facebook.com/share/1H13U3tZis/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-blue-500 transition"
+              >
+                <FaFacebook size={24} />
+              </a>
+              <a 
+                href="https://x.com/tanaviproperty" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
+                <FaTwitter size={24} />
+              </a>
+            </div>
           </div>
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
