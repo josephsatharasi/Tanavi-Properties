@@ -15,7 +15,7 @@ const PropertyDetails = () => {
   const getAreaUnit = (type) => {
     if (type === 'Agricultural Land' || type === 'Farmhouse') return 'Acres/Guntas';
     if (type === 'Open Plot') return 'Sq Yards';
-    if (type === 'Independent House' || type === 'Apartment' || type === 'Office Space') return 'SFT';
+    if (type === 'Independent House' || type === 'Apartment' || type === 'Office / Commercial Space') return 'SFT';
     return '';
   };
 

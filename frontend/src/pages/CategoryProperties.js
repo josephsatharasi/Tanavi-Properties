@@ -45,7 +45,7 @@ const CategoryProperties = () => {
     'open-plots': 'Open Plot',
     'farmhouses': 'Farmhouse',
     'apartment': 'Apartment',
-    'office-space': 'Office Space',
+    'office-space': 'Office / Commercial Space',
     'all': 'All Properties'
   };
 

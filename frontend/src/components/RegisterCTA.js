@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RegistrationModal from './RegistrationModal';
+import BookInterestModal from './BookInterestModal';
 
 const RegisterCTA = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,19 +10,19 @@ const RegisterCTA = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">Want to Sell Your Property?</h2>
-            <p className="text-xl text-gray-600">Register with Us Today!</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2">Interested in a Property?</h2>
+            <p className="text-xl text-gray-600">Book Your Interest Today!</p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
             className="mt-6 md:mt-0 bg-primary text-white px-8 py-3 rounded hover:opacity-90 transition font-medium text-lg"
           >
-            Register Now
+            Book Your Interest
           </button>
         </div>
       </div>
     </section>
-    <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <BookInterestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 };

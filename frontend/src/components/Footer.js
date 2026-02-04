@@ -39,7 +39,7 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <p className="text-gray-400">Hyderabad, Telangana</p>
-            <p className="text-gray-400">Phone: +91 90639 07346</p>
+            <p className="text-gray-400">Phone: +91 9063 9073 46</p>
             <p className="text-gray-400">Email: support@tanaviproperties.com</p>
           </div>
           <div>

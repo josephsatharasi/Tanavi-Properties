@@ -46,7 +46,7 @@ const Navbar = () => {
             <span className="text-xl font-bold"><span className="text-gray-900">TANAVI</span> <span className="text-gray-600">Properties</span></span>
           </a>
           
-          <div className="hidden md:flex items-center space-x-8 relative">
+          <div className="hidden md:flex items-center space-x-7 relative">
             <a href="/" className={`px-4 py-2 font-medium transition ${isActive('/') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Home</a>
             <button 
               onClick={() => setIsModalOpen(true)}

@@ -93,19 +93,19 @@ const About = () => {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
               <p>
-                Founded in 2015 by Mr. Balraj Sinthigari, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform connecting people to their dream properties — seamlessly, transparently, and with integrity.
+                Founded in 2015 by <strong>Mr. Balraj Sinthigari,</strong> a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform connecting people to their dream properties — seamlessly, transparently, and with integrity.
               </p>
               <p>
                 We specialize in Agriculture Lands, Open Plots, Independent Houses, Farmhouses, Apartments, and Commercial Spaces, helping buyers and sellers make confident and informed real estate decisions across diverse locations.
               </p>
               <p>
-                Beyond property listings, we deliver end-to-end real estate solutions — including farmhouse development, civil engineering, interior design, precast structures, and fencing services. Every project is managed by experienced professionals dedicated to quality, precision, and customer satisfaction.
+                Beyond property listings, we deliver end-to-end real estate solutions — including <strong>farmhouse development, civil engineering, interior design, precast structures, and fencing services.</strong> Every project is managed by experienced professionals dedicated to quality, precision, and customer satisfaction.
               </p>
               <p>
                 With the support of trusted legal and financial partners and a network of skilled technical experts, Tanavi Properties ensures that every transaction is secure, transparent, and rewarding. Our commitment to eco-friendly development further reflects our responsibility toward sustainable growth.
               </p>
               <p>
-                Driven by trust, transparency, and innovation, Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, turning real-estate aspirations into long-term success. We enable customers and investors to unlock opportunities that shape their future with confidence.
+                <strong>Driven by trust, transparency, and innovation,</strong> Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, <strong>turning real-estate aspirations into long-term success.</strong> We enable customers and investors to unlock opportunities that shape their future with confidence.
               </p>
             </div>
           </div>

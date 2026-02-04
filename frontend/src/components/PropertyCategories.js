@@ -28,7 +28,7 @@ const PropertyCategories = () => {
     { icon: <FaMapMarkerAlt className="text-6xl text-primary" />, name: 'Open plots', slug: 'open-plots' },
     { icon: <GiBarn className="text-6xl text-primary" />, name: 'Farmhouses', slug: 'farmhouses' },
     { icon: <FaBuilding className="text-6xl text-primary" />, name: 'Apartment', slug: 'apartment' },
-    { icon: <GiBriefcase className="text-6xl text-primary" />, name: 'Office space', slug: 'office-space' },
+    { icon: <GiBriefcase className="text-6xl text-primary" />, name: 'Office / Commercial Space', slug: 'office-space' },
   ];
 
   const handleCategoryClick = (slug) => {

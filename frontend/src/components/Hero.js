@@ -103,7 +103,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
                     <option value="Open Plot">Open Plot</option>
                     <option value="Apartment">Apartment</option>
                     <option value="Farmhouse">Farmhouse</option>
-                    <option value="Office Space">Office Space</option>
+                    <option value="Office / Commercial Space">Office / Commercial Space</option>
                   </select>
                   <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
                 </div>
