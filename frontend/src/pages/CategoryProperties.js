@@ -38,6 +38,17 @@ const CategoryProperties = () => {
     const interval = setInterval(fetchProperties, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // Restore scroll position when returning to this page
+    const scrollPos = sessionStorage.getItem('scrollPosition');
+    if (scrollPos) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollPos));
+        sessionStorage.removeItem('scrollPosition');
+      }, 100);
+    }
+  }, []);
   
   const categoryMap = {
     'agricultural-lands': 'Agricultural Land',

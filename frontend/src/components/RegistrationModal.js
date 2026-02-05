@@ -32,6 +32,9 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     floorDetails: '',
     propertyAge: '',
     washroomDetails: '',
+    washroomInside: '',
+    washroomOutside: '',
+    washroomTotal: '',
     // Farmhouse
     farmhouseArea: '',
     farmhouseGuntas: '',
@@ -73,6 +76,22 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleWashroomChange = (e) => {
+    const { name, value } = e.target;
+    const numValue = parseInt(value) || 0;
+    
+    let newFormData = { ...formData, [name]: value };
+    
+    // Auto-calculate total
+    if (name === 'washroomInside' || name === 'washroomOutside') {
+      const inside = name === 'washroomInside' ? numValue : (parseInt(formData.washroomInside) || 0);
+      const outside = name === 'washroomOutside' ? numValue : (parseInt(formData.washroomOutside) || 0);
+      newFormData.washroomTotal = (inside + outside).toString();
+    }
+    
+    setFormData(newFormData);
+  };
+
   const renderPropertyTypeFields = () => {
     switch (formData.propertyType) {
       case 'Agricultural Land':
@@ -81,11 +100,11 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Acres <span className="text-red-500">*</span></label>
-                <input type="number" name="acres" value={formData.acres} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="12" />
+                <input type="number" name="acres" value={formData.acres} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Guntas</label>
-                <input type="number" name="guntas" value={formData.guntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="06" />
+                <input type="number" name="guntas" value={formData.guntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
             </div>
             <div>
@@ -143,7 +162,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Bore</label>
-                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
             </div>
             <div>
@@ -197,7 +216,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Number of Car Parkings</label>
-                <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
             </div>
             <div>
@@ -207,7 +226,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Bore</label>
-                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road Type</label>
@@ -255,7 +274,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           <>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Plot Area <span className="text-red-500">*</span></label>
-              <input type="text" name="plotAreaYards" value={formData.plotAreaYards} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="200 Sq Yards" />
+              <input type="text" name="plotAreaYards" value={formData.plotAreaYards} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Sq Yards" />
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
@@ -264,7 +283,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Bore</label>
-                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road Type</label>
@@ -314,11 +333,16 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Flat Type <span className="text-red-500">*</span></label>
-                <input type="text" name="flatType" value={formData.flatType} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Triple Bed Room" />
+                <select name="flatType" value={formData.flatType} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary">
+                  <option value="">Select</option>
+                  <option value="Single Bed Room">Single Bed Room</option>
+                  <option value="Double Bed Room">Double Bed Room</option>
+                  <option value="Triple Bed Room">Triple Bed Room</option>
+                </select>
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Buildup Area <span className="text-red-500">*</span></label>
-                <input type="text" name="buildupArea" value={formData.buildupArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="1280 SFT" />
+                <input type="text" name="buildupArea" value={formData.buildupArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 SFT" />
               </div>
             </div>
             <div>
@@ -328,7 +352,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Floor Details</label>
-                <input type="text" name="floorDetails" value={formData.floorDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2nd Floor" />
+                <input type="text" name="floorDetails" value={formData.floorDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Property Age</label>
@@ -345,9 +369,19 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                   <option value="Fully Furnished">Fully Furnished</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
-                <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <input type="number" name="washroomInside" value={formData.washroomInside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Inside: 0" />
+                </div>
+                <div>
+                  <input type="number" name="washroomOutside" value={formData.washroomOutside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Outside: 0" />
+                </div>
+                <div>
+                  <input type="number" name="washroomTotal" value={formData.washroomTotal} readOnly className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none bg-gray-100" placeholder="Total: 0" />
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -361,7 +395,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Number of Car Parkings</label>
-                <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -413,11 +447,11 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Farmhouse Area (Acres) <span className="text-red-500">*</span></label>
-                <input type="number" name="farmhouseArea" value={formData.farmhouseArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="12" />
+                <input type="number" name="farmhouseArea" value={formData.farmhouseArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Guntas</label>
-                <input type="number" name="farmhouseGuntas" value={formData.farmhouseGuntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="06" />
+                <input type="number" name="farmhouseGuntas" value={formData.farmhouseGuntas} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
             </div>
             <div>
@@ -485,7 +519,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Bore</label>
-                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Swimming Pool</label>
@@ -505,9 +539,19 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                   <option value="No">No</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
-                <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <input type="number" name="washroomInside" value={formData.washroomInside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Inside: 0" />
+                </div>
+                <div>
+                  <input type="number" name="washroomOutside" value={formData.washroomOutside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Outside: 0" />
+                </div>
+                <div>
+                  <input type="number" name="washroomTotal" value={formData.washroomTotal} readOnly className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none bg-gray-100" placeholder="Total: 0" />
+                </div>
               </div>
             </div>
             <div>
@@ -545,11 +589,14 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Built-up Area <span className="text-red-500">*</span></label>
-                    <input type="text" name="builtupAreaCommercial" value={formData.builtupAreaCommercial} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="5000 Sq. Ft" />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Sq. Ft</span>
+                      <input type="number" name="builtupAreaCommercial" value={formData.builtupAreaCommercial} onChange={handleChange} required className="w-full pl-16 pr-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Floor</label>
-                    <input type="text" name="floor" value={formData.floor} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2nd Floor (of 5 Floors)" />
+                    <label className="block text-gray-700 font-medium mb-2">Enter your floor</label>
+                    <input type="text" name="floor" value={formData.floor} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -563,26 +610,36 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Work Stations</label>
-                    <input type="number" name="workStations" value={formData.workStations} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="25" />
+                    <input type="number" name="workStations" value={formData.workStations} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Cabins</label>
-                    <input type="number" name="cabins" value={formData.cabins} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="8" />
+                    <input type="number" name="cabins" value={formData.cabins} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Conference Hall</label>
-                    <input type="number" name="conferenceHall" value={formData.conferenceHall} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                    <input type="number" name="conferenceHall" value={formData.conferenceHall} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Pantry</label>
-                    <input type="number" name="pantry" value={formData.pantry} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="1" />
+                    <input type="number" name="pantry" value={formData.pantry} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">Washroom Details</label>
-                  <input type="text" name="washroomDetails" value={formData.washroomDetails} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Total-5, Inside-3, Outside-2" />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <input type="number" name="washroomInside" value={formData.washroomInside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Inside: 0" />
+                    </div>
+                    <div>
+                      <input type="number" name="washroomOutside" value={formData.washroomOutside} onChange={handleWashroomChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="Outside: 0" />
+                    </div>
+                    <div>
+                      <input type="number" name="washroomTotal" value={formData.washroomTotal} readOnly className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none bg-gray-100" placeholder="Total: 0" />
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -595,7 +652,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Number of Car Parkings</label>
-                    <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="10" />
+                    <input type="number" name="numberOfParkings" value={formData.numberOfParkings} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                 </div>
               </>
@@ -605,7 +662,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Land Area <span className="text-red-500">*</span></label>
-                    <input type="text" name="landArea" value={formData.landArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="8,000" />
+                    <input type="text" name="landArea" value={formData.landArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Unit</label>
@@ -620,7 +677,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Bore</label>
-                    <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="2" />
+                    <input type="number" name="bore" value={formData.bore} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Boundary Type</label>

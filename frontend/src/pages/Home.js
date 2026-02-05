@@ -34,6 +34,17 @@ const Home = () => {
   }, [loading]);
 
   useEffect(() => {
+    // Restore scroll position when returning to home page
+    const scrollPos = sessionStorage.getItem('scrollPosition');
+    if (scrollPos) {
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(scrollPos));
+        sessionStorage.removeItem('scrollPosition');
+      }, 100);
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchProperties = () => {
       fetchWithTimeout(`${API_URL}/api/properties?t=${Date.now()}`, { cache: 'no-store' }, 30000)
         .then(res => res.json())

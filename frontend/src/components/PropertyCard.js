@@ -99,7 +99,10 @@ const PropertyCard = ({ property }) => {
           {getPropertyDetails()}
         </div>
         <button 
-          onClick={() => navigate(`/property/${property._id || property.id}`)}
+          onClick={() => {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+            navigate(`/property/${property._id || property.id}`);
+          }}
           className="w-full bg-primary text-white py-2 rounded hover:opacity-90 transition"
         >
           View Details
