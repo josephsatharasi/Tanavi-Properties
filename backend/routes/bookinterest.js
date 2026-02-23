@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const BookInterest = require('../models/BookInterest');
-const auth = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/auth');
 
 // Submit book interest form (public)
 router.post('/', async (req, res) => {
@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all book interest submissions (admin only)
-router.get('/', auth, async (req, res) => {
+router.get('/', protect, adminOnly, async (req, res) => {
   try {
     const { status, page = 1, limit = 20 } = req.query;
     
@@ -78,7 +78,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Get single book interest by ID (admin only)
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', protect, adminOnly, async (req, res) => {
   try {
     const bookInterest = await BookInterest.findById(req.params.id);
     
@@ -94,7 +94,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Update book interest status (admin only)
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', protect, adminOnly, async (req, res) => {
   try {
     const { status } = req.body;
 
@@ -123,7 +123,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Delete book interest (admin only)
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', protect, adminOnly, async (req, res) => {
   try {
     const bookInterest = await BookInterest.findByIdAndDelete(req.params.id);
 
