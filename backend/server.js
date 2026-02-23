@@ -82,6 +82,7 @@ app.use('/api/chat', require('./routes/chat'));
 app.use('/api/share', require('./routes/share'));
 app.use('/api/book-interest', require('./routes/bookinterest'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/locations', require('./routes/locations'));
 app.use('/api', require('./routes/keepalive'));
 
 // 404 handler

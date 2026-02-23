@@ -13,15 +13,18 @@ const AdminDashboard = () => {
   const [gallery, setGallery] = useState([]);
   const [buySell, setBuySell] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [propertyLocations, setPropertyLocations] = useState([]);
   const [galleryEnabled, setGalleryEnabled] = useState(true);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [showGalleryForm, setShowGalleryForm] = useState(false);
   const [showBuySellForm, setShowBuySellForm] = useState(false);
   const [showTestimonialForm, setShowTestimonialForm] = useState(false);
+  const [showLocationForm, setShowLocationForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [editingGallery, setEditingGallery] = useState(null);
   const [editingBuySell, setEditingBuySell] = useState(null);
   const [editingTestimonial, setEditingTestimonial] = useState(null);
+  const [editingLocation, setEditingLocation] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -33,6 +36,7 @@ const AdminDashboard = () => {
   const [galleryForm, setGalleryForm] = useState({ title: '', category: '', image: '', description: '' });
   const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' });
   const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', text: '', rating: 5, image: '' });
+  const [locationForm, setLocationForm] = useState({ coordinates: '', propertyId: '', description: '' });
   const [uploading, setUploading] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
@@ -45,7 +49,7 @@ const AdminDashboard = () => {
       navigate('/');
       return;
     }
-    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings()]).then(() => setLoading(false));
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings(), fetchLocations()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -155,6 +159,24 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error fetching testimonials:', error);
       setTestimonials([]);
+      return [];
+    }
+  };
+
+  const fetchLocations = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/locations`);
+      if (!res.ok) {
+        console.warn('Locations API not available yet');
+        setPropertyLocations([]);
+        return [];
+      }
+      const data = await res.json();
+      setPropertyLocations(Array.isArray(data) ? data : []);
+      return data;
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+      setPropertyLocations([]);
       return [];
     }
   };
@@ -527,6 +549,76 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLocationSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const url = editingLocation ? `${API_URL}/api/locations/${editingLocation._id}` : `${API_URL}/api/locations`;
+    try {
+      const res = await fetch(url, {
+        method: editingLocation ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(locationForm)
+      });
+      if (!res.ok) {
+        if (res.status === 404) {
+          showToast('Locations API not available. Please deploy the updated backend code.', 'error');
+          return;
+        }
+        const error = await res.json();
+        showToast(error.message || 'Failed to save', 'error');
+        return;
+      }
+      const updatedItem = await res.json();
+      if (editingLocation) {
+        setPropertyLocations(propertyLocations.map(l => l._id === updatedItem._id ? updatedItem : l));
+      } else {
+        setPropertyLocations([updatedItem, ...propertyLocations]);
+      }
+      setShowLocationForm(false);
+      setEditingLocation(null);
+      setLocationForm({ coordinates: '', propertyId: '', description: '' });
+      showToast(editingLocation ? 'Location updated!' : 'Location added!', 'success');
+    } catch (error) {
+      showToast('Locations API not available. Please deploy the updated backend code.', 'error');
+    }
+  };
+
+  const handleDeleteLocation = async (id) => {
+    if (!window.confirm('Delete this location?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/locations/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        if (res.status === 404) {
+          showToast('Locations API not available. Please deploy the updated backend code.', 'error');
+          return;
+        }
+        showToast('Failed to delete', 'error');
+        return;
+      }
+      setPropertyLocations(propertyLocations.filter(l => l._id !== id));
+      showToast('Location deleted!', 'success');
+    } catch (error) {
+      showToast('Locations API not available. Please deploy the updated backend code.', 'error');
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    showToast('Copied to clipboard!', 'success');
+  };
+
+  const openGoogleMaps = (lat, lng) => {
+    if (lat && lng) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    } else {
+      showToast('Invalid coordinates', 'error');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -579,6 +671,9 @@ const AdminDashboard = () => {
           </button>
           <button onClick={() => setActiveTab('testimonials')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'testimonials' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             Testimonials
+          </button>
+          <button onClick={() => setActiveTab('locations')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            Locations
           </button>
           <button onClick={() => setActiveTab('chat')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'chat' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             <FaComments /> Live Chat
@@ -1061,6 +1156,110 @@ const AdminDashboard = () => {
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => { setEditingTestimonial(item); setTestimonialForm(item); setShowTestimonialForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
                         <button onClick={() => handleDeleteTestimonial(item._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'locations' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Locations</h2>
+              <button onClick={() => { setShowLocationForm(true); setEditingLocation(null); setLocationForm({ coordinates: '', propertyId: '', description: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Add Location
+              </button>
+            </div>
+
+            {showLocationForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl">
+                  <div className="border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingLocation ? 'Edit' : 'Add'} Location</h3>
+                    <button onClick={() => { setShowLocationForm(false); setEditingLocation(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
+                  </div>
+                  <form onSubmit={handleLocationSubmit} className="p-6 space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Property Location Link (Coordinates)</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g., 16°54'38.2&quot;N 78°08'05.9&quot;E or 16.5438, 78.0809" 
+                        value={locationForm.coordinates} 
+                        onChange={(e) => setLocationForm({...locationForm, coordinates: e.target.value})} 
+                        className="w-full border p-3 rounded" 
+                        required 
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Enter coordinates in any format (DMS or decimal)</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Link to Property (Optional)</label>
+                      <select 
+                        value={locationForm.propertyId} 
+                        onChange={(e) => setLocationForm({...locationForm, propertyId: e.target.value})} 
+                        className="w-full border p-3 rounded"
+                      >
+                        <option value="">Select Property (Optional)</option>
+                        {properties.map(prop => (
+                          <option key={prop._id} value={prop._id}>{prop.title} - {prop.location}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Description (Optional)</label>
+                      <textarea 
+                        placeholder="Additional location details" 
+                        value={locationForm.description} 
+                        onChange={(e) => setLocationForm({...locationForm, description: e.target.value})} 
+                        className="w-full border p-3 rounded" 
+                        rows="3"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Save</button>
+                      <button type="button" onClick={() => { setShowLocationForm(false); setEditingLocation(null); }} className="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left">Property Location Link</th>
+                    <th className="px-6 py-4 text-center">Copy Element</th>
+                    <th className="px-6 py-4 text-center">Google Map Direction</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {propertyLocations.map(location => (
+                    <tr key={location._id} className="border-b hover:bg-blue-50">
+                      <td className="px-6 py-4 font-mono text-sm">{location.coordinates}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button 
+                          onClick={() => copyToClipboard(location.coordinates)} 
+                          className="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 text-sm font-medium"
+                        >
+                          Copy Element
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button 
+                          onClick={() => openGoogleMaps(location.latitude, location.longitude)} 
+                          className="bg-green-100 text-green-700 px-4 py-2 rounded hover:bg-green-200 inline-flex items-center gap-2"
+                          disabled={!location.latitude || !location.longitude}
+                        >
+                          <span className="text-2xl">📍</span>
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button onClick={() => { setEditingLocation(location); setLocationForm(location); setShowLocationForm(true); }} className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"><FaEdit /></button>
+                        <button onClick={() => handleDeleteLocation(location._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
                       </td>
                     </tr>
                   ))}
