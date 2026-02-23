@@ -17,7 +17,9 @@ const propertySchema = new mongoose.Schema({
   expiryDate: { type: Date, index: true },
   isActive: { type: Boolean, default: true, index: true },
   renewalCount: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  parkingType: { type: String, enum: ['Public', 'Reserved', ''], default: '' },
+  parkingCount: { type: Number, default: 0 }
 }, { strict: true });
 
 propertySchema.pre('save', async function(next) {

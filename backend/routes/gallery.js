@@ -1,9 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const Gallery = require('../models/Gallery');
+const Settings = require('../models/Settings');
 const { protect, adminOnly } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
+  try {
+    // Check if gallery is enabled
+    const setting = await Settings.findOne({ key: 'gallery.enabled' });
+    if (setting && setting.value === false) {
+      return res.json([]);
+    }
+    const items = await Gallery.find({ isVisible: true }).sort({ createdAt: -1 });
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
   try {
     const items = await Gallery.find().sort({ createdAt: -1 });
     res.json(items);

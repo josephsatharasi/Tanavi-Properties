@@ -2,16 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import RegistrationModal from './RegistrationModal';
+import API_URL from '../utils/api';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bounce, setBounce] = useState(false);
+  const [hasVisibleGallery, setHasVisibleGallery] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
 
-
+  useEffect(() => {
+    // Check if gallery section is enabled
+    fetch(`${API_URL}/api/settings/gallery.enabled`)
+      .then(res => {
+        if (!res.ok) {
+          // If settings API not available, default to true
+          setHasVisibleGallery(true);
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data) setHasVisibleGallery(data.value !== false);
+      })
+      .catch(() => setHasVisibleGallery(true));
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -55,7 +72,9 @@ const Navbar = () => {
               List Your Property
             </button>
             <a href="/category/all" className={`px-4 py-2 font-medium transition ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Properties</a>
-            <a href="/blogs" className={`px-4 py-2 font-medium transition ${isActive('/blogs') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Gallery</a>
+            {hasVisibleGallery && (
+              <a href="/blogs" className={`px-4 py-2 font-medium transition ${isActive('/blogs') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Gallery</a>
+            )}
             <a href="/buy-sell" className={`px-4 py-2 font-medium transition ${isActive('/buy-sell') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Buy & Sell</a>
             <a href="/about" className={`px-4 py-2 font-medium transition ${isActive('/about') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>About</a>
           </div>
@@ -81,7 +100,9 @@ const Navbar = () => {
               List Your Property
             </button>
             <a href="/category/all" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Properties</a>
-            <a href="/blogs" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/blogs') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Gallery</a>
+            {hasVisibleGallery && (
+              <a href="/blogs" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/blogs') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Gallery</a>
+            )}
             <a href="/buy-sell" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/buy-sell') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Buy & Sell</a>
             <a href="/about" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/about') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>About</a>
           </div>

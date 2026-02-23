@@ -694,7 +694,11 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             )}
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder={formData.transactionType === 'Sale' ? 'Cr - Lakhs - Thousands' : '₹75 per Sq. Ft'} />
+              <input type="text" name="expectedPrice" value={formData.expectedPrice} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder={
+                formData.commercialPropertyType === 'Commercial Open Space' 
+                  ? 'Cr - Lakhs - Thousands' 
+                  : (formData.transactionType === 'Sale' ? 'Cr - Lakhs - Thousands' : '₹75 per Sq. Ft')
+              } />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

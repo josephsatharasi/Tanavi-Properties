@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [gallery, setGallery] = useState([]);
   const [buySell, setBuySell] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [galleryEnabled, setGalleryEnabled] = useState(true);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [showGalleryForm, setShowGalleryForm] = useState(false);
   const [showBuySellForm, setShowBuySellForm] = useState(false);
@@ -44,7 +45,7 @@ const AdminDashboard = () => {
       navigate('/');
       return;
     }
-    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials()]).then(() => setLoading(false));
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -76,13 +77,60 @@ const AdminDashboard = () => {
 
   const fetchGallery = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/gallery`);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/gallery/admin/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       const data = await res.json();
-      setGallery(data);
+      setGallery(Array.isArray(data) ? data : []);
       return data;
     } catch (error) {
       console.error('Error fetching gallery:', error);
+      setGallery([]);
       return [];
+    }
+  };
+
+  const fetchGallerySettings = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/settings/gallery.enabled`);
+      if (!res.ok) {
+        console.warn('Settings API not available, defaulting to enabled');
+        setGalleryEnabled(true);
+        return null;
+      }
+      const data = await res.json();
+      setGalleryEnabled(data.value !== false);
+      return data;
+    } catch (error) {
+      console.error('Error fetching gallery settings:', error);
+      setGalleryEnabled(true);
+      return null;
+    }
+  };
+
+  const handleToggleGallerySection = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/settings/gallery.enabled`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          value: !galleryEnabled,
+          description: 'Enable or disable the gallery section in the public portal'
+        })
+      });
+      if (!res.ok) {
+        showToast('Settings API not available. Please deploy the updated backend code.', 'error');
+        return;
+      }
+      setGalleryEnabled(!galleryEnabled);
+      showToast(`Gallery section ${!galleryEnabled ? 'enabled' : 'disabled'}!`, 'success');
+    } catch (error) {
+      showToast('Settings API not available. Please deploy the updated backend code.', 'error');
     }
   };
 
@@ -723,6 +771,29 @@ const AdminDashboard = () => {
 
         {activeTab === 'gallery' && (
           <div>
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-yellow-800">Gallery Section Control</h3>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    {galleryEnabled 
+                      ? 'Gallery section is currently visible in the public portal' 
+                      : 'Gallery section is currently hidden from the public portal'}
+                  </p>
+                </div>
+                <button 
+                  onClick={handleToggleGallerySection}
+                  className={`px-6 py-3 rounded-lg font-semibold transition ${
+                    galleryEnabled 
+                      ? 'bg-red-600 hover:bg-red-700 text-white' 
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }`}
+                >
+                  {galleryEnabled ? 'Disable Gallery' : 'Enable Gallery'}
+                </button>
+              </div>
+            </div>
+
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Gallery</h2>
               <button onClick={() => { setShowGalleryForm(true); setEditingGallery(null); setGalleryForm({ title: '', category: '', image: '', description: '' }); }} className="bg-green-600 text-white px-4 py-2 rounded">

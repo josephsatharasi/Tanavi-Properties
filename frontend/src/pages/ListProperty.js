@@ -6,13 +6,13 @@ import { compressImage } from '../utils/imageCompressor';
 const ListProperty = () => {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', 
-    bedrooms: '', bathrooms: '', description: '', images: [], video: ''
+    bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: ''
   });
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
-  const categories = ['Agricultural Land', 'Independent House', 'Open Plot', 'Apartment', 'Farmhouse'];
+  const categories = ['Agricultural Land', 'Independent House', 'Open Plot', 'Apartment', 'Farmhouse', 'Office Space'];
 
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
@@ -123,7 +123,7 @@ const ListProperty = () => {
       
       if (res.ok) {
         showToast('Property submitted successfully! We will review and contact you.', 'success');
-        setFormData({ name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', images: [], video: '' });
+        setFormData({ name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '' });
       } else {
         const error = await res.json();
         showToast(error.message || 'Failed to submit', 'error');
@@ -209,6 +209,22 @@ const ListProperty = () => {
                   <div>
                     <label className="block text-gray-700 mb-2">Bathrooms</label>
                     <input type="number" value={formData.bathrooms} onChange={(e) => setFormData({...formData, bathrooms: e.target.value})} className="w-full border p-3 rounded" />
+                  </div>
+                </>
+              )}
+              {formData.category && ['Apartment', 'Office Space', 'Independent House'].includes(formData.category) && (
+                <>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Parking Type</label>
+                    <select value={formData.parkingType} onChange={(e) => setFormData({...formData, parkingType: e.target.value})} className="w-full border p-3 rounded">
+                      <option value="">Select Parking Type</option>
+                      <option value="Public">Public</option>
+                      <option value="Reserved">Reserved</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Number of Car Parkings</label>
+                    <input type="number" min="0" value={formData.parkingCount} onChange={(e) => setFormData({...formData, parkingCount: e.target.value})} className="w-full border p-3 rounded" placeholder="0" />
                   </div>
                 </>
               )}
