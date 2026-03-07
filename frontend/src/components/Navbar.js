@@ -76,6 +76,7 @@ const Navbar = () => {
               <a href="/blogs" className={`px-4 py-2 font-medium transition ${isActive('/blogs') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Gallery</a>
             )}
             <a href="/buy-sell" className={`px-4 py-2 font-medium transition ${isActive('/buy-sell') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Buy & Sell</a>
+            <a href="/guide" className={`px-4 py-2 font-medium transition ${isActive('/guide') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Guide</a>
             <a href="/about" className={`px-4 py-2 font-medium transition ${isActive('/about') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>About</a>
           </div>
 
@@ -104,6 +105,7 @@ const Navbar = () => {
               <a href="/blogs" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/blogs') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Gallery</a>
             )}
             <a href="/buy-sell" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/buy-sell') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Buy & Sell</a>
+            <a href="/guide" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/guide') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Guide</a>
             <a href="/about" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/about') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>About</a>
           </div>
         </div>

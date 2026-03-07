@@ -19,6 +19,7 @@ import Careers from './pages/Careers';
 import CallLog from './pages/CallLog';
 import ChoiceCategoryProperties from './pages/ChoiceCategoryProperties';
 import ListProperty from './pages/ListProperty';
+import Guide from './pages/Guide';
 
 const scrollPositions = {};
 
@@ -60,6 +61,7 @@ function App() {
           <Route path="/category/:category" element={<CategoryProperties />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/buy-sell" element={<BuySell />} />
+          <Route path="/guide" element={<Guide />} />
           <Route path="/gallery/:id" element={<GalleryDetail />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
