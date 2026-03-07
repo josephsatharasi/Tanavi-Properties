@@ -10,7 +10,7 @@ const ChoiceProperties = () => {
     { icon: FaMapMarkedAlt, title: 'Open Plot', description: 'Ready-to-build plots in prime locations', color: 'from-orange-500 to-orange-600' },
     { icon: FaBuilding, title: 'Apartment', description: 'Modern flats with world-class amenities', color: 'from-purple-500 to-purple-600' },
     { icon: FaWarehouse, title: 'Farmhouse', description: 'Luxury farmhouses for weekend getaways', color: 'from-teal-500 to-teal-600' },
-    { icon: FaStore, title: 'Commercial Space', description: 'Prime locations for your business', color: 'from-red-500 to-red-600' }
+    { icon: FaStore, title: 'Office / Commercial Space', description: 'Prime locations for your business', color: 'from-red-500 to-red-600' }
   ];
 
   return (

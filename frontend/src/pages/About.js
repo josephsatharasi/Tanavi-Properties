@@ -25,7 +25,7 @@ const About = () => {
 
   const milestones = [
     { 
-      year: "2015", 
+      year: "", 
       title: "Company Establishment",
       icon: FaHome,
       points: [
@@ -78,12 +78,12 @@ const About = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           <div className="animate-fade-in">
             <img 
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800" 
               alt="Tanavi Properties" 
-              className="rounded-lg shadow-2xl"
+              className="rounded-lg shadow-2xl w-full h-auto"
             />
           </div>
           <div>
@@ -93,7 +93,7 @@ const About = () => {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
               <p>
-                Founded in 2015 by <strong>Mr. Balraj Sinthigari,</strong> a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform connecting people to their dream properties — seamlessly, transparently, and with integrity.
+                Founded by Mr. Balraj Sinthigari, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform that seamlessly and transparently connects people to their dream properties with integrity.
               </p>
               <p>
                 We specialize in Agriculture Lands, Open Plots, Independent Houses, Farmhouses, Apartments, and Commercial Spaces, helping buyers and sellers make confident and informed real estate decisions across diverse locations.
@@ -105,13 +105,13 @@ const About = () => {
                 With the support of trusted legal and financial partners and a network of skilled technical experts, Tanavi Properties ensures that every transaction is secure, transparent, and rewarding. Our commitment to eco-friendly development further reflects our responsibility toward sustainable growth.
               </p>
               <p>
-                <strong>Driven by trust, transparency, and innovation,</strong> Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, <strong>turning real-estate aspirations into long-term success.</strong> We enable customers and investors to unlock opportunities that shape their future with confidence.
+                Driven by trust, transparency, and innovation, Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, turning real-estate aspirations into long-term success. We enable customers and investors to unlock opportunities that shape their future with confidence.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mb-20">
+        <div className="mb-16">
           <h2 className="text-4xl font-bold text-center mb-12">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {values.map((value, index) => {
@@ -130,14 +130,14 @@ const About = () => {
           </div>
         </div>
 
-        <div className="mb-20">
-          <div className="relative max-w-4xl mx-auto px-4">
-            <div className="overflow-hidden rounded-lg shadow-2xl">
-              <div className="relative h-96">
+        <div className="mb-16">
+          <div className="max-w-5xl mx-auto">
+            <div className="overflow-hidden rounded-lg shadow-2xl bg-white">
+              <div className="relative" style={{ paddingTop: '56.25%' }}>
                 <img 
                   src={currentSlide === 0 ? carousel1 : carousel2}
                   alt={`Slide ${currentSlide + 1}`}
-                  className="w-full h-full object-contain"
+                  className="absolute top-0 left-0 w-full h-full object-cover"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ const About = () => {
           </div>
         </div>
 
-        <div className="mb-20">
+        <div className="mb-16">
           <h2 className="text-4xl font-bold text-center mb-12">Our Journey</h2>
           <div className="relative max-w-2xl mx-auto">
             <div className="absolute left-8 top-0 bottom-0 w-1 bg-gray-300"></div>

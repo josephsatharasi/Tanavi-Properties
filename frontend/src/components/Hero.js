@@ -61,27 +61,27 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
           </p>
           
           <div className="space-y-4 max-w-4xl">
-            <div className="bg-white/90 backdrop-blur-lg rounded-lg p-4 shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '400ms' }}>
+            <div className="animate-slide-up" style={{ animationDelay: '400ms' }}>
               <div className="relative">
-                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl z-10" />
                 <input
                   type="text"
                   placeholder="Search by property name, location or ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+                  className="w-full pl-12 pr-4 py-3 bg-white/90 backdrop-blur-lg rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-2xl text-gray-700 transition-all duration-300"
                 />
               </div>
             </div>
             
-            <div className="bg-white/90 backdrop-blur-lg rounded-lg p-6 shadow-lg animate-slide-up hover:shadow-2xl transition-shadow duration-500" style={{ animationDelay: '500ms' }}>
+            <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
               <div className="flex flex-col gap-4">
               <div className="relative">
                 <select 
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
+                  className="w-full px-4 py-3 bg-white/90 backdrop-blur-lg rounded-lg shadow-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:shadow-2xl appearance-none transition-all duration-300"
                 >
                   <option value="">Location</option>
                   {locations.map(loc => (
@@ -95,7 +95,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
                   <select 
                     value={propertyType}
                     onChange={(e) => setPropertyType(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
+                    className="w-full px-4 py-3 bg-white/90 backdrop-blur-lg rounded-lg shadow-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:shadow-2xl appearance-none transition-all duration-300"
                   >
                     <option value="">Property Type</option>
                     <option value="Agricultural Land">Agricultural Land</option>
@@ -111,7 +111,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
                   <select 
                     value={priceRange}
                     onChange={(e) => setPriceRange(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded text-gray-700 focus:outline-none focus:border-primary appearance-none"
+                    className="w-full px-4 py-3 bg-white/90 backdrop-blur-lg rounded-lg shadow-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:shadow-2xl appearance-none transition-all duration-300"
                   >
                     <option value="">Budget Range</option>
                     <option value="0-50">Under 50 Lakhs</option>
@@ -125,7 +125,7 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
               </div>
               <button 
                 onClick={handleSearch}
-                className="w-full bg-primary text-white px-6 py-3 rounded hover:opacity-90 transition font-medium"
+                className="w-full bg-primary text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-90 hover:shadow-2xl transition-all duration-300 font-medium"
               >
                 Search
               </button>
