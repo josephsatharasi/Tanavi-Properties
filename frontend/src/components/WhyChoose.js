@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaCheckCircle, FaShieldAlt, FaHandshake, FaUserTie, FaAward } from 'react-icons/fa';
+import { FaShieldAlt, FaHome, FaHandshake, FaSmile } from 'react-icons/fa';
 
 const WhyChoose = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,35 +19,73 @@ const WhyChoose = () => {
     return () => observer.disconnect();
   }, []);
 
-  const features = [
-    { icon: FaShieldAlt, title: 'Verified Properties', color: 'from-blue-500 to-blue-600' },
-    { icon: FaHandshake, title: 'Transparent Deals', color: 'from-green-500 to-green-600' },
-    { icon: FaUserTie, title: 'Direct Owner Listings', color: 'from-purple-500 to-purple-600' },
-    { icon: FaAward, title: 'Expert Consultation', color: 'from-orange-500 to-orange-600' }
+  const stats = [
+    { value: '15+', label: 'Years Experience' },
+    { value: '50+', label: 'Projects Delivered' },
+    { value: '500+', label: 'Happy Families' },
+    { value: '100%', label: 'Customer Satisfaction' }
+  ];
+
+  const steps = [
+    { step: 'STEP 1', icon: FaShieldAlt, title: 'Identify a Trusted Platform', subtitle: 'Start with Confidence' },
+    { step: 'STEP 2', icon: FaHome, title: 'Select the Right Property', subtitle: 'Choose What Truly Fits You' },
+    { step: 'STEP 3', icon: FaHandshake, title: 'Close the Deal Successfully', subtitle: 'Smooth, Transparent & Secure' },
+    { step: 'STEP 4', icon: FaSmile, title: 'A Happy Family, A Confident Decision', subtitle: 'Because Trust Creates Happiness' }
   ];
 
   return (
-    <section id="why-choose" className="py-12 md:py-16 bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <section id="why-choose" className="py-12 md:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`text-center mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">Why Choose Tanavi Properties</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">Your trusted partner for transparent and verified property deals</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div key={index} className={`bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-t-4 border-transparent hover:border-blue-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: `${index * 150}ms` }}>
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg`}>
-                  <Icon className="text-white text-3xl" />
-                </div>
-                <h3 className="text-xl font-bold text-center text-gray-800 mb-2">{feature.title}</h3>
-                <div className="flex justify-center">
-                  <FaCheckCircle className="text-green-500 text-xl" />
-                </div>
+        <div className={`bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-8 md:p-12 mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-8">Why Choose Tanavi Properties?</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</div>
+                <div className="text-white text-sm md:text-base">{stat.label}</div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+
+        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">How Tanavi Properties Helps You Succeed</h2>
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="h-px w-16 bg-amber-400"></div>
+            <p className="text-gray-600 text-lg">A Simple, Trusted Property Journey</p>
+            <div className="h-px w-16 bg-amber-400"></div>
+          </div>
+          
+          <div className="bg-gradient-to-b from-gray-100 to-white rounded-2xl p-8 shadow-inner">
+            <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-3">
+              {steps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <React.Fragment key={index}>
+                    <div className="flex-shrink-0">
+                      <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">{step.step}</div>
+                      <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                        <div className="flex flex-col items-center text-center">
+                          <div className="bg-green-100 p-3 rounded-full mb-2">
+                            <Icon className="text-green-700 text-3xl" />
+                          </div>
+                          <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">{step.title}</h3>
+                          <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                            <p className="text-xs font-medium">{step.subtitle}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div className="hidden md:flex items-center justify-center flex-shrink-0">
+                        <div className="text-gray-400 text-2xl">»</div>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -9,51 +9,191 @@ router.get('/:id', async (req, res) => {
       return res.status(404).send('Property not found');
     }
 
-    const imageUrl = property.images?.[0] || '';
+    const imageUrl = property.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200';
     const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
     const frontendUrl = process.env.FRONTEND_URL || 'https://tanaviproperties.com';
+    const apiUrl = process.env.API_URL || 'https://api.tanaviproperties.com';
     const propertyUrl = `${frontendUrl}/property/${property._id}`;
+    
+    // Format price
+    const formattedPrice = property.price ? `₹${property.price}` : 'Price on request';
+    
+    // Create title - Property Code and Title
+    const title = `${propertyId} ${property.title}`;
+    
+    // Create description - Category, Price, Location
+    const description = `${property.category || 'Property'} - ${formattedPrice} at ${property.location}`;
+    
+    // Additional details for preview
+    const additionalInfo = `Your trusted partner in finding the perfect property!`;
 
     const html = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>${propertyId} ${property.title} - Tanavi Properties</title>
-  <meta name="description" content="${property.title} - ₹${property.price} at ${property.location}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Open Graph / Facebook -->
+  <!-- Primary Meta Tags -->
+  <title>${title}</title>
+  <meta name="title" content="${title}">
+  <meta name="description" content="${description}. ${additionalInfo}">
+  
+  <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="${propertyUrl}">
-  <meta property="og:title" content="${propertyId} ${property.title}">
-  <meta property="og:description" content="${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${description}. ${additionalInfo}">
   <meta property="og:image" content="${imageUrl}">
+  <meta property="og:image:secure_url" content="${imageUrl}">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="${propertyUrl}">
-  <meta property="twitter:title" content="${propertyId} ${property.title}">
-  <meta property="twitter:description" content="${property.title} - ₹${property.price} at ${property.location}">
-  <meta property="twitter:image" content="${imageUrl}">
-  
-  <!-- WhatsApp -->
+  <meta property="og:image:alt" content="${property.title} - ${property.location}">
   <meta property="og:site_name" content="Tanavi Properties">
   <meta property="og:locale" content="en_IN">
   
-  <meta http-equiv="refresh" content="0;url=${propertyUrl}">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${propertyUrl}">
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${description}. ${additionalInfo}">
+  <meta name="twitter:image" content="${imageUrl}">
+  <meta name="twitter:image:alt" content="${property.title}">
+  
+  <!-- Additional Meta Tags -->
+  <link rel="canonical" href="${propertyUrl}">
+  <link rel="icon" type="image/x-icon" href="${frontendUrl}/favicon.ico">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    p {
+      font-size: 16px;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+    .property-info {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+    }
+    a {
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      border: 2px solid white;
+    }
+    a:hover {
+      background: white;
+      color: #667eea;
+    }
+  </style>
+  
+  <script>
+    // Redirect after a short delay to ensure meta tags are read
+    setTimeout(function() {
+      window.location.href = '${propertyUrl}';
+    }, 100);
+  </script>
 </head>
 <body>
-  <p>Redirecting to property details...</p>
-  <a href="${propertyUrl}">Click here if not redirected</a>
+  <div class="container">
+    <div class="spinner"></div>
+    <h2>Loading Property Details</h2>
+    <div class="property-info">
+      <p><strong>${title}</strong></p>
+      <p>${description}</p>
+    </div>
+    <p>Redirecting you to Tanavi Properties...</p>
+    <a href="${propertyUrl}">View Property Now</a>
+  </div>
 </body>
 </html>
     `;
 
+    res.set('Content-Type', 'text/html');
     res.send(html);
   } catch (error) {
-    res.status(500).send('Error loading property');
+    console.error('Error in share route:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Error - Tanavi Properties</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+            margin: 0;
+          }
+          .error {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          }
+        </style>
+      </head>
+      <body>
+        <div class="error">
+          <h1>Property Not Found</h1>
+          <p>Sorry, we couldn't load this property.</p>
+          <a href="${process.env.FRONTEND_URL || 'https://tanaviproperties.com'}">Go to Homepage</a>
+        </div>
+      </body>
+      </html>
+    `);
   }
 });
 

@@ -7,6 +7,8 @@ import TanaviHighlights from '../components/TanaviHighlights';
 import WhyChoose from '../components/WhyChoose';
 import ChoiceProperties from '../components/ChoiceProperties';
 import Testimonials from '../components/Testimonials';
+import FAQ from '../components/FAQ';
+import Essentials from '../components/Essentials';
 import RegisterCTA from '../components/RegisterCTA';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL, { fetchWithTimeout } from '../utils/api';
@@ -116,6 +118,7 @@ const Home = () => {
 
       <PropertyCategories />
       <TanaviHighlights />
+      <ChoiceProperties />
       
       <section id="banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.banner ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,7 +139,6 @@ const Home = () => {
       </section>
 
       <WhyChoose />
-      <ChoiceProperties />
       
       <section id="agri-banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections['agri-banner'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -156,6 +158,8 @@ const Home = () => {
       </section>
       
       <Testimonials />
+      <FAQ />
+      <Essentials />
       <RegisterCTA />
     </div>
   );

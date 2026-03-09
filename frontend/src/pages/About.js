@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaBullseye, FaEye, FaStar, FaHome, FaUser, FaChartLine, FaSmile } from 'react-icons/fa';
+import { FaBullseye, FaEye, FaStar, FaHome, FaUser, FaChartLine, FaSmile, FaShieldAlt, FaHandshake } from 'react-icons/fa';
 import carousel1 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_7e3d7ae3.jpg';
 import carousel2 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_9582503a.jpg';
 
@@ -183,24 +183,112 @@ const About = () => {
           </div>
         </div>
 
-        <div className="bg-primary text-white rounded-lg p-12 text-center">
-          <h2 className="text-4xl font-bold mb-4">Why Choose Tanavi Properties?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-8">
-            <div>
-              <div className="text-5xl font-bold mb-2">15+</div>
-              <div className="text-lg">Years Experience</div>
+        <div className="mb-16">
+          <div className="bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-12 mb-12">
+            <h2 className="text-4xl font-bold text-white text-center mb-8">Why Choose Tanavi Properties?</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="text-5xl font-bold text-white mb-2">15+</div>
+                <div className="text-white text-lg">Years Experience</div>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl font-bold text-white mb-2">50+</div>
+                <div className="text-white text-lg">Projects Delivered</div>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl font-bold text-white mb-2">500+</div>
+                <div className="text-white text-lg">Happy Families</div>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl font-bold text-white mb-2">100%</div>
+                <div className="text-white text-lg">Customer Satisfaction</div>
+              </div>
             </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">50+</div>
-              <div className="text-lg">Projects Delivered</div>
+          </div>
+
+          <div>
+            <h2 className="text-4xl font-bold text-center mb-3">How Tanavi Properties Helps You Succeed</h2>
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div className="h-px w-16 bg-amber-400"></div>
+              <p className="text-gray-600 text-lg">A Simple, Trusted Property Journey</p>
+              <div className="h-px w-16 bg-amber-400"></div>
             </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">500+</div>
-              <div className="text-lg">Happy Families</div>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">100%</div>
-              <div className="text-lg">Customer Satisfaction</div>
+            
+            <div className="bg-gradient-to-b from-gray-100 to-white rounded-2xl p-8 shadow-inner">
+              <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-3">
+                {/* Step 1 */}
+                <div className="flex-shrink-0">
+                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 1</div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="bg-green-100 p-3 rounded-full mb-2">
+                        <FaShieldAlt className="text-green-700 text-3xl" />
+                      </div>
+                      <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Identify a Trusted Platform</h3>
+                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                        <p className="text-xs font-medium">Start with Confidence</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center justify-center flex-shrink-0">
+                  <div className="text-gray-400 text-2xl">»</div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex-shrink-0">
+                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 2</div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="bg-green-100 p-3 rounded-full mb-2">
+                        <FaHome className="text-green-700 text-3xl" />
+                      </div>
+                      <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Select the Right Property</h3>
+                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                        <p className="text-xs font-medium">Choose What Truly Fits You</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center justify-center flex-shrink-0">
+                  <div className="text-gray-400 text-2xl">»</div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex-shrink-0">
+                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 3</div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="bg-green-100 p-3 rounded-full mb-2">
+                        <FaHandshake className="text-green-700 text-3xl" />
+                      </div>
+                      <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Close the Deal Successfully</h3>
+                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                        <p className="text-xs font-medium">Smooth, Transparent & Secure</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center justify-center flex-shrink-0">
+                  <div className="text-gray-400 text-2xl">»</div>
+                </div>
+
+                {/* Step 4 */}
+                <div className="flex-shrink-0">
+                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 4</div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="bg-green-100 p-3 rounded-full mb-2">
+                        <FaSmile className="text-green-700 text-3xl" />
+                      </div>
+                      <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">A Happy Family, A Confident Decision</h3>
+                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                        <p className="text-xs font-medium">Because Trust Creates Happiness</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
