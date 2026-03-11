@@ -14,7 +14,7 @@ const ChoiceProperties = () => {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white">
+    <section id="choice-properties" className="py-12 md:py-16 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Choice Properties</h2>
@@ -27,7 +27,11 @@ const ChoiceProperties = () => {
             return (
               <div 
                 key={index}
-                onClick={() => navigate(`/choice-category/${property.title}`)}
+                onClick={() => {
+                sessionStorage.setItem('returnSection', 'choice-properties');
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+                navigate(`/choice-category/${property.title}`);
+              }}
                 className="group relative bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
                 onMouseEnter={(e) => e.currentTarget.style.borderColor = property.color.includes('green') ? '#22c55e' : property.color.includes('blue') ? '#3b82f6' : property.color.includes('orange') ? '#f97316' : property.color.includes('purple') ? '#a855f7' : property.color.includes('teal') ? '#14b8a6' : '#ef4444'}

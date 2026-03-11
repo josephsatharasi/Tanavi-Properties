@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 import PropertyCard from '../components/PropertyCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL from '../utils/api';
 
 const ChoiceCategoryProperties = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,11 +34,29 @@ const ChoiceCategoryProperties = () => {
     }
   };
 
+  const handleBackClick = () => {
+    const returnSection = sessionStorage.getItem('returnSection');
+    const scrollPos = sessionStorage.getItem('scrollPosition');
+    
+    // Don't remove from sessionStorage - let Home page handle it
+    navigate('/');
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={handleBackClick}
+            className="flex items-center gap-2 text-primary hover:text-secondary transition-colors font-semibold"
+          >
+            <FaArrowLeft />
+            <span>Back</span>
+          </button>
+        </div>
+        
         <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800">{category}</h1>
         
         {properties.length === 0 ? (

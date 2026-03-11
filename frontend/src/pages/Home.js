@@ -36,14 +36,31 @@ const Home = () => {
   }, [loading]);
 
   useEffect(() => {
-    // Restore scroll position when returning to home page
+    // Restore scroll position immediately when returning to home page
     const scrollPos = sessionStorage.getItem('scrollPosition');
-    if (scrollPos) {
-      setTimeout(() => {
+    const returnSection = sessionStorage.getItem('returnSection');
+    
+    if (scrollPos && returnSection) {
+      // Prevent default scroll to top
+      window.history.scrollRestoration = 'manual';
+      
+      // Restore scroll immediately
+      const restoreScroll = () => {
         window.scrollTo(0, parseInt(scrollPos));
         sessionStorage.removeItem('scrollPosition');
-      }, 100);
+        sessionStorage.removeItem('returnSection');
+      };
+      
+      // Try multiple times to ensure it works
+      restoreScroll();
+      requestAnimationFrame(restoreScroll);
+      setTimeout(restoreScroll, 0);
+      setTimeout(restoreScroll, 50);
     }
+    
+    return () => {
+      window.history.scrollRestoration = 'auto';
+    };
   }, []);
 
   useEffect(() => {
@@ -109,7 +126,7 @@ const Home = () => {
               (p.propertyCode && p.propertyCode.toLowerCase().includes(searchQuery.toLowerCase()))
             ).slice(0, 8).map((property, index) => (
               <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
-                <PropertyCard property={property} />
+                <PropertyCard property={property} section="properties" />
               </div>
             ))}
           </div>

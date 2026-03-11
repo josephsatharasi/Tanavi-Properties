@@ -14,9 +14,22 @@ const ChatWidget = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const messagesEndRef = useRef(null);
   const pollIntervalRef = useRef(null);
   const availabilityCheckRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const clientHeight = window.innerHeight;
+      setIsAtBottom(scrollHeight - scrollTop - clientHeight < 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const savedUserId = localStorage.getItem('chatUserId');
@@ -285,7 +298,7 @@ const ChatWidget = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-20 bg-primary text-white p-3 rounded-full shadow-lg hover:opacity-90 transition z-50"
+          className={`fixed right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-[220px]' : 'bottom-[140px]'}`}
           aria-label="Open chat"
         >
           <FaComments className="w-6 h-6" />
@@ -293,7 +306,7 @@ const ChatWidget = () => {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-20 w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
+        <div className={`fixed right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col z-50 ${isAtBottom ? 'bottom-[220px]' : 'bottom-[140px]'}`}>
           <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
             <div>
               <h3 className="font-bold">Chat with Tanavi Properties</h3>

@@ -27,31 +27,18 @@ async function addWatermarkToExistingImages() {
           // Generate watermarked URL using Cloudinary transformations
           const watermarkedUrl = cloudinary.url(publicId, {
             transformation: [
+              { width: 1200, height: 800, crop: 'fill', gravity: 'auto' },
               {
                 overlay: {
                   font_family: 'Arial',
-                  font_size: 16,
+                  font_size: 50,
                   font_weight: 'bold',
                   text: watermarkText
                 },
-                gravity: 'south_east',
-                x: 10,
-                y: 10,
-                opacity: 80,
-                color: 'white'
-              },
-              {
-                overlay: {
-                  font_family: 'Arial',
-                  font_size: 16,
-                  font_weight: 'bold',
-                  text: watermarkText
-                },
-                gravity: 'south_east',
-                x: 11,
-                y: 11,
+                angle: -30,
                 opacity: 60,
-                color: 'black'
+                color: 'white',
+                flags: 'tiled'
               }
             ]
           });

@@ -19,13 +19,6 @@ const WhyChoose = () => {
     return () => observer.disconnect();
   }, []);
 
-  const stats = [
-    { value: '15+', label: 'Years Experience' },
-    { value: '50+', label: 'Projects Delivered' },
-    { value: '500+', label: 'Happy Families' },
-    { value: '100%', label: 'Customer Satisfaction' }
-  ];
-
   const steps = [
     { step: 'STEP 1', icon: FaShieldAlt, title: 'Identify a Trusted Platform', subtitle: 'Start with Confidence' },
     { step: 'STEP 2', icon: FaHome, title: 'Select the Right Property', subtitle: 'Choose What Truly Fits You' },
@@ -36,18 +29,6 @@ const WhyChoose = () => {
   return (
     <section id="why-choose" className="py-12 md:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-8 md:p-12 mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-8">Why Choose Tanavi Properties?</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</div>
-                <div className="text-white text-sm md:text-base">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">How Tanavi Properties Helps You Succeed</h2>
           <div className="flex items-center justify-center gap-2 mb-8">

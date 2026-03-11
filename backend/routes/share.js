@@ -22,10 +22,7 @@ router.get('/:id', async (req, res) => {
     const title = `${propertyId} ${property.title}`;
     
     // Create description - Category, Price, Location
-    const description = `${property.category || 'Property'} - ${formattedPrice} at ${property.location}`;
-    
-    // Additional details for preview
-    const additionalInfo = `Your trusted partner in finding the perfect property!`;
+    const description = `${property.category || 'Property'} - ${formattedPrice} at ${property.location}. Your trusted partner in finding the perfect property!`;
 
     const html = `
 <!DOCTYPE html>
@@ -37,13 +34,13 @@ router.get('/:id', async (req, res) => {
   <!-- Primary Meta Tags -->
   <title>${title}</title>
   <meta name="title" content="${title}">
-  <meta name="description" content="${description}. ${additionalInfo}">
+  <meta name="description" content="${description}">
   
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="${propertyUrl}">
   <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}. ${additionalInfo}">
+  <meta property="og:description" content="${description}">
   <meta property="og:image" content="${imageUrl}">
   <meta property="og:image:secure_url" content="${imageUrl}">
   <meta property="og:image:type" content="image/jpeg">
@@ -57,7 +54,7 @@ router.get('/:id', async (req, res) => {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="${propertyUrl}">
   <meta name="twitter:title" content="${title}">
-  <meta name="twitter:description" content="${description}. ${additionalInfo}">
+  <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${imageUrl}">
   <meta name="twitter:image:alt" content="${property.title}">
   

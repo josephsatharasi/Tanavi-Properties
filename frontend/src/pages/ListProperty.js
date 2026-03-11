@@ -6,7 +6,10 @@ import { compressImage } from '../utils/imageCompressor';
 const ListProperty = () => {
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', 
-    bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: ''
+    bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '',
+    // Office Space specific fields
+    builtUpArea: '', pricePerSqFt: '', expectedRent: '', depositAmount: '', floor: '',
+    plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: ''
   });
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
@@ -17,6 +20,29 @@ const ListProperty = () => {
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+  };
+
+  // Calculate expected rent for Office Space
+  const calculateExpectedRent = (builtUpArea, pricePerSqFt) => {
+    if (builtUpArea && pricePerSqFt) {
+      const rent = parseFloat(builtUpArea) * parseFloat(pricePerSqFt);
+      return rent.toLocaleString('en-IN');
+    }
+    return '';
+  };
+
+  const handleOfficeSpaceChange = (field, value) => {
+    const newFormData = { ...formData, [field]: value };
+    
+    if (field === 'builtUpArea' || field === 'pricePerSqFt') {
+      const rent = calculateExpectedRent(
+        field === 'builtUpArea' ? value : formData.builtUpArea,
+        field === 'pricePerSqFt' ? value : formData.pricePerSqFt
+      );
+      newFormData.expectedRent = rent;
+    }
+    
+    setFormData(newFormData);
   };
 
   const handleImageUpload = async (e) => {
@@ -123,7 +149,12 @@ const ListProperty = () => {
       
       if (res.ok) {
         showToast('Property submitted successfully! We will review and contact you.', 'success');
-        setFormData({ name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '' });
+        setFormData({ 
+          name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', 
+          bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '',
+          builtUpArea: '', pricePerSqFt: '', expectedRent: '', depositAmount: '', floor: '',
+          plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: ''
+        });
       } else {
         const error = await res.json();
         showToast(error.message || 'Failed to submit', 'error');
@@ -164,7 +195,17 @@ const ListProperty = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 mb-2">Your Name *</label>
-                <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full border p-3 rounded" required />
+                <input 
+                  type="text" 
+                  value={formData.name} 
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[0-9]/g, '');
+                    setFormData({...formData, name: value});
+                  }} 
+                  className="w-full border p-3 rounded" 
+                  required 
+                  placeholder="Enter your full name"
+                />
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Email *</label>
@@ -172,7 +213,18 @@ const ListProperty = () => {
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Phone *</label>
-                <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border p-3 rounded" required />
+                <input 
+                  type="tel" 
+                  value={formData.phone} 
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    setFormData({...formData, phone: value});
+                  }} 
+                  className="w-full border p-3 rounded" 
+                  required 
+                  placeholder="Enter 10-digit phone number"
+                  maxLength="10"
+                />
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Property Title *</label>
@@ -192,15 +244,146 @@ const ListProperty = () => {
                   {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
                 </select>
               </div>
-              <div>
-                <label className="block text-gray-700 mb-2">Price (INR) *</label>
-                <input type="text" placeholder="e.g., 50,00,000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full border p-3 rounded" required />
-              </div>
-              <div>
-                <label className="block text-gray-700 mb-2">Area (sq.ft)</label>
-                <input type="text" value={formData.area} onChange={(e) => setFormData({...formData, area: e.target.value})} className="w-full border p-3 rounded" />
-              </div>
-              {formData.category && !['Agricultural Land', 'Open Plot'].includes(formData.category) && (
+              
+              {/* Office Space - Show only for Rent/Lease */}
+              {formData.category === 'Office Space' && (
+                <>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Built-up Area *</label>
+                    <div className="flex items-center border rounded overflow-hidden">
+                      <span className="bg-gray-100 px-3 py-3 text-gray-600 border-r">Sq. Ft</span>
+                      <input 
+                        type="number" 
+                        value={formData.builtUpArea} 
+                        onChange={(e) => handleOfficeSpaceChange('builtUpArea', e.target.value)} 
+                        className="flex-1 p-3 outline-none" 
+                        required 
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Floor</label>
+                    <input 
+                      type="text" 
+                      value={formData.floor} 
+                      onChange={(e) => setFormData({...formData, floor: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="Enter the floor"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Expected Price (Per Sq.Ft) *</label>
+                    <input 
+                      type="number" 
+                      value={formData.pricePerSqFt} 
+                      onChange={(e) => handleOfficeSpaceChange('pricePerSqFt', e.target.value)} 
+                      className="w-full border p-3 rounded" 
+                      required 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Expected Rent (Auto-calculated)</label>
+                    <input 
+                      type="text" 
+                      value={formData.expectedRent} 
+                      className="w-full border p-3 rounded bg-gray-100" 
+                      readOnly 
+                      placeholder="Will be calculated automatically"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Deposit Amount *</label>
+                    <input 
+                      type="text" 
+                      value={formData.depositAmount} 
+                      onChange={(e) => setFormData({...formData, depositAmount: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      required 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Plug & Play</label>
+                    <select 
+                      value={formData.plugAndPlay} 
+                      onChange={(e) => setFormData({...formData, plugAndPlay: e.target.value})} 
+                      className="w-full border p-3 rounded"
+                    >
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Work Stations</label>
+                    <input 
+                      type="number" 
+                      value={formData.workStations} 
+                      onChange={(e) => setFormData({...formData, workStations: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Cabins</label>
+                    <input 
+                      type="number" 
+                      value={formData.cabins} 
+                      onChange={(e) => setFormData({...formData, cabins: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Conference Hall</label>
+                    <input 
+                      type="number" 
+                      value={formData.conferenceHall} 
+                      onChange={(e) => setFormData({...formData, conferenceHall: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Pantry</label>
+                    <input 
+                      type="number" 
+                      value={formData.pantry} 
+                      onChange={(e) => setFormData({...formData, pantry: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-gray-700 mb-2">Washroom Details</label>
+                    <input 
+                      type="text" 
+                      value={formData.washroomDetails} 
+                      onChange={(e) => setFormData({...formData, washroomDetails: e.target.value})} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="Total-0, Inside-0, Outside-0"
+                    />
+                  </div>
+                </>
+              )}
+              
+              {/* Regular fields for non-Office Space */}
+              {formData.category !== 'Office Space' && (
+                <>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Price (INR) *</label>
+                    <input type="text" placeholder="e.g., 50,00,000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full border p-3 rounded" required />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2">Area (sq.ft)</label>
+                    <input type="text" value={formData.area} onChange={(e) => setFormData({...formData, area: e.target.value})} className="w-full border p-3 rounded" />
+                  </div>
+                </>
+              )}
+              
+              {formData.category && !['Agricultural Land', 'Open Plot', 'Office Space'].includes(formData.category) && (
                 <>
                   <div>
                     <label className="block text-gray-700 mb-2">Bedrooms</label>

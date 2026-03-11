@@ -19,7 +19,7 @@ const CallButton = () => {
   return (
     <a
       href="tel:+919063907346"
-      className={`fixed right-6 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-40' : 'bottom-20'}`}
+      className={`fixed right-6 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-[160px]' : 'bottom-[80px]'}`}
       aria-label="Call Owner"
     >
       <FaPhoneAlt className="w-6 h-6" />

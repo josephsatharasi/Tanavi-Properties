@@ -32,8 +32,10 @@ const PropertyCategories = () => {
   ];
 
   const handleCategoryClick = (slug) => {
+    // Store the section ID and scroll position
+    sessionStorage.setItem('returnSection', 'categories');
+    sessionStorage.setItem('scrollPosition', window.scrollY);
     navigate(`/category/${slug}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (

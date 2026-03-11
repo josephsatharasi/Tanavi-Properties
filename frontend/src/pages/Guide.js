@@ -50,10 +50,10 @@ const Guide = () => {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition border-2 ${
                   activeSection === section.id
-                    ? 'bg-primary text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                    ? 'bg-primary text-white shadow-lg border-primary'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border-gray-300 hover:border-primary'
                 }`}
               >
                 <Icon className="text-xl" />

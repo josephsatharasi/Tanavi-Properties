@@ -23,7 +23,7 @@ const WhatsAppButton = () => {
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`fixed right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-24' : 'bottom-6'}`}
+      className={`fixed right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-[100px]' : 'bottom-5'}`}
       aria-label="Chat on WhatsApp"
     >
       <svg

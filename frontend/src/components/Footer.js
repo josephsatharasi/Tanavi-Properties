@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -25,6 +25,14 @@ const Footer = () => {
                 className="text-gray-400 hover:text-blue-400 transition"
               >
                 <FaTwitter size={24} />
+              </a>
+              <a 
+                href="https://www.instagram.com/tanavi_properties?igsh=MWR0OWo3dmJ4d2c5cw==" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-pink-500 transition"
+              >
+                <FaInstagram size={24} />
               </a>
             </div>
           </div>

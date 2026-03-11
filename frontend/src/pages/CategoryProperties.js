@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 import PropertyCard from '../components/PropertyCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL from '../utils/api';
@@ -7,6 +8,7 @@ import API_URL from '../utils/api';
 const CategoryProperties = () => {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -103,11 +105,29 @@ const CategoryProperties = () => {
     });
   }
 
+  const handleBackClick = () => {
+    const returnSection = sessionStorage.getItem('returnSection');
+    const scrollPos = sessionStorage.getItem('scrollPosition');
+    
+    // Don't remove from sessionStorage - let Home page handle it
+    navigate('/');
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={handleBackClick}
+            className="flex items-center gap-2 text-primary hover:text-secondary transition-colors font-semibold"
+          >
+            <FaArrowLeft />
+            <span>Back</span>
+          </button>
+        </div>
+        
         <h1 className="text-4xl font-bold mb-4">{categoryName}</h1>
         {(location || type || priceRange || searchQuery) && (
           <div className="mb-4 flex gap-2 flex-wrap">

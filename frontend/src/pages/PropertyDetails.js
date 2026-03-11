@@ -97,6 +97,14 @@ const PropertyDetails = () => {
     return () => clearInterval(interval);
   }, [property]);
 
+  const handleBackClick = () => {
+    const returnSection = sessionStorage.getItem('returnSection');
+    const scrollPos = sessionStorage.getItem('scrollPosition');
+    
+    // Don't remove from sessionStorage - let Home page handle it
+    navigate('/');
+  };
+
   if (loading) return <LoadingSpinner />;
   if (!property) return <div className="pt-20 text-center">Property not found</div>;
 
@@ -105,19 +113,10 @@ const PropertyDetails = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <button 
-            onClick={() => {
-              navigate(-1);
-              setTimeout(() => {
-                const scrollPos = sessionStorage.getItem('scrollPosition');
-                if (scrollPos) {
-                  window.scrollTo(0, parseInt(scrollPos));
-                  sessionStorage.removeItem('scrollPosition');
-                }
-              }, 100);
-            }} 
+            onClick={handleBackClick} 
             className="text-primary hover:underline flex items-center gap-2"
           >
-            ← Back to Properties
+            ← Back
           </button>
           <button 
             onClick={handleShare}

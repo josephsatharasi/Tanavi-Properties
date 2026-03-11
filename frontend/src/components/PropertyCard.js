@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaRulerCombined } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 
-const PropertyCard = ({ property }) => {
+const PropertyCard = ({ property, section = 'properties' }) => {
   const navigate = useNavigate();
 
   const getAreaUnit = (type) => {
@@ -100,6 +100,7 @@ const PropertyCard = ({ property }) => {
         </div>
         <button 
           onClick={() => {
+            sessionStorage.setItem('returnSection', section);
             sessionStorage.setItem('scrollPosition', window.scrollY);
             navigate(`/property/${property._id || property.id}`);
           }}

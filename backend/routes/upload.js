@@ -63,31 +63,18 @@ router.post('/', protect, adminOnly, upload.single('image'), async (req, res) =>
           resource_type: 'auto',
           timeout: 60000,
           transformation: [
+            { width: 1200, height: 800, crop: 'fill', gravity: 'auto' },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 16,
+                font_size: 50,
                 font_weight: 'bold',
                 text: watermarkText
               },
-              gravity: 'south_east',
-              x: 10,
-              y: 10,
-              opacity: 80,
-              color: 'white'
-            },
-            {
-              overlay: {
-                font_family: 'Arial',
-                font_size: 16,
-                font_weight: 'bold',
-                text: watermarkText
-              },
-              gravity: 'south_east',
-              x: 11,
-              y: 11,
+              angle: -30,
               opacity: 60,
-              color: 'black'
+              color: 'white',
+              flags: 'tiled'
             }
           ]
         },
@@ -132,28 +119,14 @@ router.post('/video', protect, adminOnly, videoUpload.single('video'), async (re
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 20,
+                font_size: 60,
                 font_weight: 'bold',
                 text: watermarkText
               },
-              gravity: 'south_east',
-              x: 15,
-              y: 15,
-              opacity: 80,
-              color: 'white'
-            },
-            {
-              overlay: {
-                font_family: 'Arial',
-                font_size: 20,
-                font_weight: 'bold',
-                text: watermarkText
-              },
-              gravity: 'south_east',
-              x: 16,
-              y: 16,
+              angle: -30,
               opacity: 60,
-              color: 'black'
+              color: 'white',
+              flags: 'tiled'
             }
           ]
         },
@@ -192,31 +165,18 @@ router.post('/public', upload.single('image'), async (req, res) => {
           resource_type: 'auto',
           timeout: 60000,
           transformation: [
+            { width: 1200, height: 800, crop: 'fill', gravity: 'auto' },
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 16,
+                font_size: 50,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
-              gravity: 'south_east',
-              x: 10,
-              y: 10,
-              opacity: 80,
-              color: 'white'
-            },
-            {
-              overlay: {
-                font_family: 'Arial',
-                font_size: 16,
-                font_weight: 'bold',
-                text: 'Tanavi Properties'
-              },
-              gravity: 'south_east',
-              x: 11,
-              y: 11,
+              angle: -30,
               opacity: 60,
-              color: 'black'
+              color: 'white',
+              flags: 'tiled'
             }
           ]
         },
@@ -257,28 +217,14 @@ router.post('/public/video', videoUpload.single('video'), async (req, res) => {
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 20,
+                font_size: 60,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
-              gravity: 'south_east',
-              x: 15,
-              y: 15,
-              opacity: 80,
-              color: 'white'
-            },
-            {
-              overlay: {
-                font_family: 'Arial',
-                font_size: 20,
-                font_weight: 'bold',
-                text: 'Tanavi Properties'
-              },
-              gravity: 'south_east',
-              x: 16,
-              y: 16,
+              angle: -30,
               opacity: 60,
-              color: 'black'
+              color: 'white',
+              flags: 'tiled'
             }
           ]
         },

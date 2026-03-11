@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaArrowRight, FaCheck } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
+import API_URL from '../utils/api';
 
 const HighlightCard = ({ property }) => {
   const navigate = useNavigate();
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
 
-  const handleShare = (e) => {
+  const handleShare = async (e) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/property/${property._id || property.id}`;
-    const text = `🏡 Tanavi Properties\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\nYour trusted partner in finding the perfect property!`;
+    const shareUrl = `${API_URL}/api/share/${property._id}`;
+    const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
+    const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!`;
     
     if (navigator.share) {
-      navigator.share({ title: property.title, text, url })
-        .catch(() => setShowShareMenu(true));
+      try {
+        await navigator.share({
+          title: `${propertyId} ${property.title}`,
+          text: text,
+          url: shareUrl
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          setShowShareMenu(true);
+        }
+      }
     } else {
       setShowShareMenu(true);
     }
@@ -22,29 +34,44 @@ const HighlightCard = ({ property }) => {
 
   const shareToWhatsApp = (e) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/property/${property._id || property.id}`;
-    const text = `🏡 *Tanavi Properties*\n\nCheck out this property: ${property.title} - ₹${property.price} at ${property.location}\n\n${url}\n\nYour trusted partner in finding the perfect property!`;
+    const shareUrl = `${API_URL}/api/share/${property._id}`;
+    const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
+    const text = `${propertyId} ${property.title} - ₹${property.price} at ${property.location}. Your trusted partner in finding the perfect property!\n\n${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     setShowShareMenu(false);
   };
 
   const shareToFacebook = (e) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/property/${property._id || property.id}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    const shareUrl = `${API_URL}/api/share/${property._id}`;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
     setShowShareMenu(false);
   };
 
   const copyLink = (e) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/property/${property._id || property.id}`;
-    navigator.clipboard.writeText(url);
-    alert('Link copied to clipboard!');
+    const shareUrl = `${API_URL}/api/share/${property._id}`;
+    navigator.clipboard.writeText(shareUrl);
+    setShowCopyNotification(true);
     setShowShareMenu(false);
+    setTimeout(() => setShowCopyNotification(false), 3000);
   };
 
   return (
-    <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 h-full">
+    <>
+      {/* Copy Notification */}
+      {showCopyNotification && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 animate-slide-down">
+          <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3">
+            <div className="bg-white rounded-full p-1">
+              <FaCheck className="text-green-500 text-sm" />
+            </div>
+            <span className="font-medium">Link copied to clipboard!</span>
+          </div>
+        </div>
+      )}
+
+      <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 h-full">
       <div className="relative h-64 overflow-hidden">
         <img 
           src={getImageUrl(property.images?.[0] || property.image)} 
@@ -68,8 +95,9 @@ const HighlightCard = ({ property }) => {
         <div className="flex items-center justify-between gap-2">
           <button 
             onClick={() => {
+              sessionStorage.setItem('returnSection', 'tanavi-highlights');
+              sessionStorage.setItem('scrollPosition', window.scrollY);
               navigate(`/property/${property._id || property.id}`);
-              window.scrollTo(0, 0);
             }}
             className="flex items-center gap-2 text-primary font-semibold group-hover:text-secondary transition-colors"
           >
@@ -110,6 +138,7 @@ const HighlightCard = ({ property }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

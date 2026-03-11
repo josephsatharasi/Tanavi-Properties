@@ -93,10 +93,10 @@ const About = () => {
             </h2>
             <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
               <p>
-                Founded by Mr. Balraj Sinthigari, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform that seamlessly and transparently connects people to their dream properties with integrity.
+                Founded by <strong>Mr. Balraj Sinthigari</strong>, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform that seamlessly and transparently connects people to their dream properties with integrity.
               </p>
               <p>
-                We specialize in Agriculture Lands, Open Plots, Independent Houses, Farmhouses, Apartments, and Commercial Spaces, helping buyers and sellers make confident and informed real estate decisions across diverse locations.
+                <strong>We specialize in Agriculture Lands, Open Plots, Independent Houses, Farmhouses, Apartments, and Commercial Spaces, helping buyers and sellers make confident and informed real estate decisions across diverse locations.</strong>
               </p>
               <p>
                 Beyond property listings, we deliver end-to-end real estate solutions — including <strong>farmhouse development, civil engineering, interior design, precast structures, and fencing services.</strong> Every project is managed by experienced professionals dedicated to quality, precision, and customer satisfaction.
@@ -105,7 +105,7 @@ const About = () => {
                 With the support of trusted legal and financial partners and a network of skilled technical experts, Tanavi Properties ensures that every transaction is secure, transparent, and rewarding. Our commitment to eco-friendly development further reflects our responsibility toward sustainable growth.
               </p>
               <p>
-                Driven by trust, transparency, and innovation, Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, turning real-estate aspirations into long-term success. We enable customers and investors to unlock opportunities that shape their future with confidence.
+                <strong>Driven by trust, transparency, and innovation,</strong> Tanavi Properties advances with the strategic vision of Mr. Balraj Sinthigari, Founder & Managing Director, <strong>turning real-estate aspirations into long-term success.</strong> We enable customers and investors to unlock opportunities that shape their future with confidence.
               </p>
             </div>
           </div>
@@ -135,7 +135,7 @@ const About = () => {
             <div className="overflow-hidden rounded-lg shadow-2xl bg-white">
               <div className="relative" style={{ paddingTop: '56.25%' }}>
                 <img 
-                  src={currentSlide === 0 ? carousel1 : carousel2}
+                  src={currentSlide === 0 ? carousel2 : carousel1}
                   alt={`Slide ${currentSlide + 1}`}
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />
@@ -184,28 +184,6 @@ const About = () => {
         </div>
 
         <div className="mb-16">
-          <div className="bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-12 mb-12">
-            <h2 className="text-4xl font-bold text-white text-center mb-8">Why Choose Tanavi Properties?</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-2">15+</div>
-                <div className="text-white text-lg">Years Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-2">50+</div>
-                <div className="text-white text-lg">Projects Delivered</div>
-              </div>
-              <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-2">500+</div>
-                <div className="text-white text-lg">Happy Families</div>
-              </div>
-              <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-2">100%</div>
-                <div className="text-white text-lg">Customer Satisfaction</div>
-              </div>
-            </div>
-          </div>
-
           <div>
             <h2 className="text-4xl font-bold text-center mb-3">How Tanavi Properties Helps You Succeed</h2>
             <div className="flex items-center justify-center gap-2 mb-8">
