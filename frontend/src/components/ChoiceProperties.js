@@ -5,12 +5,12 @@ import { FaLeaf, FaHome, FaMapMarkedAlt, FaBuilding, FaWarehouse, FaStore } from
 const ChoiceProperties = () => {
   const navigate = useNavigate();
   const properties = [
-    { icon: FaLeaf, title: 'Agricultural Land', description: 'Fertile lands for farming and cultivation', color: 'from-green-500 to-green-600' },
-    { icon: FaHome, title: 'Independent House', description: 'Spacious homes with privacy and comfort', color: 'from-blue-500 to-blue-600' },
-    { icon: FaMapMarkedAlt, title: 'Open Plot', description: 'Ready-to-build plots in prime locations', color: 'from-orange-500 to-orange-600' },
-    { icon: FaBuilding, title: 'Apartment', description: 'Modern flats with world-class amenities', color: 'from-purple-500 to-purple-600' },
-    { icon: FaWarehouse, title: 'Farmhouse', description: 'Luxury farmhouses for weekend getaways', color: 'from-teal-500 to-teal-600' },
-    { icon: FaStore, title: 'Office / Commercial Space', description: 'Prime locations for your business', color: 'from-red-500 to-red-600' }
+    { icon: FaLeaf, title: 'Agricultural Land', slug: 'agricultural-land', description: 'Fertile lands for farming and cultivation', color: 'from-green-500 to-green-600' },
+    { icon: FaHome, title: 'Independent House', slug: 'independent-house', description: 'Spacious homes with privacy and comfort', color: 'from-blue-500 to-blue-600' },
+    { icon: FaMapMarkedAlt, title: 'Open Plot', slug: 'open-plot', description: 'Ready-to-build plots in prime locations', color: 'from-orange-500 to-orange-600' },
+    { icon: FaBuilding, title: 'Apartment', slug: 'apartment', description: 'Modern flats with world-class amenities', color: 'from-purple-500 to-purple-600' },
+    { icon: FaWarehouse, title: 'Farmhouse', slug: 'farmhouse', description: 'Luxury farmhouses for weekend getaways', color: 'from-teal-500 to-teal-600' },
+    { icon: FaStore, title: 'Office / Commercial Space', slug: 'office-commercial-space', description: 'Prime locations for your business', color: 'from-red-500 to-red-600' }
   ];
 
   return (
@@ -30,7 +30,7 @@ const ChoiceProperties = () => {
                 onClick={() => {
                 sessionStorage.setItem('returnSection', 'choice-properties');
                 sessionStorage.setItem('scrollPosition', window.scrollY);
-                navigate(`/choice-category/${property.title}`);
+                navigate(`/choice-category/${property.slug}`);
               }}
                 className="group relative bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}

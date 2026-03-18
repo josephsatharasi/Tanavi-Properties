@@ -103,7 +103,17 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
             sessionStorage.setItem('returnSection', section);
             sessionStorage.setItem('scrollPosition', window.scrollY);
             if (fromCategory) {
-              sessionStorage.setItem('returnCategory', fromCategory);
+              // Convert category name to slug for URL
+              const categorySlugMap = {
+                'Agricultural Land': 'agricultural-land',
+                'Independent House': 'independent-house',
+                'Open Plot': 'open-plot',
+                'Apartment': 'apartment',
+                'Farmhouse': 'farmhouse',
+                'Office / Commercial Space': 'office-commercial-space'
+              };
+              const categorySlug = categorySlugMap[fromCategory] || fromCategory;
+              sessionStorage.setItem('returnCategory', categorySlug);
             } else {
               sessionStorage.removeItem('returnCategory');
             }

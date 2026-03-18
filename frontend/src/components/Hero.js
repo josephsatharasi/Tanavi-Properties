@@ -27,6 +27,10 @@ const Hero = ({ searchQuery, setSearchQuery }) => {
       setTimeout(() => setShowAlert(false), 3000);
       return;
     }
+    // Store scroll position for return navigation
+    sessionStorage.setItem('returnSection', 'home');
+    sessionStorage.setItem('scrollPosition', window.scrollY);
+    
     const params = new URLSearchParams();
     if (location) params.append('location', location);
     if (propertyType) params.append('type', propertyType);

@@ -9,7 +9,9 @@ const ListProperty = () => {
     bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '',
     // Office Space specific fields
     builtUpArea: '', pricePerSqFt: '', expectedRent: '', depositAmount: '', floor: '',
-    plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: ''
+    plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: '',
+    // Optional location URL
+    locationUrl: ''
   });
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
@@ -22,6 +24,31 @@ const ListProperty = () => {
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
   };
 
+  // Format number with Indian comma system
+  const formatIndianNumber = (num) => {
+    if (!num) return '';
+    const numStr = num.toString().replace(/,/g, '');
+    const lastThree = numStr.substring(numStr.length - 3);
+    const otherNumbers = numStr.substring(0, numStr.length - 3);
+    if (otherNumbers !== '') {
+      return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + lastThree;
+    }
+    return lastThree;
+  };
+
+  // Handle price input with Indian comma formatting
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/[^0-9]/g, '');
+    setFormData({ ...formData, [name]: numericValue });
+  };
+
+  // Handle numeric input (only numbers allowed)
+  const handleNumericChange = (field, value) => {
+    const numericValue = value.replace(/[^0-9]/g, '');
+    setFormData({ ...formData, [field]: numericValue });
+  };
+
   // Calculate expected rent for Office Space
   const calculateExpectedRent = (builtUpArea, pricePerSqFt) => {
     if (builtUpArea && pricePerSqFt) {
@@ -32,12 +59,14 @@ const ListProperty = () => {
   };
 
   const handleOfficeSpaceChange = (field, value) => {
-    const newFormData = { ...formData, [field]: value };
+    // Only allow numbers
+    const numericValue = value.replace(/[^0-9]/g, '');
+    const newFormData = { ...formData, [field]: numericValue };
     
     if (field === 'builtUpArea' || field === 'pricePerSqFt') {
       const rent = calculateExpectedRent(
-        field === 'builtUpArea' ? value : formData.builtUpArea,
-        field === 'pricePerSqFt' ? value : formData.pricePerSqFt
+        field === 'builtUpArea' ? numericValue : formData.builtUpArea,
+        field === 'pricePerSqFt' ? numericValue : formData.pricePerSqFt
       );
       newFormData.expectedRent = rent;
     }
@@ -153,7 +182,8 @@ const ListProperty = () => {
           name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', 
           bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '',
           builtUpArea: '', pricePerSqFt: '', expectedRent: '', depositAmount: '', floor: '',
-          plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: ''
+          plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: '',
+          locationUrl: ''
         });
       } else {
         const error = await res.json();
@@ -343,9 +373,9 @@ const ListProperty = () => {
                   <div>
                     <label className="block text-gray-700 mb-2">Work Stations</label>
                     <input 
-                      type="number" 
+                      type="text" 
                       value={formData.workStations} 
-                      onChange={(e) => setFormData({...formData, workStations: e.target.value})} 
+                      onChange={(e) => handleNumericChange('workStations', e.target.value)} 
                       className="w-full border p-3 rounded" 
                       placeholder="0"
                     />
@@ -353,9 +383,9 @@ const ListProperty = () => {
                   <div>
                     <label className="block text-gray-700 mb-2">Cabins</label>
                     <input 
-                      type="number" 
+                      type="text" 
                       value={formData.cabins} 
-                      onChange={(e) => setFormData({...formData, cabins: e.target.value})} 
+                      onChange={(e) => handleNumericChange('cabins', e.target.value)} 
                       className="w-full border p-3 rounded" 
                       placeholder="0"
                     />
@@ -363,9 +393,9 @@ const ListProperty = () => {
                   <div>
                     <label className="block text-gray-700 mb-2">Conference Hall</label>
                     <input 
-                      type="number" 
+                      type="text" 
                       value={formData.conferenceHall} 
-                      onChange={(e) => setFormData({...formData, conferenceHall: e.target.value})} 
+                      onChange={(e) => handleNumericChange('conferenceHall', e.target.value)} 
                       className="w-full border p-3 rounded" 
                       placeholder="0"
                     />
@@ -373,9 +403,9 @@ const ListProperty = () => {
                   <div>
                     <label className="block text-gray-700 mb-2">Pantry</label>
                     <input 
-                      type="number" 
+                      type="text" 
                       value={formData.pantry} 
-                      onChange={(e) => setFormData({...formData, pantry: e.target.value})} 
+                      onChange={(e) => handleNumericChange('pantry', e.target.value)} 
                       className="w-full border p-3 rounded" 
                       placeholder="0"
                     />
@@ -398,7 +428,15 @@ const ListProperty = () => {
                 <>
                   <div>
                     <label className="block text-gray-700 mb-2">Price (INR) *</label>
-                    <input type="text" placeholder="e.g., 50,00,000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full border p-3 rounded" required />
+                    <input 
+                      type="text" 
+                      name="price"
+                      placeholder="₹ 0,00,000" 
+                      value={formData.price ? formatIndianNumber(formData.price) : ''} 
+                      onChange={handlePriceChange} 
+                      className="w-full border p-3 rounded" 
+                      required 
+                    />
                   </div>
                   <div>
                     <label className="block text-gray-700 mb-2">Area (sq.ft)</label>
@@ -411,11 +449,23 @@ const ListProperty = () => {
                 <>
                   <div>
                     <label className="block text-gray-700 mb-2">Bedrooms</label>
-                    <input type="number" value={formData.bedrooms} onChange={(e) => setFormData({...formData, bedrooms: e.target.value})} className="w-full border p-3 rounded" />
+                    <input 
+                      type="text" 
+                      value={formData.bedrooms} 
+                      onChange={(e) => handleNumericChange('bedrooms', e.target.value)} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
                   </div>
                   <div>
                     <label className="block text-gray-700 mb-2">Bathrooms</label>
-                    <input type="number" value={formData.bathrooms} onChange={(e) => setFormData({...formData, bathrooms: e.target.value})} className="w-full border p-3 rounded" />
+                    <input 
+                      type="text" 
+                      value={formData.bathrooms} 
+                      onChange={(e) => handleNumericChange('bathrooms', e.target.value)} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0"
+                    />
                   </div>
                 </>
               )}
@@ -431,7 +481,14 @@ const ListProperty = () => {
                   </div>
                   <div>
                     <label className="block text-gray-700 mb-2">Number of Car Parkings</label>
-                    <input type="number" min="0" value={formData.parkingCount} onChange={(e) => setFormData({...formData, parkingCount: e.target.value})} className="w-full border p-3 rounded" placeholder="0" />
+                    <input 
+                      type="text" 
+                      min="0" 
+                      value={formData.parkingCount} 
+                      onChange={(e) => handleNumericChange('parkingCount', e.target.value)} 
+                      className="w-full border p-3 rounded" 
+                      placeholder="0" 
+                    />
                   </div>
                 </>
               )}
@@ -469,6 +526,18 @@ const ListProperty = () => {
                   <button type="button" onClick={() => setFormData({...formData, video: ''})} className="absolute top-2 right-2 bg-red-600 text-white rounded px-3 py-1 text-sm">Remove</button>
                 </div>
               )}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 mb-2">Property Location URL (Optional)</label>
+              <input 
+                type="url" 
+                value={formData.locationUrl} 
+                onChange={(e) => setFormData({...formData, locationUrl: e.target.value})} 
+                className="w-full border p-3 rounded" 
+                placeholder="https://maps.google.com/..." 
+              />
+              <p className="text-sm text-gray-500 mt-1">Add Google Maps link or any location URL for this property</p>
             </div>
 
             <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
