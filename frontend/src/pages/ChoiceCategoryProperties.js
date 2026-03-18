@@ -38,7 +38,7 @@ const ChoiceCategoryProperties = () => {
     const returnSection = sessionStorage.getItem('returnSection');
     const scrollPos = sessionStorage.getItem('scrollPosition');
     
-    // Don't remove from sessionStorage - let Home page handle it
+    // Navigate to home, keeping scroll position in sessionStorage for Home to restore
     navigate('/');
   };
 
@@ -66,7 +66,12 @@ const ChoiceCategoryProperties = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <PropertyCard key={property._id} property={property} />
+              <PropertyCard 
+                key={property._id} 
+                property={property} 
+                section="choice"
+                fromCategory={category}
+              />
             ))}
           </div>
         )}

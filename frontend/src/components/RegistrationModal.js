@@ -1053,12 +1053,23 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Only allow alphabets and spaces
+                const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+                setFormData({ ...formData, name: value });
+              }}
+              onKeyPress={(e) => {
+                // Block any non-alphabet keys (except space)
+                const char = String.fromCharCode(e.which);
+                if (!/[a-zA-Z\s]/.test(char)) {
+                  e.preventDefault();
+                }
+              }}
               required
               pattern="[A-Za-z\s]+"
               title="Name should only contain letters"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Enter your full name"
+              placeholder="Enter your full name (alphabets only)"
             />
           </div>
 
@@ -1083,14 +1094,29 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               type="tel"
               name="phone"
               value={formData.phone}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Only allow numbers and limit to 10 digits
+                const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                setFormData({ ...formData, phone: value });
+              }}
+              onKeyPress={(e) => {
+                // Block any non-numeric keys
+                const char = String.fromCharCode(e.which);
+                if (!/[0-9]/.test(char)) {
+                  e.preventDefault();
+                }
+              }}
               required
               pattern="[0-9]{10}"
+              minLength="10"
               maxLength="10"
               title="Phone number must be exactly 10 digits"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
               placeholder="Enter 10-digit phone number"
             />
+            {formData.phone && formData.phone.length < 10 && (
+              <p className="text-red-500 text-sm mt-1">Phone number must be exactly 10 digits</p>
+            )}
           </div>
 
           <div>

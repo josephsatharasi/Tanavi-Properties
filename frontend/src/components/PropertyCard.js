@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaRulerCombined } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 
-const PropertyCard = ({ property, section = 'properties' }) => {
+const PropertyCard = ({ property, section = 'properties', fromCategory = null }) => {
   const navigate = useNavigate();
 
   const getAreaUnit = (type) => {
@@ -102,6 +102,11 @@ const PropertyCard = ({ property, section = 'properties' }) => {
           onClick={() => {
             sessionStorage.setItem('returnSection', section);
             sessionStorage.setItem('scrollPosition', window.scrollY);
+            if (fromCategory) {
+              sessionStorage.setItem('returnCategory', fromCategory);
+            } else {
+              sessionStorage.removeItem('returnCategory');
+            }
             navigate(`/property/${property._id || property.id}`);
           }}
           className="w-full bg-primary text-white py-2 rounded hover:opacity-90 transition"

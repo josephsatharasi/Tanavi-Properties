@@ -44,24 +44,35 @@ const Home = () => {
       // Prevent default scroll to top
       window.history.scrollRestoration = 'manual';
       
-      // Restore scroll immediately
+      // Restore scroll after content is loaded
       const restoreScroll = () => {
-        window.scrollTo(0, parseInt(scrollPos));
-        sessionStorage.removeItem('scrollPosition');
-        sessionStorage.removeItem('returnSection');
+        const targetY = parseInt(scrollPos);
+        window.scrollTo(0, targetY);
       };
       
-      // Try multiple times to ensure it works
-      restoreScroll();
-      requestAnimationFrame(restoreScroll);
-      setTimeout(restoreScroll, 0);
-      setTimeout(restoreScroll, 50);
+      // Wait for content to load, then restore scroll
+      if (loading) {
+        // If still loading, wait for load to complete
+        const checkLoaded = setInterval(() => {
+          if (!loading) {
+            clearInterval(checkLoaded);
+            setTimeout(restoreScroll, 100);
+            sessionStorage.removeItem('scrollPosition');
+            sessionStorage.removeItem('returnSection');
+          }
+        }, 50);
+      } else {
+        // Content already loaded, restore immediately
+        setTimeout(restoreScroll, 100);
+        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem('returnSection');
+      }
     }
     
     return () => {
       window.history.scrollRestoration = 'auto';
     };
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     const fetchProperties = () => {

@@ -99,10 +99,27 @@ const PropertyDetails = () => {
 
   const handleBackClick = () => {
     const returnSection = sessionStorage.getItem('returnSection');
+    const returnCategory = sessionStorage.getItem('returnCategory');
     const scrollPos = sessionStorage.getItem('scrollPosition');
     
-    // Don't remove from sessionStorage - let Home page handle it
-    navigate('/');
+    // If coming from choice category, navigate back to that category page
+    if (returnSection === 'choice' && returnCategory) {
+      sessionStorage.removeItem('returnCategory');
+      sessionStorage.removeItem('returnSection');
+      sessionStorage.removeItem('scrollPosition');
+      navigate(`/choice-category/${returnCategory}`);
+    } 
+    // If coming from regular category, navigate back to that category page
+    else if (returnSection === 'category' && returnCategory) {
+      sessionStorage.removeItem('returnCategory');
+      sessionStorage.removeItem('returnSection');
+      sessionStorage.removeItem('scrollPosition');
+      navigate(`/category/${returnCategory}`);
+    } 
+    // Otherwise navigate to home, keeping scroll position for restoration
+    else {
+      navigate('/');
+    }
   };
 
   if (loading) return <LoadingSpinner />;

@@ -107,10 +107,17 @@ const CategoryProperties = () => {
 
   const handleBackClick = () => {
     const returnSection = sessionStorage.getItem('returnSection');
+    const returnCategory = sessionStorage.getItem('returnCategory');
     const scrollPos = sessionStorage.getItem('scrollPosition');
     
-    // Don't remove from sessionStorage - let Home page handle it
-    navigate('/');
+    // If coming from a category page, navigate back to that category
+    if (returnSection === 'category' && returnCategory) {
+      sessionStorage.removeItem('returnCategory');
+      navigate(`/category/${returnCategory}`);
+    } else {
+      // Navigate to home, keeping scroll position in sessionStorage for Home to restore
+      navigate('/');
+    }
   };
 
   if (loading) return <LoadingSpinner />;
@@ -142,7 +149,12 @@ const CategoryProperties = () => {
         {filteredProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredProperties.map((property) => (
-              <PropertyCard key={property._id || property.id} property={property} />
+              <PropertyCard 
+                key={property._id || property.id} 
+                property={property}
+                section="category"
+                fromCategory={category}
+              />
             ))}
           </div>
         ) : (

@@ -67,14 +67,14 @@ router.post('/', protect, adminOnly, upload.single('image'), async (req, res) =>
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 80,
                 font_weight: 'bold',
                 text: watermarkText
               },
+              gravity: 'center',
               angle: -30,
-              opacity: 60,
-              color: 'white',
-              flags: 'tiled'
+              opacity: 50,
+              color: 'white'
             }
           ]
         },
@@ -119,14 +119,14 @@ router.post('/video', protect, adminOnly, videoUpload.single('video'), async (re
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 60,
+                font_size: 100,
                 font_weight: 'bold',
                 text: watermarkText
               },
+              gravity: 'center',
               angle: -30,
-              opacity: 60,
-              color: 'white',
-              flags: 'tiled'
+              opacity: 50,
+              color: 'white'
             }
           ]
         },
@@ -169,14 +169,14 @@ router.post('/public', upload.single('image'), async (req, res) => {
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 50,
+                font_size: 80,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
+              gravity: 'center',
               angle: -30,
-              opacity: 60,
-              color: 'white',
-              flags: 'tiled'
+              opacity: 50,
+              color: 'white'
             }
           ]
         },
@@ -217,14 +217,14 @@ router.post('/public/video', videoUpload.single('video'), async (req, res) => {
             {
               overlay: {
                 font_family: 'Arial',
-                font_size: 60,
+                font_size: 100,
                 font_weight: 'bold',
                 text: 'Tanavi Properties'
               },
+              gravity: 'center',
               angle: -30,
-              opacity: 60,
-              color: 'white',
-              flags: 'tiled'
+              opacity: 50,
+              color: 'white'
             }
           ]
         },

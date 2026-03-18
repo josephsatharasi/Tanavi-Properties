@@ -199,12 +199,22 @@ const ListProperty = () => {
                   type="text" 
                   value={formData.name} 
                   onChange={(e) => {
-                    const value = e.target.value.replace(/[0-9]/g, '');
+                    // Only allow alphabets and spaces
+                    const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
                     setFormData({...formData, name: value});
-                  }} 
+                  }}
+                  onKeyPress={(e) => {
+                    // Block any non-alphabet keys (except space)
+                    const char = String.fromCharCode(e.which);
+                    if (!/[a-zA-Z\s]/.test(char)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="w-full border p-3 rounded" 
                   required 
-                  placeholder="Enter your full name"
+                  placeholder="Enter your full name (alphabets only)"
+                  pattern="[a-zA-Z\s]+"
+                  title="Only alphabets and spaces are allowed"
                 />
               </div>
               <div>
@@ -217,14 +227,28 @@ const ListProperty = () => {
                   type="tel" 
                   value={formData.phone} 
                   onChange={(e) => {
+                    // Only allow numbers and limit to 10 digits
                     const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                     setFormData({...formData, phone: value});
-                  }} 
+                  }}
+                  onKeyPress={(e) => {
+                    // Block any non-numeric keys
+                    const char = String.fromCharCode(e.which);
+                    if (!/[0-9]/.test(char)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="w-full border p-3 rounded" 
                   required 
                   placeholder="Enter 10-digit phone number"
                   maxLength="10"
+                  minLength="10"
+                  pattern="[0-9]{10}"
+                  title="Please enter exactly 10 digits"
                 />
+                {formData.phone && formData.phone.length < 10 && (
+                  <p className="text-red-500 text-sm mt-1">Phone number must be exactly 10 digits</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Property Title *</label>

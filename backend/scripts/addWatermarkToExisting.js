@@ -31,14 +31,14 @@ async function addWatermarkToExistingImages() {
               {
                 overlay: {
                   font_family: 'Arial',
-                  font_size: 50,
+                  font_size: 80,
                   font_weight: 'bold',
                   text: watermarkText
                 },
+                gravity: 'center',
                 angle: -30,
-                opacity: 60,
-                color: 'white',
-                flags: 'tiled'
+                opacity: 50,
+                color: 'white'
               }
             ]
           });
