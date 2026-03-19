@@ -70,7 +70,7 @@ const About = () => {
 
   return (
     <div className="pt-16 min-h-screen bg-gray-50">
-      <div className="relative h-96 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+      <div className="relative h-[346px] bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
         <div className="text-center text-white">
           <h1 className="text-6xl font-bold mb-4 animate-fade-in">About Tanavi Properties</h1>
           <p className="text-xl">Building Dreams, Creating Landmarks</p>
@@ -130,25 +130,130 @@ const About = () => {
           </div>
         </div>
 
+        {/* TANAVI DEALS Section */}
         <div className="mb-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="overflow-hidden rounded-lg shadow-2xl bg-white">
-              <div className="relative" style={{ paddingTop: '56.25%' }}>
-                <img 
-                  src={currentSlide === 0 ? carousel2 : carousel1}
-                  alt={`Slide ${currentSlide + 1}`}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
-                />
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI DEALS</h2>
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-1 w-20 bg-gradient-to-r from-transparent to-primary"></div>
+              <p className="text-lg text-gray-600 font-medium">Diverse Properties, Endless Possibilities</p>
+              <div className="h-1 w-20 bg-gradient-to-l from-transparent to-primary"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800" 
+                alt="Agricultural Land" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Agricultural Land</h3>
               </div>
             </div>
-            <div className="flex justify-center gap-2 mt-6">
-              {[0, 1].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-all ${currentSlide === index ? 'bg-primary w-8' : 'bg-gray-300'}`}
-                />
-              ))}
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" 
+                alt="Open Plots" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Open Plots</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800" 
+                alt="Independent Houses" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Independent Houses</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" 
+                alt="Farmhouses" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Farmhouses</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800" 
+                alt="Apartments" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Apartments</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800" 
+                alt="Commercial Spaces" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-xl font-bold text-gray-800">Commercial Spaces</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TANAVI SERVICES Section */}
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI SERVICES</h2>
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-1 w-20 bg-gradient-to-r from-transparent to-secondary"></div>
+              <p className="text-lg text-gray-600 font-medium">Complete Real Estate Solutions Under One Roof</p>
+              <div className="h-1 w-20 bg-gradient-to-l from-transparent to-secondary"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800" 
+                alt="Interior Design" 
+                className="w-full h-56 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-lg font-bold text-gray-800">Interior Design</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800" 
+                alt="Farmhouse Development" 
+                className="w-full h-56 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-lg font-bold text-gray-800">Farmhouse Development</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800" 
+                alt="Civil Engineering" 
+                className="w-full h-56 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-lg font-bold text-gray-800">Civil Engineering</h3>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+              <img 
+                src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800" 
+                alt="Precast & Fencing" 
+                className="w-full h-56 object-cover"
+              />
+              <div className="bg-white p-4 text-center">
+                <h3 className="text-lg font-bold text-gray-800">Precast & Fencing</h3>
+              </div>
             </div>
           </div>
         </div>

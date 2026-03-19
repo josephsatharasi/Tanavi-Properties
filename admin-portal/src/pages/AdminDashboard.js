@@ -14,17 +14,21 @@ const AdminDashboard = () => {
   const [buySell, setBuySell] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [propertyLocations, setPropertyLocations] = useState([]);
+  const [posters, setPosters] = useState([]);
   const [galleryEnabled, setGalleryEnabled] = useState(true);
+  const [mapEnabled, setMapEnabled] = useState(true);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
   const [showGalleryForm, setShowGalleryForm] = useState(false);
   const [showBuySellForm, setShowBuySellForm] = useState(false);
   const [showTestimonialForm, setShowTestimonialForm] = useState(false);
   const [showLocationForm, setShowLocationForm] = useState(false);
+  const [showPosterForm, setShowPosterForm] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [editingGallery, setEditingGallery] = useState(null);
   const [editingBuySell, setEditingBuySell] = useState(null);
   const [editingTestimonial, setEditingTestimonial] = useState(null);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [editingPoster, setEditingPoster] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -37,6 +41,7 @@ const AdminDashboard = () => {
   const [buySellForm, setBuySellForm] = useState({ title: '', location: '', price: '', area: '', type: 'sale', date: '', image: '' });
   const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', text: '', rating: 5, image: '' });
   const [locationForm, setLocationForm] = useState({ coordinates: '', propertyId: '', description: '' });
+  const [posterForm, setPosterForm] = useState({ title: '', image: '', startDate: '', endDate: '', isActive: true });
   const [uploading, setUploading] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
@@ -49,7 +54,7 @@ const AdminDashboard = () => {
       navigate('/');
       return;
     }
-    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings(), fetchLocations()]).then(() => setLoading(false));
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings(), fetchMapSettings(), fetchLocations(), fetchPosters()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -113,6 +118,24 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchMapSettings = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/settings/map.enabled`);
+      if (!res.ok) {
+        console.warn('Settings API not available, defaulting to enabled');
+        setMapEnabled(true);
+        return null;
+      }
+      const data = await res.json();
+      setMapEnabled(data.value !== false);
+      return data;
+    } catch (error) {
+      console.error('Error fetching map settings:', error);
+      setMapEnabled(true);
+      return null;
+    }
+  };
+
   const handleToggleGallerySection = async () => {
     const token = localStorage.getItem('token');
     try {
@@ -133,6 +156,31 @@ const AdminDashboard = () => {
       }
       setGalleryEnabled(!galleryEnabled);
       showToast(`Gallery section ${!galleryEnabled ? 'enabled' : 'disabled'}!`, 'success');
+    } catch (error) {
+      showToast('Settings API not available. Please deploy the updated backend code.', 'error');
+    }
+  };
+
+  const handleToggleMapSection = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/settings/map.enabled`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          value: !mapEnabled,
+          description: 'Enable or disable the map section in the footer'
+        })
+      });
+      if (!res.ok) {
+        showToast('Settings API not available. Please deploy the updated backend code.', 'error');
+        return;
+      }
+      setMapEnabled(!mapEnabled);
+      showToast(`Map section ${!mapEnabled ? 'enabled' : 'disabled'}!`, 'success');
     } catch (error) {
       showToast('Settings API not available. Please deploy the updated backend code.', 'error');
     }
@@ -177,6 +225,22 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error fetching locations:', error);
       setPropertyLocations([]);
+      return [];
+    }
+  };
+
+  const fetchPosters = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/posters/admin/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setPosters(Array.isArray(data) ? data : []);
+      return data;
+    } catch (error) {
+      console.error('Error fetching posters:', error);
+      setPosters([]);
       return [];
     }
   };
@@ -619,6 +683,84 @@ const AdminDashboard = () => {
     }
   };
 
+  // Poster handlers
+  const handlePosterSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const url = editingPoster ? `${API_URL}/api/posters/${editingPoster._id}` : `${API_URL}/api/posters`;
+    try {
+      const res = await fetch(url, {
+        method: editingPoster ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(posterForm)
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        showToast(error.message || 'Failed to save poster', 'error');
+        return;
+      }
+      const updatedPoster = await res.json();
+      if (editingPoster) {
+        setPosters(posters.map(p => p._id === updatedPoster._id ? updatedPoster : p));
+      } else {
+        setPosters([updatedPoster, ...posters]);
+      }
+      setShowPosterForm(false);
+      setEditingPoster(null);
+      setPosterForm({ title: '', image: '', startDate: '', endDate: '', isActive: true });
+      showToast(editingPoster ? 'Poster updated!' : 'Poster added!', 'success');
+    } catch (error) {
+      showToast('Failed to save poster', 'error');
+    }
+  };
+
+  const handleDeletePoster = async (id) => {
+    if (!window.confirm('Delete this poster?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/posters/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        showToast('Failed to delete poster', 'error');
+        return;
+      }
+      setPosters(posters.filter(p => p._id !== id));
+      showToast('Poster deleted!', 'success');
+    } catch (error) {
+      showToast('Failed to delete poster', 'error');
+    }
+  };
+
+  const handleTogglePoster = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_URL}/api/posters/${id}/toggle`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        showToast('Failed to toggle poster', 'error');
+        return;
+      }
+      const updatedPoster = await res.json();
+      setPosters(posters.map(p => p._id === updatedPoster._id ? updatedPoster : p));
+      showToast(`Poster ${updatedPoster.isActive ? 'activated' : 'deactivated'}!`, 'success');
+    } catch (error) {
+      showToast('Failed to toggle poster', 'error');
+    }
+  };
+
+  const isPosterExpired = (endDate) => {
+    return new Date(endDate) < new Date();
+  };
+
+  const isPosterActive = (poster) => {
+    const now = new Date();
+    return poster.isActive && new Date(poster.startDate) <= now && new Date(poster.endDate) >= now;
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -674,6 +816,9 @@ const AdminDashboard = () => {
           </button>
           <button onClick={() => setActiveTab('locations')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             Locations
+          </button>
+          <button onClick={() => setActiveTab('posters')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'posters' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
+            Posters
           </button>
           <button onClick={() => setActiveTab('chat')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'chat' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
             <FaComments /> Live Chat
@@ -866,26 +1011,53 @@ const AdminDashboard = () => {
 
         {activeTab === 'gallery' && (
           <div>
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-yellow-800">Gallery Section Control</h3>
-                  <p className="text-sm text-yellow-700 mt-1">
-                    {galleryEnabled 
-                      ? 'Gallery section is currently visible in the public portal' 
-                      : 'Gallery section is currently hidden from the public portal'}
-                  </p>
+            <div className="space-y-4 mb-4">
+              {/* Gallery Section Control */}
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-yellow-800">Gallery Section Control</h3>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      {galleryEnabled 
+                        ? 'Gallery section is currently visible in the public portal' 
+                        : 'Gallery section is currently hidden from the public portal'}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={handleToggleGallerySection}
+                    className={`px-6 py-3 rounded-lg font-semibold transition ${
+                      galleryEnabled 
+                        ? 'bg-red-600 hover:bg-red-700 text-white' 
+                        : 'bg-green-600 hover:bg-green-700 text-white'
+                    }`}
+                  >
+                    {galleryEnabled ? 'Disable Gallery' : 'Enable Gallery'}
+                  </button>
                 </div>
-                <button 
-                  onClick={handleToggleGallerySection}
-                  className={`px-6 py-3 rounded-lg font-semibold transition ${
-                    galleryEnabled 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'bg-green-600 hover:bg-green-700 text-white'
-                  }`}
-                >
-                  {galleryEnabled ? 'Disable Gallery' : 'Enable Gallery'}
-                </button>
+              </div>
+
+              {/* Map Section Control */}
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-800">Footer Map Control</h3>
+                    <p className="text-sm text-blue-700 mt-1">
+                      {mapEnabled 
+                        ? 'Map section is currently visible in the footer' 
+                        : 'Map section is currently hidden from the footer'}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={handleToggleMapSection}
+                    className={`px-6 py-3 rounded-lg font-semibold transition ${
+                      mapEnabled 
+                        ? 'bg-red-600 hover:bg-red-700 text-white' 
+                        : 'bg-green-600 hover:bg-green-700 text-white'
+                    }`}
+                  >
+                    {mapEnabled ? 'Disable Map' : 'Enable Map'}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1265,6 +1437,156 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'posters' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Posters</h2>
+              <button 
+                onClick={() => { 
+                  setShowPosterForm(true); 
+                  setEditingPoster(null); 
+                  const today = new Date().toISOString().split('T')[0];
+                  const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                  setPosterForm({ title: '', image: '', startDate: today, endDate: nextWeek, isActive: true }); 
+                }} 
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Add Poster
+              </button>
+            </div>
+
+            {showPosterForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl my-8">
+                  <div className="border-b px-6 py-4 flex justify-between items-center">
+                    <h3 className="text-xl font-bold">{editingPoster ? 'Edit' : 'Add'} Poster</h3>
+                    <button onClick={() => { setShowPosterForm(false); setEditingPoster(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
+                  </div>
+                  <form onSubmit={handlePosterSubmit} className="p-6 space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Title *</label>
+                      <input type="text" value={posterForm.title} onChange={(e) => setPosterForm({...posterForm, title: e.target.value})} required className="w-full px-4 py-2 border rounded" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Poster Image *</label>
+                      <input type="file" accept="image/*" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploading(true);
+                        try {
+                          const compressed = await compressImage(file);
+                          const formData = new FormData();
+                          formData.append('image', compressed);
+                          const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', body: formData });
+                          const data = await res.json();
+                          if (res.ok) {
+                            setPosterForm({...posterForm, image: data.url});
+                          } else {
+                            alert(`Upload failed: ${data.message}`);
+                          }
+                        } catch (error) {
+                          alert('Upload failed');
+                        }
+                        setUploading(false);
+                      }} className="w-full px-4 py-2 border rounded" />
+                      {posterForm.image && <img src={getImageUrl(posterForm.image)} alt="Preview" className="mt-2 h-48 w-full object-contain rounded border" />}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Start Date *</label>
+                        <input type="date" value={posterForm.startDate} onChange={(e) => setPosterForm({...posterForm, startDate: e.target.value})} required className="w-full px-4 py-2 border rounded" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">End Date *</label>
+                        <input type="date" value={posterForm.endDate} onChange={(e) => setPosterForm({...posterForm, endDate: e.target.value})} required className="w-full px-4 py-2 border rounded" />
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <button type="submit" disabled={uploading} className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400">
+                        {uploading ? 'Uploading...' : editingPoster ? 'Update' : 'Add'} Poster
+                      </button>
+                      <button type="button" onClick={() => { setShowPosterForm(false); setEditingPoster(null); }} className="px-6 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left">Image</th>
+                    <th className="px-6 py-4 text-left">Title</th>
+                    <th className="px-6 py-4 text-left">Duration</th>
+                    <th className="px-6 py-4 text-center">Status</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {posters.map(poster => (
+                    <tr key={poster._id} className={`border-b hover:bg-blue-50 ${isPosterExpired(poster.endDate) ? 'bg-red-50' : isPosterActive(poster) ? 'bg-green-50' : ''}`}>
+                      <td className="px-6 py-4">
+                        <img src={getImageUrl(poster.image)} alt={poster.title} className="h-20 w-32 object-cover rounded" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-semibold">{poster.title}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm">
+                          <div>Start: {new Date(poster.startDate).toLocaleDateString()}</div>
+                          <div>End: {new Date(poster.endDate).toLocaleDateString()}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {isPosterExpired(poster.endDate) ? (
+                          <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Expired</span>
+                        ) : isPosterActive(poster) ? (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+                        ) : (
+                          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Scheduled</span>
+                        )}
+                        <div className="mt-1">
+                          <button 
+                            onClick={() => handleTogglePoster(poster._id)} 
+                            className={`text-xs px-2 py-1 rounded ${poster.isActive ? 'bg-gray-200 text-gray-700' : 'bg-green-200 text-green-700'}`}
+                          >
+                            {poster.isActive ? 'Deactivate' : 'Activate'}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <button 
+                          onClick={() => { 
+                            setEditingPoster(poster); 
+                            setPosterForm({
+                              title: poster.title,
+                              image: poster.image,
+                              startDate: poster.startDate.split('T')[0],
+                              endDate: poster.endDate.split('T')[0],
+                              isActive: poster.isActive
+                            }); 
+                            setShowPosterForm(true); 
+                          }} 
+                          className="text-blue-600 hover:bg-blue-100 p-2 rounded mr-2"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button onClick={() => handleDeletePoster(poster._id)} className="text-red-600 hover:bg-red-100 p-2 rounded"><FaTrash /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {posters.length === 0 && (
+                <div className="text-center py-8 text-gray-500">No posters yet. Add your first poster!</div>
+              )}
             </div>
           </div>
         )}

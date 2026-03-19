@@ -10,7 +10,8 @@ router.get('/:key', async (req, res) => {
     if (!setting) {
       // Return default values for known settings
       const defaults = {
-        'gallery.enabled': true
+        'gallery.enabled': true,
+        'map.enabled': true
       };
       return res.json({ key: req.params.key, value: defaults[req.params.key] || null });
     }

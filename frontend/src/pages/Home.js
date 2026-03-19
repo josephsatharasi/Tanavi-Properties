@@ -11,6 +11,7 @@ import FAQ from '../components/FAQ';
 import Essentials from '../components/Essentials';
 import RegisterCTA from '../components/RegisterCTA';
 import LoadingSpinner from '../components/LoadingSpinner';
+import PosterModal from '../components/PosterModal';
 import API_URL, { fetchWithTimeout } from '../utils/api';
 
 const Home = () => {
@@ -124,6 +125,7 @@ const Home = () => {
 
   return (
     <div>
+      <PosterModal />
       <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       
       <section id="properties" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
 import RegistrationModal from './RegistrationModal';
 import API_URL from '../utils/api';
@@ -9,9 +9,33 @@ const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bounce, setBounce] = useState(false);
   const [hasVisibleGallery, setHasVisibleGallery] = useState(false);
+  const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path) => location.pathname === path;
+
+  const handleChoicePropertiesClick = (e) => {
+    e.preventDefault();
+    setPropertiesDropdownOpen(false);
+    
+    if (location.pathname === '/') {
+      // Already on home page, just scroll
+      const element = document.getElementById('choice-properties');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      // Navigate to home page first, then scroll
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById('choice-properties');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  };
 
   useEffect(() => {
     // Check if gallery section is enabled
@@ -35,10 +59,17 @@ const Navbar = () => {
       if (isOpen && !e.target.closest('nav')) {
         setIsOpen(false);
       }
+      // Close properties dropdown when clicking anywhere
+      if (propertiesDropdownOpen && !e.target.closest('.properties-dropdown-container')) {
+        setPropertiesDropdownOpen(false);
+      }
     };
     const handleScroll = () => {
       if (isOpen) {
         setIsOpen(false);
+      }
+      if (propertiesDropdownOpen) {
+        setPropertiesDropdownOpen(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
@@ -47,7 +78,7 @@ const Navbar = () => {
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isOpen]);
+  }, [isOpen, propertiesDropdownOpen]);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -71,7 +102,48 @@ const Navbar = () => {
             >
               List Your Property
             </button>
-            <a href="/category/all" className={`px-4 py-2 font-medium transition ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Properties</a>
+            
+            {/* Properties Dropdown */}
+            <div className="relative properties-dropdown-container">
+              <button
+                onClick={() => setPropertiesDropdownOpen(!propertiesDropdownOpen)}
+                className={`px-4 py-2 font-medium transition flex items-center gap-1 ${
+                  isActive('/category/all') || location.pathname.startsWith('/category/') || location.pathname.startsWith('/choice-category/')
+                    ? 'bg-primary text-white rounded' 
+                    : 'text-gray-700 hover:text-primary'
+                }`}
+              >
+                Properties
+                <svg 
+                  className={`w-4 h-4 transition-transform ${propertiesDropdownOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {propertiesDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                  <a 
+                    href="/category/all" 
+                    onClick={() => setPropertiesDropdownOpen(false)}
+                    className="block px-4 py-2.5 text-gray-700 hover:bg-primary hover:text-white transition font-medium"
+                  >
+                    All Properties
+                  </a>
+                  <a 
+                    href="/#choice-properties" 
+                    onClick={handleChoicePropertiesClick}
+                    className="block px-4 py-2.5 text-gray-700 hover:bg-primary hover:text-white transition font-medium"
+                  >
+                    Choice Properties
+                  </a>
+                </div>
+              )}
+            </div>
+            
             {hasVisibleGallery && (
               <a href="/blogs" className={`px-4 py-2 font-medium transition ${isActive('/blogs') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Gallery</a>
             )}

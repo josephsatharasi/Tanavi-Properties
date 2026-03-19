@@ -46,6 +46,9 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     commercialPropertyType: '',
     transactionType: '',
     builtupAreaCommercial: '',
+    pricePerSqFt: '',
+    expectedRent: '',
+    depositAmount: '',
     floor: '',
     plugPlay: '',
     workStations: '',
@@ -69,7 +72,8 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     district: '',
     state: '',
     images: [],
-    video: ''
+    video: '',
+    locationUrl: ''
   });
   const [uploading, setUploading] = useState(false);
 
@@ -145,6 +149,28 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     // Only allow numbers
     const numericValue = value.replace(/\D/g, '');
     setFormData({ ...formData, [name]: numericValue });
+  };
+
+  // Handle Office Space rent calculation
+  const handleOfficeSpaceChange = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, '');
+    const newFormData = { ...formData, [name]: numericValue };
+    
+    // Auto-calculate expected rent for Rent/Lease
+    if ((name === 'builtupAreaCommercial' || name === 'pricePerSqFt') && 
+        (formData.transactionType === 'Rent' || formData.transactionType === 'Lease')) {
+      const area = name === 'builtupAreaCommercial' ? numericValue : formData.builtupAreaCommercial;
+      const price = name === 'pricePerSqFt' ? numericValue : formData.pricePerSqFt;
+      
+      if (area && price) {
+        newFormData.expectedRent = (parseInt(area) * parseInt(price)).toString();
+      } else {
+        newFormData.expectedRent = '';
+      }
+    }
+    
+    setFormData(newFormData);
   };
 
   const handleWashroomChange = (e) => {
@@ -679,34 +705,107 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             </div>
             {formData.commercialPropertyType === 'Office / Commercial Space' && (
               <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2">Built-up Area <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">Sq. Ft</span>
+                {/* For Rent/Lease - Show Built-up Area, Price per Sq.Ft, and Expected Rent in 3 columns */}
+                {(formData.transactionType === 'Rent' || formData.transactionType === 'Lease') ? (
+                  <>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-2">Built-up Area <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Sq. Ft</span>
+                          <input 
+                            type="text" 
+                            name="builtupAreaCommercial" 
+                            value={formData.builtupAreaCommercial} 
+                            onChange={handleOfficeSpaceChange} 
+                            required 
+                            className="w-full pl-14 pr-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                            placeholder="0" 
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-2">Expected Price (Per Sq.Ft) <span className="text-red-500">*</span></label>
+                        <input 
+                          type="text" 
+                          name="pricePerSqFt" 
+                          value={formData.pricePerSqFt} 
+                          onChange={handleOfficeSpaceChange} 
+                          required 
+                          className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                          placeholder="₹ 0" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-2">Expected Rent (Auto)</label>
+                        <input 
+                          type="text" 
+                          name="expectedRent" 
+                          value={formData.expectedRent ? formatIndianNumber(formData.expectedRent) : ''} 
+                          readOnly 
+                          className="w-full px-4 py-3 border border-gray-300 rounded bg-gray-100 focus:outline-none" 
+                          placeholder="₹ 0" 
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-2">Deposit Amount <span className="text-red-500">*</span></label>
+                        <input 
+                          type="text" 
+                          name="depositAmount" 
+                          value={formData.depositAmount ? formatIndianNumber(formData.depositAmount) : ''} 
+                          onChange={handlePriceChange} 
+                          required 
+                          className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                          placeholder="₹ 0,00,000" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-2">Floor</label>
+                        <input 
+                          type="text" 
+                          name="floor" 
+                          value={formData.floor} 
+                          onChange={handleNumericChange} 
+                          className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                          placeholder="2nd Floor (of 5 Floors)" 
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  /* For Sale - Show Built-up Area and Floor side by side */
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2">Built-up Area <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Sq. Ft</span>
+                        <input 
+                          type="text" 
+                          name="builtupAreaCommercial" 
+                          value={formData.builtupAreaCommercial} 
+                          onChange={handleNumericChange} 
+                          required 
+                          className="w-full pl-14 pr-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                          placeholder="0" 
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2">Floor</label>
                       <input 
                         type="text" 
-                        name="builtupAreaCommercial" 
-                        value={formData.builtupAreaCommercial} 
+                        name="floor" 
+                        value={formData.floor} 
                         onChange={handleNumericChange} 
-                        required 
-                        className="w-full pl-16 pr-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
-                        placeholder="0" 
+                        className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                        placeholder="2nd Floor (of 5 Floors)" 
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2">Enter your floor</label>
-                    <input 
-                      type="text" 
-                      name="floor" 
-                      value={formData.floor} 
-                      onChange={handleNumericChange} 
-                      className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
-                      placeholder="0" 
-                    />
-                  </div>
-                </div>
+                )}
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">Plug & Play</label>
@@ -1136,6 +1235,9 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           commercialPropertyType: '',
           transactionType: '',
           builtupAreaCommercial: '',
+          pricePerSqFt: '',
+          expectedRent: '',
+          depositAmount: '',
           floor: '',
           plugPlay: '',
           workStations: '',
@@ -1158,7 +1260,8 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           district: '',
           state: '',
           images: [],
-          video: ''
+          video: '',
+          locationUrl: ''
         });
       } else {
         const error = await res.json();
@@ -1412,6 +1515,19 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                     </button>
                   </div>
                 )}
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Property Location URL (Optional)</label>
+                <input
+                  type="url"
+                  name="locationUrl"
+                  value={formData.locationUrl}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+                  placeholder="https://maps.google.com/..."
+                />
+                <p className="text-sm text-gray-500 mt-1">Add Google Maps link or any location URL for this property</p>
               </div>
             </>
           )}
