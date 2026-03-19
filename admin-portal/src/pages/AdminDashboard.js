@@ -1478,10 +1478,15 @@ const AdminDashboard = () => {
                         if (!file) return;
                         setUploading(true);
                         try {
+                          const token = localStorage.getItem('token');
                           const compressed = await compressImage(file);
                           const formData = new FormData();
                           formData.append('image', compressed);
-                          const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', body: formData });
+                          const res = await fetch(`${API_URL}/api/upload`, { 
+                            method: 'POST', 
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: formData 
+                          });
                           const data = await res.json();
                           if (res.ok) {
                             setPosterForm({...posterForm, image: data.url});
