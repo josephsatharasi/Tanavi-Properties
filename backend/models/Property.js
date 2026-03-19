@@ -14,6 +14,8 @@ const propertySchema = new mongoose.Schema({
   description: String,
   features: [String],
   images: [String],
+  video: String,
+  locationUrl: String,
   status: { type: String, enum: ['available', 'sold', 'pending'], default: 'available', index: true },
   sections: { type: [String], enum: ['featured', 'highlights', 'choice', 'user-submitted'] },
   expiryDate: { type: Date, index: true },
@@ -21,7 +23,23 @@ const propertySchema = new mongoose.Schema({
   renewalCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   parkingType: { type: String, enum: ['Public', 'Reserved', ''], default: '' },
-  parkingCount: { type: Number, default: 0 }
+  parkingCount: { type: Number, default: 0 },
+  // User submission fields
+  name: String,
+  email: String,
+  phone: String,
+  // Office Space specific fields
+  builtUpArea: String,
+  pricePerSqFt: String,
+  expectedRent: String,
+  depositAmount: String,
+  floor: String,
+  plugAndPlay: String,
+  workStations: String,
+  cabins: String,
+  conferenceHall: String,
+  pantry: String,
+  washroomDetails: String
 }, { strict: true });
 
 propertySchema.pre('save', async function(next) {

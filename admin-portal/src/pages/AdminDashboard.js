@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments, FaBars, FaImages, FaShoppingCart, FaStar, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments, FaBars, FaImages, FaShoppingCart, FaStar, FaMapMarkerAlt, FaImage, FaClipboardList } from 'react-icons/fa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AdminChat from '../components/AdminChat';
+import UserSubmissions from '../components/UserSubmissions';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
 
@@ -250,6 +251,15 @@ const AdminDashboard = () => {
     const num = value.replace(/[^0-9]/g, '');
     if (!num) return '';
     return new Intl.NumberFormat('en-IN').format(num);
+  };
+
+  const formatIndianPrice = (price) => {
+    if (!price) return '0';
+    // Remove any existing commas and non-numeric characters except digits
+    const numericPrice = price.toString().replace(/[^0-9]/g, '');
+    if (!numericPrice) return '0';
+    // Format with Indian comma system
+    return new Intl.NumberFormat('en-IN').format(numericPrice);
   };
 
   const handlePriceChange = (e) => {
@@ -832,6 +842,12 @@ const AdminDashboard = () => {
                 <FaHome /> Properties
               </button>
               <button 
+                onClick={() => { setActiveTab('userSubmissions'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'userSubmissions' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaClipboardList /> List Property
+              </button>
+              <button 
                 onClick={() => { setActiveTab('schedules'); setSidebarOpen(false); }} 
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
               >
@@ -1061,6 +1077,18 @@ const AdminDashboard = () => {
               </table>
             </div>
           </div>
+        )}
+
+        {activeTab === 'userSubmissions' && (
+          <UserSubmissions 
+            onEditProperty={(formData, submission) => {
+              setEditingProperty(submission);
+              setPropertyForm(formData);
+              setShowPropertyForm(true);
+            }}
+            onSwitchToProperties={() => setActiveTab('properties')}
+            showToast={showToast}
+          />
         )}
 
         {activeTab === 'gallery' && (
