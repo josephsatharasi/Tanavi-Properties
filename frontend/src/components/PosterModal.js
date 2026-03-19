@@ -36,22 +36,22 @@ const PosterModal = () => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 z-[9999] flex items-center justify-center p-4 animate-fadeIn">
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-scaleIn">
+      <div className="relative bg-transparent max-w-4xl w-full max-h-[90vh] animate-scaleIn">
         {/* Close Button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 z-10 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110"
+          className="absolute top-2 right-2 z-10 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110"
           aria-label="Close poster"
         >
           <FaTimes size={24} />
         </button>
 
         {/* Poster Content */}
-        <div className="relative">
+        <div className="relative w-full h-full">
           <img
             src={getImageUrl(poster.image)}
             alt={poster.title}
-            className="w-full h-auto max-h-[85vh] object-contain"
+            className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
           />
         </div>
       </div>
