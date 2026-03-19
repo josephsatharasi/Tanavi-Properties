@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaBullseye, FaEye, FaStar, FaHome, FaUser, FaChartLine, FaSmile, FaShieldAlt, FaHandshake } from 'react-icons/fa';
-import carousel1 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_7e3d7ae3.jpg';
-import carousel2 from '../assets/WhatsApp Image 2025-11-15 at 17.38.47_9582503a.jpg';
+import tanaviDeals from '../assets/tanavideals.jpg';
+import tanaviServices from '../assets/tanaviservices.jpg';
 
 const About = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -14,7 +14,7 @@ const About = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 2);
-    }, 3000);
+    }, 5000); // Change slide every 5 seconds
     return () => clearInterval(interval);
   }, []);
   const values = [
@@ -130,131 +130,64 @@ const About = () => {
           </div>
         </div>
 
-        {/* TANAVI DEALS Section */}
+        {/* TANAVI DEALS & SERVICES Carousel */}
         <div className="mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI DEALS</h2>
-            <div className="flex items-center justify-center gap-3">
-              <div className="h-1 w-20 bg-gradient-to-r from-transparent to-primary"></div>
-              <p className="text-lg text-gray-600 font-medium">Diverse Properties, Endless Possibilities</p>
-              <div className="h-1 w-20 bg-gradient-to-l from-transparent to-primary"></div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800" 
-                alt="Agricultural Land" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Agricultural Land</h3>
+          <div className="relative overflow-hidden">
+            {/* TANAVI DEALS Slide */}
+            <div className={`transition-all duration-700 ${currentSlide === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full absolute inset-0'}`}>
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI DEALS</h2>
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-1 w-20 bg-gradient-to-r from-transparent to-primary"></div>
+                  <p className="text-lg text-gray-600 font-medium">Diverse Properties, Endless Possibilities</p>
+                  <div className="h-1 w-20 bg-gradient-to-l from-transparent to-primary"></div>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="max-w-5xl w-full overflow-hidden rounded-lg shadow-2xl">
+                  <img 
+                    src={tanaviDeals} 
+                    alt="TANAVI DEALS - Property Types" 
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               </div>
             </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800" 
-                alt="Open Plots" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Open Plots</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800" 
-                alt="Independent Houses" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Independent Houses</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" 
-                alt="Farmhouses" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Farmhouses</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800" 
-                alt="Apartments" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Apartments</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800" 
-                alt="Commercial Spaces" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-xl font-bold text-gray-800">Commercial Spaces</h3>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* TANAVI SERVICES Section */}
-        <div className="mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI SERVICES</h2>
-            <div className="flex items-center justify-center gap-3">
-              <div className="h-1 w-20 bg-gradient-to-r from-transparent to-secondary"></div>
-              <p className="text-lg text-gray-600 font-medium">Complete Real Estate Solutions Under One Roof</p>
-              <div className="h-1 w-20 bg-gradient-to-l from-transparent to-secondary"></div>
+            {/* TANAVI SERVICES Slide */}
+            <div className={`transition-all duration-700 ${currentSlide === 1 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full absolute inset-0'}`}>
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold text-gray-800 mb-3">TANAVI SERVICES</h2>
+                <div className="flex items-center justify-center gap-3">
+                  <div className="h-1 w-20 bg-gradient-to-r from-transparent to-secondary"></div>
+                  <p className="text-lg text-gray-600 font-medium">Complete Real Estate Solutions Under One Roof</p>
+                  <div className="h-1 w-20 bg-gradient-to-l from-transparent to-secondary"></div>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="max-w-5xl w-full overflow-hidden rounded-lg shadow-2xl">
+                  <img 
+                    src={tanaviServices} 
+                    alt="TANAVI SERVICES - Real Estate Solutions" 
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800" 
-                alt="Interior Design" 
-                className="w-full h-56 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-lg font-bold text-gray-800">Interior Design</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800" 
-                alt="Farmhouse Development" 
-                className="w-full h-56 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-lg font-bold text-gray-800">Farmhouse Development</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800" 
-                alt="Civil Engineering" 
-                className="w-full h-56 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-lg font-bold text-gray-800">Civil Engineering</h3>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <img 
-                src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800" 
-                alt="Precast & Fencing" 
-                className="w-full h-56 object-cover"
-              />
-              <div className="bg-white p-4 text-center">
-                <h3 className="text-lg font-bold text-gray-800">Precast & Fencing</h3>
-              </div>
-            </div>
+
+          {/* Carousel Indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            <button
+              onClick={() => setCurrentSlide(0)}
+              className={`w-3 h-3 rounded-full transition-all ${currentSlide === 0 ? 'bg-primary w-8' : 'bg-gray-300'}`}
+              aria-label="Show TANAVI DEALS"
+            />
+            <button
+              onClick={() => setCurrentSlide(1)}
+              className={`w-3 h-3 rounded-full transition-all ${currentSlide === 1 ? 'bg-secondary w-8' : 'bg-gray-300'}`}
+              aria-label="Show TANAVI SERVICES"
+            />
           </div>
         </div>
 

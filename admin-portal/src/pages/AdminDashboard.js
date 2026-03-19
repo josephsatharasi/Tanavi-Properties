@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments } from 'react-icons/fa';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments, FaBars, FaImages, FaShoppingCart, FaStar, FaMapMarkerAlt, FaImage } from 'react-icons/fa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AdminChat from '../components/AdminChat';
 import API_URL, { getImageUrl } from '../utils/api';
@@ -29,6 +29,7 @@ const AdminDashboard = () => {
   const [editingTestimonial, setEditingTestimonial] = useState(null);
   const [editingLocation, setEditingLocation] = useState(null);
   const [editingPoster, setEditingPoster] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -790,41 +791,94 @@ const AdminDashboard = () => {
       )}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)} 
+              className="text-gray-700 hover:text-blue-600 p-2"
+            >
+              <FaBars size={24} />
+            </button>
+            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          </div>
           <button onClick={handleLogout} className="flex items-center gap-2 text-red-600 hover:text-red-700">
             <FaSignOutAlt /> Logout
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-4 mb-6 overflow-x-auto">
-          <button onClick={() => setActiveTab('properties')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'properties' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            <FaHome /> Properties
-          </button>
-          <button onClick={() => setActiveTab('schedules')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            <FaCalendar /> Schedules
-          </button>
-          <button onClick={() => setActiveTab('gallery')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'gallery' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            Gallery
-          </button>
-          <button onClick={() => setActiveTab('buysell')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'buysell' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            Buy/Sell
-          </button>
-          <button onClick={() => setActiveTab('testimonials')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'testimonials' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            Testimonials
-          </button>
-          <button onClick={() => setActiveTab('locations')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            Locations
-          </button>
-          <button onClick={() => setActiveTab('posters')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'posters' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            Posters
-          </button>
-          <button onClick={() => setActiveTab('chat')} className={`flex items-center gap-2 px-6 py-3 rounded whitespace-nowrap ${activeTab === 'chat' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            <FaComments /> Live Chat
-          </button>
+      {/* Side Drawer */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50" 
+            onClick={() => setSidebarOpen(false)}
+          ></div>
+          
+          {/* Drawer */}
+          <div className="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-2xl animate-slideInRight">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="text-xl font-bold">Menu</h2>
+              <button onClick={() => setSidebarOpen(false)} className="text-gray-500 hover:text-gray-700">
+                <FaTimes size={24} />
+              </button>
+            </div>
+            
+            <nav className="p-4">
+              <button 
+                onClick={() => { setActiveTab('properties'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'properties' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaHome /> Properties
+              </button>
+              <button 
+                onClick={() => { setActiveTab('schedules'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'schedules' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaCalendar /> Schedules
+              </button>
+              <button 
+                onClick={() => { setActiveTab('gallery'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'gallery' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaImages /> Gallery
+              </button>
+              <button 
+                onClick={() => { setActiveTab('buysell'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'buysell' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaShoppingCart /> Buy/Sell
+              </button>
+              <button 
+                onClick={() => { setActiveTab('testimonials'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'testimonials' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaStar /> Testimonials
+              </button>
+              <button 
+                onClick={() => { setActiveTab('locations'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'locations' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaMapMarkerAlt /> Locations
+              </button>
+              <button 
+                onClick={() => { setActiveTab('posters'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'posters' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaImage /> Posters
+              </button>
+              <button 
+                onClick={() => { setActiveTab('chat'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'chat' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaComments /> Live Chat
+              </button>
+            </nav>
+          </div>
         </div>
+      )}
 
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {activeTab === 'chat' && <AdminChat />}
 
         {activeTab === 'properties' && (
