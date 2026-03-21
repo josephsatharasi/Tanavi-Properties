@@ -144,11 +144,11 @@ const About = () => {
                 </div>
               </div>
               <div className="flex justify-center">
-                <div className="max-w-5xl w-full overflow-hidden rounded-lg shadow-2xl">
+                <div className="max-w-6xl w-full rounded-lg shadow-2xl bg-white p-2 md:p-3">
                   <img 
                     src={tanaviDeals} 
                     alt="TANAVI DEALS - Property Types" 
-                    className="w-full h-auto object-contain"
+                    className="w-full max-h-[65vh] object-contain mx-auto"
                   />
                 </div>
               </div>
@@ -165,11 +165,11 @@ const About = () => {
                 </div>
               </div>
               <div className="flex justify-center">
-                <div className="max-w-5xl w-full overflow-hidden rounded-lg shadow-2xl">
+                <div className="max-w-6xl w-full rounded-lg shadow-2xl bg-white p-2 md:p-3">
                   <img 
                     src={imagePng} 
                     alt="TANAVI SERVICES - Real Estate Solutions" 
-                    className="w-full h-auto object-contain"
+                    className="w-full max-h-[65vh] object-contain mx-auto"
                   />
                 </div>
               </div>
@@ -230,19 +230,19 @@ const About = () => {
               <div className="h-px w-16 bg-amber-400"></div>
             </div>
             
-            <div className="bg-gradient-to-b from-gray-100 to-white rounded-2xl p-8 shadow-inner">
+            <div className="bg-gradient-to-br from-slate-100 via-emerald-50 to-amber-50 rounded-3xl p-8 border border-emerald-100 shadow-[0_20px_50px_rgba(16,185,129,0.15)]">
               <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-3">
                 {/* Step 1 */}
                 <div className="flex-shrink-0">
-                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 1</div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                  <div className="bg-gradient-to-r from-emerald-700 to-green-600 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3 shadow-md">STEP 1</div>
+                  <div className="bg-gradient-to-b from-white to-emerald-50/40 border border-emerald-100 rounded-xl p-4 shadow-lg w-56 hover:-translate-y-1 transition-all duration-300">
                     <div className="flex flex-col items-center text-center">
-                      <div className="bg-green-100 p-3 rounded-full mb-2">
-                        <FaShieldAlt className="text-green-700 text-3xl" />
+                      <div className="bg-gradient-to-br from-emerald-100 to-green-200 p-3 rounded-full mb-2 shadow-sm">
+                        <FaShieldAlt className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Identify a Trusted Platform</h3>
-                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
-                        <p className="text-xs font-medium">Start with Confidence</p>
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                        <p className="text-xs font-semibold tracking-wide">Start with Confidence</p>
                       </div>
                     </div>
                   </div>
@@ -253,15 +253,15 @@ const About = () => {
 
                 {/* Step 2 */}
                 <div className="flex-shrink-0">
-                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 2</div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                  <div className="bg-gradient-to-r from-emerald-700 to-green-600 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3 shadow-md">STEP 2</div>
+                  <div className="bg-gradient-to-b from-white to-emerald-50/40 border border-emerald-100 rounded-xl p-4 shadow-lg w-56 hover:-translate-y-1 transition-all duration-300">
                     <div className="flex flex-col items-center text-center">
-                      <div className="bg-green-100 p-3 rounded-full mb-2">
-                        <FaHome className="text-green-700 text-3xl" />
+                      <div className="bg-gradient-to-br from-emerald-100 to-green-200 p-3 rounded-full mb-2 shadow-sm">
+                        <FaHome className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Select the Right Property</h3>
-                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
-                        <p className="text-xs font-medium">Choose What Truly Fits You</p>
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                        <p className="text-xs font-semibold tracking-wide">Choose What Truly Fits You</p>
                       </div>
                     </div>
                   </div>
@@ -272,15 +272,15 @@ const About = () => {
 
                 {/* Step 3 */}
                 <div className="flex-shrink-0">
-                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 3</div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                  <div className="bg-gradient-to-r from-emerald-700 to-green-600 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3 shadow-md">STEP 3</div>
+                  <div className="bg-gradient-to-b from-white to-emerald-50/40 border border-emerald-100 rounded-xl p-4 shadow-lg w-56 hover:-translate-y-1 transition-all duration-300">
                     <div className="flex flex-col items-center text-center">
-                      <div className="bg-green-100 p-3 rounded-full mb-2">
-                        <FaHandshake className="text-green-700 text-3xl" />
+                      <div className="bg-gradient-to-br from-emerald-100 to-green-200 p-3 rounded-full mb-2 shadow-sm">
+                        <FaHandshake className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Close the Deal Successfully</h3>
-                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
-                        <p className="text-xs font-medium">Smooth, Transparent & Secure</p>
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                        <p className="text-xs font-semibold tracking-wide">Smooth, Transparent & Secure</p>
                       </div>
                     </div>
                   </div>
@@ -291,15 +291,15 @@ const About = () => {
 
                 {/* Step 4 */}
                 <div className="flex-shrink-0">
-                  <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">STEP 4</div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                  <div className="bg-gradient-to-r from-emerald-700 to-green-600 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3 shadow-md">STEP 4</div>
+                  <div className="bg-gradient-to-b from-white to-emerald-50/40 border border-emerald-100 rounded-xl p-4 shadow-lg w-56 hover:-translate-y-1 transition-all duration-300">
                     <div className="flex flex-col items-center text-center">
-                      <div className="bg-green-100 p-3 rounded-full mb-2">
-                        <FaSmile className="text-green-700 text-3xl" />
+                      <div className="bg-gradient-to-br from-emerald-100 to-green-200 p-3 rounded-full mb-2 shadow-sm">
+                        <FaSmile className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">A Happy Family, A Confident Decision</h3>
-                      <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
-                        <p className="text-xs font-medium">Because Trust Creates Happiness</p>
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                        <p className="text-xs font-semibold tracking-wide">Because Trust Creates Happiness</p>
                       </div>
                     </div>
                   </div>
