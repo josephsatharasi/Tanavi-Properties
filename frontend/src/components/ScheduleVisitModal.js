@@ -3,6 +3,15 @@ import { FaTimes } from 'react-icons/fa';
 import API_URL from '../utils/api';
 
 const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, propertyCode }) => {
+  const timeOptions = Array.from({ length: 24 * 2 }, (_, index) => {
+    const totalMinutes = index * 30;
+    const hours24 = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const period = hours24 >= 12 ? 'PM' : 'AM';
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+    return `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`;
+  });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,13 +108,17 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
             
             <div className="mb-4">
               <label className="block text-gray-700 mb-2">Preferred Time <span className="text-red-500">*</span></label>
-              <input
-                type="time"
+              <select
                 required
                 value={formData.time}
                 onChange={(e) => setFormData({...formData, time: e.target.value})}
                 className="w-full px-4 py-2 border rounded focus:outline-none focus:border-primary"
-              />
+              >
+                <option value="">Select Time</option>
+                {timeOptions.map((time) => (
+                  <option key={time} value={time}>{time}</option>
+                ))}
+              </select>
             </div>
             
             <div className="mb-6">
