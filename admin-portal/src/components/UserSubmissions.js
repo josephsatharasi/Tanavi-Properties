@@ -37,6 +37,19 @@ const UserSubmissions = ({ onEditProperty, onSwitchToProperties, showToast }) =>
     return new Intl.NumberFormat('en-IN').format(numericPrice);
   };
 
+  const formatSubmissionFieldValue = (key, value) => {
+    if (value === null || value === undefined || value === '') return '-';
+
+    if (key === 'road') {
+      const roadStr = String(value).trim();
+      const match = roadStr.match(/\d+/);
+      if (match) return `${match[0]} Feet Road`;
+      return roadStr;
+    }
+
+    return value;
+  };
+
   const handleApproveSubmission = async (id) => {
     if (!window.confirm('Approve this property submission?')) return;
     const token = localStorage.getItem('token');
@@ -440,7 +453,7 @@ const UserSubmissions = ({ onEditProperty, onSwitchToProperties, showToast }) =>
                                     {key.replace(/([A-Z])/g, ' $1').trim()}
                                   </td>
                                   <td className="px-4 py-3 text-sm text-gray-800 border-b break-words">
-                                    {value || '-'}
+                                    {formatSubmissionFieldValue(key, value)}
                                   </td>
                                 </tr>
                               ));

@@ -249,7 +249,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Property Under</label>
@@ -296,11 +296,26 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div>
               <label className="block text-gray-700 font-medium mb-2">Villa / House Details <span className="text-red-500">*</span></label>
               <div className="grid grid-cols-2 gap-4">
-                <input type="text" name="plotArea" value={formData.plotArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
-                <input type="text" name="totalFloors" value={formData.totalFloors} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
-                <input type="text" name="portions" value={formData.portions} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
-                <input type="text" name="bedrooms" value={formData.bedrooms} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
-                <input type="text" name="washrooms" value={formData.washrooms} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-1">Plot Area (Sq Yards)</label>
+                  <input type="text" name="plotArea" value={formData.plotArea} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-1">Total Floors</label>
+                  <input type="text" name="totalFloors" value={formData.totalFloors} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-1">Portions</label>
+                  <input type="text" name="portions" value={formData.portions} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-1">Bedrooms</label>
+                  <input type="text" name="bedrooms" value={formData.bedrooms} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-1">Washrooms</label>
+                  <input type="text" name="washrooms" value={formData.washrooms} onChange={handleNumericChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -334,7 +349,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="? 0,00,000" />
+              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="₹ 0,00,000" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -354,7 +369,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Property Under</label>
@@ -391,7 +406,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="? 0,00,000" />
+              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="₹ 0,00,000" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -412,7 +427,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Property Under</label>
@@ -460,7 +475,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="? 0,00,000" />
+              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="₹ 0,00,000" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -524,7 +539,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -576,7 +591,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="? 0,00,000" />
+              <input type="text" name="expectedPrice" value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} onChange={handlePriceChange} required className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="₹ 0,00,000" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -590,7 +605,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -975,7 +990,7 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road</label>
-                <input type="text" name="road" value={formData.road} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0" />
+                <input type="text" name="road" value={formatRoadDisplay(formData.road)} onChange={handleRoadChange} className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" placeholder="0 Feet Road" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
