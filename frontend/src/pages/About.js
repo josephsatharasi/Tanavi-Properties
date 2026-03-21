@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaBullseye, FaEye, FaStar, FaHome, FaUser, FaChartLine, FaSmile, FaShieldAlt, FaHandshake } from 'react-icons/fa';
+import imagePng from '../assets/image.png';
 import tanaviDeals from '../assets/tanavideals.jpg';
-import tanaviServices from '../assets/tanaviservices.jpg';
 
 const About = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -167,7 +167,7 @@ const About = () => {
               <div className="flex justify-center">
                 <div className="max-w-5xl w-full overflow-hidden rounded-lg shadow-2xl">
                   <img 
-                    src={tanaviServices} 
+                    src={imagePng} 
                     alt="TANAVI SERVICES - Real Estate Solutions" 
                     className="w-full h-auto object-contain"
                   />

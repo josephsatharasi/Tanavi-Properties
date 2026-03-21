@@ -115,3 +115,48 @@
   opacity: 0;
 }
 
+.announcement-marquee-wrap {
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.announcement-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  width: max-content;
+  padding: 8px 0;
+  animation: marquee-full-width 18s linear infinite;
+}
+
+.announcement-badge {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.announcement-message {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.announcement-divider {
+  opacity: 0.7;
+}
+
+@keyframes marquee-full-width {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+

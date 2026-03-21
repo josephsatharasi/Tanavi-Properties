@@ -699,11 +699,16 @@ const AdminDashboard = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const url = editingPoster ? `${API_URL}/api/posters/${editingPoster._id}` : `${API_URL}/api/posters`;
+    const fallbackImage = 'https://via.placeholder.com/1200x300?text=Announcement';
+    const payload = {
+      ...posterForm,
+      image: posterForm.image && posterForm.image.trim() ? posterForm.image : fallbackImage
+    };
     try {
       const res = await fetch(url, {
         method: editingPoster ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(posterForm)
+        body: JSON.stringify(payload)
       });
       if (!res.ok) {
         const error = await res.json();
@@ -1526,7 +1531,7 @@ const AdminDashboard = () => {
         {activeTab === 'posters' && (
           <div>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Manage Posters</h2>
+              <h2 className="text-xl font-bold">Manage Announcement Marquee</h2>
               <button 
                 onClick={() => { 
                   setShowPosterForm(true); 
@@ -1537,7 +1542,7 @@ const AdminDashboard = () => {
                 }} 
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
               >
-                Add Poster
+                Add Announcement
               </button>
             </div>
 
@@ -1545,42 +1550,20 @@ const AdminDashboard = () => {
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
                 <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl my-8">
                   <div className="border-b px-6 py-4 flex justify-between items-center">
-                    <h3 className="text-xl font-bold">{editingPoster ? 'Edit' : 'Add'} Poster</h3>
+                    <h3 className="text-xl font-bold">{editingPoster ? 'Edit' : 'Add'} Announcement</h3>
                     <button onClick={() => { setShowPosterForm(false); setEditingPoster(null); }} className="text-gray-500 hover:text-gray-700 text-2xl"><FaTimes /></button>
                   </div>
                   <form onSubmit={handlePosterSubmit} className="p-6 space-y-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Title *</label>
-                      <input type="text" value={posterForm.title} onChange={(e) => setPosterForm({...posterForm, title: e.target.value})} required className="w-full px-4 py-2 border rounded" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Poster Image *</label>
-                      <input type="file" accept="image/*" onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploading(true);
-                        try {
-                          const token = localStorage.getItem('token');
-                          const compressed = await compressImage(file);
-                          const formData = new FormData();
-                          formData.append('image', compressed);
-                          const res = await fetch(`${API_URL}/api/upload`, { 
-                            method: 'POST', 
-                            headers: { Authorization: `Bearer ${token}` },
-                            body: formData 
-                          });
-                          const data = await res.json();
-                          if (res.ok) {
-                            setPosterForm({...posterForm, image: data.url});
-                          } else {
-                            alert(`Upload failed: ${data.message}`);
-                          }
-                        } catch (error) {
-                          alert('Upload failed');
-                        }
-                        setUploading(false);
-                      }} className="w-full px-4 py-2 border rounded" />
-                      {posterForm.image && <img src={getImageUrl(posterForm.image)} alt="Preview" className="mt-2 h-48 w-full object-contain rounded border" />}
+                      <label className="block text-sm font-medium mb-2">Announcement Text *</label>
+                      <input
+                        type="text"
+                        value={posterForm.title}
+                        onChange={(e) => setPosterForm({...posterForm, title: e.target.value})}
+                        required
+                        className="w-full px-4 py-2 border rounded"
+                        placeholder="Example: Mega offer this weekend at Shadnagar open plots..."
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -1593,8 +1576,8 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                     <div className="flex gap-4">
-                      <button type="submit" disabled={uploading} className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400">
-                        {uploading ? 'Uploading...' : editingPoster ? 'Update' : 'Add'} Poster
+                      <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                        {editingPoster ? 'Update' : 'Add'} Announcement
                       </button>
                       <button type="button" onClick={() => { setShowPosterForm(false); setEditingPoster(null); }} className="px-6 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400">
                         Cancel
@@ -1609,8 +1592,7 @@ const AdminDashboard = () => {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
-                    <th className="px-6 py-4 text-left">Image</th>
-                    <th className="px-6 py-4 text-left">Title</th>
+                    <th className="px-6 py-4 text-left">Announcement Text</th>
                     <th className="px-6 py-4 text-left">Duration</th>
                     <th className="px-6 py-4 text-center">Status</th>
                     <th className="px-6 py-4 text-center">Actions</th>
@@ -1619,9 +1601,6 @@ const AdminDashboard = () => {
                 <tbody>
                   {posters.map(poster => (
                     <tr key={poster._id} className={`border-b hover:bg-blue-50 ${isPosterExpired(poster.endDate) ? 'bg-red-50' : isPosterActive(poster) ? 'bg-green-50' : ''}`}>
-                      <td className="px-6 py-4">
-                        <img src={getImageUrl(poster.image)} alt={poster.title} className="h-20 w-32 object-cover rounded" />
-                      </td>
                       <td className="px-6 py-4">
                         <div className="font-semibold">{poster.title}</div>
                       </td>
@@ -1672,7 +1651,7 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
               {posters.length === 0 && (
-                <div className="text-center py-8 text-gray-500">No posters yet. Add your first poster!</div>
+                <div className="text-center py-8 text-gray-500">No announcements yet. Add your first marquee text!</div>
               )}
             </div>
           </div>

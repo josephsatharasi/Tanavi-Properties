@@ -42,13 +42,17 @@ const CategoryProperties = () => {
   }, []);
 
   useEffect(() => {
-    // Restore scroll position when returning to this page
+    // Restore scroll only when returning from property details.
+    // For direct category clicks from Home, always start from top.
+    const returnSection = sessionStorage.getItem('returnSection');
     const scrollPos = sessionStorage.getItem('scrollPosition');
-    if (scrollPos) {
+    if (returnSection === 'category' && scrollPos) {
       setTimeout(() => {
         window.scrollTo(0, parseInt(scrollPos));
         sessionStorage.removeItem('scrollPosition');
       }, 100);
+    } else {
+      window.scrollTo(0, 0);
     }
   }, []);
   

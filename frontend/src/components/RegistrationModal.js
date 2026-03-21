@@ -105,19 +105,20 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   // Handle Guntas input with zero padding for single digits only
   const handleGuntasChange = (e) => {
     const { name, value } = e.target;
-    // Allow only numbers
+    // Allow only numbers and normalize (remove unnecessary leading zeros)
     const numericValue = value.replace(/\D/g, '');
-    setFormData({ ...formData, [name]: numericValue });
+    const normalizedValue = numericValue === '' ? '' : String(parseInt(numericValue, 10));
+    setFormData({ ...formData, [name]: normalizedValue });
   };
 
   // Format Guntas display value (add leading zero for single digits)
   const formatGuntasDisplay = (value) => {
     if (!value) return '';
-    const num = parseInt(value);
+    const num = parseInt(value, 10);
     if (num >= 1 && num <= 9) {
       return '0' + num;
     }
-    return value;
+    return String(num);
   };
 
   // Handle price input with Indian comma formatting

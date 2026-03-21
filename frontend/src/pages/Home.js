@@ -11,7 +11,7 @@ import FAQ from '../components/FAQ';
 import Essentials from '../components/Essentials';
 import RegisterCTA from '../components/RegisterCTA';
 import LoadingSpinner from '../components/LoadingSpinner';
-import PosterModal from '../components/PosterModal';
+import AnnouncementMarquee from '../components/AnnouncementMarquee';
 import API_URL, { fetchWithTimeout } from '../utils/api';
 
 const Home = () => {
@@ -40,6 +40,7 @@ const Home = () => {
     // Restore scroll position immediately when returning to home page
     const scrollPos = sessionStorage.getItem('scrollPosition');
     const returnSection = sessionStorage.getItem('returnSection');
+    const scrollTarget = sessionStorage.getItem('scrollTarget');
     
     if (scrollPos && returnSection) {
       // Prevent default scroll to top
@@ -67,7 +68,17 @@ const Home = () => {
         setTimeout(restoreScroll, 100);
         sessionStorage.removeItem('scrollPosition');
         sessionStorage.removeItem('returnSection');
+        sessionStorage.removeItem('scrollTarget');
       }
+    } else if (scrollTarget) {
+      // Fallback: restore by section id when exact scroll position is unavailable.
+      setTimeout(() => {
+        const targetEl = document.getElementById(scrollTarget);
+        if (targetEl) {
+          targetEl.scrollIntoView({ block: 'start', behavior: 'auto' });
+        }
+        sessionStorage.removeItem('scrollTarget');
+      }, 100);
     }
     
     return () => {
@@ -125,7 +136,7 @@ const Home = () => {
 
   return (
     <div>
-      <PosterModal />
+      <AnnouncementMarquee />
       <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       
       <section id="properties" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>

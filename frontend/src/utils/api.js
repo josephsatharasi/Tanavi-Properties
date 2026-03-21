@@ -1,10 +1,15 @@
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-export const getImageUrl = (imagePath) => {
+export const getImageUrl = (imagePath, propertyCode = null, options = {}) => {
   if (!imagePath) return 'https://via.placeholder.com/400x300?text=No+Image';
   
   // If it's already a full URL (Cloudinary or external)
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    // For Cloudinary URLs, we can modify the URL to get different image qualities
+    if (imagePath.includes('cloudinary.com') && options.fullResolution) {
+      // Remove any existing transformations and get the original image
+      return imagePath.replace(/\/upload\/[^/]+/, '/upload');
+    }
     return imagePath;
   }
   

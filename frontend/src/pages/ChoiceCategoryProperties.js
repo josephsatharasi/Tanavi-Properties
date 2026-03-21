@@ -50,10 +50,8 @@ const ChoiceCategoryProperties = () => {
   };
 
   const handleBackClick = () => {
-    const returnSection = sessionStorage.getItem('returnSection');
-    const scrollPos = sessionStorage.getItem('scrollPosition');
-    
-    // Navigate to home, keeping scroll position in sessionStorage for Home to restore
+    // Ensure Home restores to Choice Properties section.
+    sessionStorage.setItem('scrollTarget', 'choice-properties');
     navigate('/');
   };
 

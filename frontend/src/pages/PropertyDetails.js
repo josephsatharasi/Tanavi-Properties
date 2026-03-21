@@ -151,7 +151,7 @@ const PropertyDetails = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="relative h-96 overflow-hidden">
+          <div className="relative h-[70vh] min-h-[320px] max-h-[820px] overflow-hidden bg-white">
             {property.images && property.images.length > 0 ? (
               <>
                 {property.images.map((img, index) => (
@@ -160,7 +160,7 @@ const PropertyDetails = () => {
                     src={getImageUrl(img, property.propertyCode)}
                     alt={`${property.title} ${index + 1}`}
                     loading="lazy"
-                    className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
+                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
                       index === currentImage ? 'opacity-100' : 'opacity-0'
                     }`}
                   />
