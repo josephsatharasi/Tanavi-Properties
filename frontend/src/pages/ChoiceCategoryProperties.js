@@ -28,20 +28,15 @@ const ChoiceCategoryProperties = () => {
   useEffect(() => {
     fetchProperties();
     
-    // Restore scroll when returning from property details
-    const categoryScrollPos = sessionStorage.getItem('categoryScrollPosition');
+    // Always start at top when entering category page
     const returnSection = sessionStorage.getItem('returnSection');
     
-    if (returnSection === 'choice' && categoryScrollPos) {
-      // Returning from property details - restore category page scroll
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(categoryScrollPos));
-        // Clean up ONLY categoryScrollPosition, keep everything else for home navigation
-        sessionStorage.removeItem('categoryScrollPosition');
-        // Reset returnSection back to 'choice-properties' for home navigation
-        sessionStorage.setItem('returnSection', 'choice-properties');
-        sessionStorage.removeItem('returnCategory');
-      }, 100);
+    if (returnSection === 'choice') {
+      // Returning from property details - go to top of page
+      window.scrollTo(0, 0);
+      // Reset returnSection back to 'choice-properties' for home navigation
+      sessionStorage.setItem('returnSection', 'choice-properties');
+      sessionStorage.removeItem('returnCategory');
     } else if (!returnSection) {
       // Coming fresh from home - start at top
       window.scrollTo(0, 0);

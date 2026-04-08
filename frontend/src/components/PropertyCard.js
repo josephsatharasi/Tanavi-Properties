@@ -101,9 +101,7 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
         <button 
           onClick={() => {
             // When clicking from a category page:
-            // 1. Save category page scroll for returning from property details
-            sessionStorage.setItem('categoryScrollPosition', window.scrollY);
-            
+            // 1. DON'T save category scroll - we want to return to top of category page
             // 2. Set return section for property details back navigation
             sessionStorage.setItem('returnSection', section);
             
