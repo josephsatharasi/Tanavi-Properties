@@ -91,11 +91,11 @@ const CategoryProperties = () => {
   }
   
   if (location) {
-    filteredProperties = filteredProperties.filter(p => p.location.includes(location));
+    filteredProperties = filteredProperties.filter(p => p.location === location);
   }
   
   if (type) {
-    filteredProperties = filteredProperties.filter(p => p.type === type);
+    filteredProperties = filteredProperties.filter(p => p.category === type);
   }
   
   if (priceRange) {

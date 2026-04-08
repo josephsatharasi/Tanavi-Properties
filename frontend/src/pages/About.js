@@ -91,7 +91,7 @@ const About = () => {
               WHO WE ARE
               <div className="w-24 h-1 bg-primary mt-2"></div>
             </h2>
-            <div className="space-y-4 text-gray-700 leading-relaxed text-justify">
+            <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
                 Founded by <strong>Mr. Balraj Sinthigari</strong>, a visionary entrepreneur driven by a passion for excellence, Tanavi Properties has evolved into a trusted real estate platform that seamlessly and transparently connects people to their dream properties with integrity.
               </p>
