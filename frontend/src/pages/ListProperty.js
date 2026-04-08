@@ -229,12 +229,10 @@ const ListProperty = () => {
                   type="text" 
                   value={formData.name} 
                   onChange={(e) => {
-                    // Only allow alphabets and spaces
                     const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
                     setFormData({...formData, name: value});
                   }}
                   onKeyPress={(e) => {
-                    // Block any non-alphabet keys (except space)
                     const char = String.fromCharCode(e.which);
                     if (!/[a-zA-Z\s]/.test(char)) {
                       e.preventDefault();
@@ -257,12 +255,10 @@ const ListProperty = () => {
                   type="tel" 
                   value={formData.phone} 
                   onChange={(e) => {
-                    // Only allow numbers and limit to 10 digits
                     const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                     setFormData({...formData, phone: value});
                   }}
                   onKeyPress={(e) => {
-                    // Block any non-numeric keys
                     const char = String.fromCharCode(e.which);
                     if (!/[0-9]/.test(char)) {
                       e.preventDefault();
@@ -299,7 +295,6 @@ const ListProperty = () => {
                 </select>
               </div>
               
-              {/* Office Space - Show only for Rent/Lease */}
               {formData.category === 'Office Space' && (
                 <>
                   <div>
@@ -335,16 +330,6 @@ const ListProperty = () => {
                       className="w-full border p-3 rounded" 
                       required 
                       placeholder="0"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 mb-2">Expected Rent (Auto-calculated)</label>
-                    <input 
-                      type="text" 
-                      value={formData.expectedRent} 
-                      className="w-full border p-3 rounded bg-gray-100" 
-                      readOnly 
-                      placeholder="Will be calculated automatically"
                     />
                   </div>
                   <div>
@@ -423,7 +408,6 @@ const ListProperty = () => {
                 </>
               )}
               
-              {/* Regular fields for non-Office Space */}
               {formData.category !== 'Office Space' && (
                 <>
                   <div>
@@ -500,10 +484,10 @@ const ListProperty = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Property Images (Max 5 images)</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading || formData.images.length >= 5} />
+              <label className="block text-gray-700 mb-2">Property Images (Max 8 images)</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading || formData.images.length >= 8} />
               {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
-              {formData.images.length >= 5 && <p className="text-sm text-red-600 mt-1">Maximum 5 images allowed</p>}
+              {formData.images.length >= 8 && <p className="text-sm text-red-600 mt-1">Maximum 8 images allowed</p>}
               {formData.images.length > 0 && (
                 <div className="grid grid-cols-4 gap-2 mt-3">
                   {formData.images.map((img, idx) => (
