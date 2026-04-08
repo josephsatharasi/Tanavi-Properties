@@ -944,10 +944,19 @@ const AdminDashboard = () => {
                   </div>
                   <div>
                     <label className="block text-sm text-gray-600 mb-1">Area</label>
-                    <select value={propertyForm.area} onChange={(e) => setPropertyForm({...propertyForm, area: e.target.value})} className="border p-2 rounded w-full">
-                      <option value="">Select Area</option>
-                      {areas.map(area => <option key={area} value={area}>{area}</option>)}
-                    </select>
+                    <div className="flex items-center border rounded overflow-hidden">
+                      <span className="bg-gray-100 px-3 py-2 text-gray-600 border-r">SFT</span>
+                      <input 
+                        type="text" 
+                        placeholder="0" 
+                        value={propertyForm.area} 
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          setPropertyForm({...propertyForm, area: value});
+                        }} 
+                        className="flex-1 p-2 outline-none" 
+                      />
+                    </div>
                   </div>
                   {propertyForm.category && !['Agricultural Land', 'Open Plot'].includes(propertyForm.category) && (
                     <>
@@ -1659,11 +1668,43 @@ const AdminDashboard = () => {
 
         {activeTab === 'schedules' && (
           <div>
-            <h2 className="text-xl font-bold mb-4">Manage Schedules</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Manage Schedules</h2>
+              <button 
+                onClick={() => {
+                  const csvContent = [
+                    ['Property ID', 'Property', 'Customer', 'Email', 'Phone', 'Date', 'Time', 'Status', 'Message'],
+                    ...schedules.map(s => [
+                      s.propertyCode || 'N/A',
+                      s.propertyTitle,
+                      s.name,
+                      s.email,
+                      s.phone,
+                      s.date,
+                      s.time,
+                      s.status,
+                      s.message || ''
+                    ])
+                  ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                  
+                  const blob = new Blob([csvContent], { type: 'text/csv' });
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `schedules_${new Date().toISOString().split('T')[0]}.csv`;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                }}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
+              >
+                📥 Download Report
+              </button>
+            </div>
             <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
               <table className="w-full min-w-[900px]">
                 <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <tr>
+                    <th className="px-6 py-4 text-left font-semibold">Property ID</th>
                     <th className="px-6 py-4 text-left font-semibold">Property</th>
                     <th className="px-6 py-4 text-left font-semibold">Customer</th>
                     <th className="px-6 py-4 text-left font-semibold">Contact</th>
@@ -1675,9 +1716,23 @@ const AdminDashboard = () => {
                 <tbody>
                   {schedules.map(schedule => (
                     <tr key={schedule._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
+                      <td className="px-6 py-4">
+                        <span className="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                          {schedule.propertyCode || 'N/A'}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 font-medium">{schedule.propertyTitle}</td>
                       <td className="px-6 py-4 text-gray-700">{schedule.name}</td>
-                      <td className="px-6 py-4 text-gray-700">{schedule.phone}<br/><span className="text-sm text-gray-500">{schedule.email}</span></td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <a href={`tel:${schedule.phone}`} className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+                              📞 {schedule.phone}
+                            </a>
+                            <span className="text-sm text-gray-500 block mt-1">{schedule.email}</span>
+                          </div>
+                        </div>
+                      </td>
                       <td className="px-6 py-4 text-gray-700">{schedule.date} {schedule.time}</td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${schedule.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : schedule.status === 'approved' ? 'bg-blue-100 text-blue-800' : schedule.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>

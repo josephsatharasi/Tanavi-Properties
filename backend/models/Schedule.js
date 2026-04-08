@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const scheduleSchema = new mongoose.Schema({
   propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property', required: true },
   propertyTitle: { type: String, required: true },
+  propertyCode: { type: String },
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },

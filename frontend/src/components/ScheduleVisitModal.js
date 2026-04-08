@@ -27,7 +27,7 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
       const res = await fetch(`${API_URL}/api/schedules`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, propertyId, propertyTitle })
+        body: JSON.stringify({ ...formData, propertyId, propertyTitle, propertyCode })
       });
       if (res.ok) {
         alert('Visit scheduled successfully! We will contact you soon.');

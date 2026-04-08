@@ -5,7 +5,13 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const schedule = await Schedule.create(req.body);
+    const Property = require('../models/Property');
+    const property = await Property.findById(req.body.propertyId);
+    const scheduleData = {
+      ...req.body,
+      propertyCode: property?.propertyCode || req.body.propertyCode
+    };
+    const schedule = await Schedule.create(scheduleData);
     res.status(201).json(schedule);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +21,21 @@ router.post('/', async (req, res) => {
 router.get('/', protect, adminOnly, async (req, res) => {
   try {
     const schedules = await Schedule.find().populate('propertyId').sort({ createdAt: -1 });
-    res.json(schedules);
+    const Property = require('../models/Property');
+    
+    // Populate propertyCode if missing
+    const updatedSchedules = await Promise.all(schedules.map(async (schedule) => {
+      if (!schedule.propertyCode && schedule.propertyId) {
+        const property = await Property.findById(schedule.propertyId);
+        if (property?.propertyCode) {
+          schedule.propertyCode = property.propertyCode;
+          await schedule.save();
+        }
+      }
+      return schedule;
+    }));
+    
+    res.json(updatedSchedules);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
