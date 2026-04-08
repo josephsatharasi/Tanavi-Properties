@@ -110,18 +110,10 @@ const CategoryProperties = () => {
   }
 
   const handleBackClick = () => {
-    const returnSection = sessionStorage.getItem('returnSection');
-    const returnCategory = sessionStorage.getItem('returnCategory');
-    const scrollPos = sessionStorage.getItem('scrollPosition');
-    
-    // If coming from a category page, navigate back to that category
-    if (returnSection === 'category' && returnCategory) {
-      sessionStorage.removeItem('returnCategory');
-      navigate(`/category/${returnCategory}`);
-    } else {
-      // Navigate to home, keeping scroll position in sessionStorage for Home to restore
-      navigate('/');
-    }
+    // When navigating back to home, keep the returnSection and scrollPosition
+    // that were set when we first navigated from Home to this category page
+    // Home.js will handle the restoration
+    navigate('/');
   };
 
   if (loading) return <LoadingSpinner />;

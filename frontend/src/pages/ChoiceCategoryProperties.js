@@ -50,8 +50,8 @@ const ChoiceCategoryProperties = () => {
   };
 
   const handleBackClick = () => {
-    // Ensure Home restores to Choice Properties section.
-    sessionStorage.setItem('scrollTarget', 'choice-properties');
+    // Store the section for Home to restore (same as HighlightCard)
+    // returnSection and scrollPosition are already in sessionStorage from when we navigated here
     navigate('/');
   };
 

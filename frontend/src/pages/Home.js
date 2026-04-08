@@ -37,10 +37,9 @@ const Home = () => {
   }, [loading]);
 
   useEffect(() => {
-    // Restore scroll position immediately when returning to home page
+    // Restore scroll position when returning to home page
     const scrollPos = sessionStorage.getItem('scrollPosition');
     const returnSection = sessionStorage.getItem('returnSection');
-    const scrollTarget = sessionStorage.getItem('scrollTarget');
     
     if (scrollPos && returnSection) {
       // Prevent default scroll to top
@@ -50,35 +49,22 @@ const Home = () => {
       const restoreScroll = () => {
         const targetY = parseInt(scrollPos);
         window.scrollTo(0, targetY);
+        // Clean up
+        sessionStorage.removeItem('scrollPosition');
+        sessionStorage.removeItem('returnSection');
       };
       
       // Wait for content to load, then restore scroll
       if (loading) {
-        // If still loading, wait for load to complete
         const checkLoaded = setInterval(() => {
           if (!loading) {
             clearInterval(checkLoaded);
             setTimeout(restoreScroll, 100);
-            sessionStorage.removeItem('scrollPosition');
-            sessionStorage.removeItem('returnSection');
           }
         }, 50);
       } else {
-        // Content already loaded, restore immediately
         setTimeout(restoreScroll, 100);
-        sessionStorage.removeItem('scrollPosition');
-        sessionStorage.removeItem('returnSection');
-        sessionStorage.removeItem('scrollTarget');
       }
-    } else if (scrollTarget) {
-      // Fallback: restore by section id when exact scroll position is unavailable.
-      setTimeout(() => {
-        const targetEl = document.getElementById(scrollTarget);
-        if (targetEl) {
-          targetEl.scrollIntoView({ block: 'start', behavior: 'auto' });
-        }
-        sessionStorage.removeItem('scrollTarget');
-      }, 100);
     }
     
     return () => {

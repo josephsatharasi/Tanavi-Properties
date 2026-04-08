@@ -106,18 +106,19 @@ const PropertyDetails = () => {
     if (returnSection === 'choice' && returnCategory) {
       sessionStorage.removeItem('returnCategory');
       sessionStorage.removeItem('returnSection');
-      sessionStorage.removeItem('scrollPosition');
+      // Keep scrollPosition for restoration
       navigate(`/choice-category/${returnCategory}`);
     } 
     // If coming from regular category, navigate back to that category page
     else if (returnSection === 'category' && returnCategory) {
       sessionStorage.removeItem('returnCategory');
       sessionStorage.removeItem('returnSection');
-      sessionStorage.removeItem('scrollPosition');
+      // Keep scrollPosition for restoration
       navigate(`/category/${returnCategory}`);
     } 
     // Otherwise navigate to home, keeping scroll position for restoration
     else {
+      // Keep scrollPosition and returnSection for restoration
       navigate('/');
     }
   };

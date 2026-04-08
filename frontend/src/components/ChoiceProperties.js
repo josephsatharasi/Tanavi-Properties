@@ -30,7 +30,6 @@ const ChoiceProperties = () => {
                 onClick={() => {
                 sessionStorage.setItem('returnSection', 'choice-properties');
                 sessionStorage.setItem('scrollPosition', window.scrollY);
-                sessionStorage.setItem('scrollTarget', 'choice-properties');
                 navigate(`/choice-category/${property.slug}`);
               }}
                 className="group relative bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 cursor-pointer"

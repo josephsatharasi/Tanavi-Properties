@@ -32,7 +32,7 @@ const PropertyCategories = () => {
   ];
 
   const handleCategoryClick = (slug) => {
-    // Store the section ID and scroll position
+    // Store the section ID and scroll position (same as HighlightCard)
     sessionStorage.setItem('returnSection', 'categories');
     sessionStorage.setItem('scrollPosition', window.scrollY);
     navigate(`/category/${slug}`);

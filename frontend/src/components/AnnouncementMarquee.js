@@ -38,8 +38,9 @@ const AnnouncementMarquee = () => {
   if (!message) return null;
 
   return (
-    <div className="announcement-marquee-wrap bg-secondary text-white border-t border-white/20">
+    <div className="announcement-marquee-wrap text-white border-t border-white/20">
       <div className="announcement-marquee-track">
+        <span className="announcement-message">{message}</span>
         <span className="announcement-message">{message}</span>
         <span className="announcement-message">{message}</span>
       </div>
