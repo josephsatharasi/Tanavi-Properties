@@ -27,6 +27,25 @@ const ChoiceCategoryProperties = () => {
 
   useEffect(() => {
     fetchProperties();
+    
+    // Restore scroll when returning from property details
+    const categoryScrollPos = sessionStorage.getItem('categoryScrollPosition');
+    const returnSection = sessionStorage.getItem('returnSection');
+    
+    if (returnSection === 'choice' && categoryScrollPos) {
+      // Returning from property details - restore category page scroll
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(categoryScrollPos));
+        // Clean up ONLY categoryScrollPosition, keep everything else for home navigation
+        sessionStorage.removeItem('categoryScrollPosition');
+        // Reset returnSection back to 'choice-properties' for home navigation
+        sessionStorage.setItem('returnSection', 'choice-properties');
+        sessionStorage.removeItem('returnCategory');
+      }, 100);
+    } else if (!returnSection) {
+      // Coming fresh from home - start at top
+      window.scrollTo(0, 0);
+    }
   }, [categorySlug]);
 
   const fetchProperties = async () => {

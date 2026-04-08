@@ -42,16 +42,22 @@ const CategoryProperties = () => {
   }, []);
 
   useEffect(() => {
-    // Restore scroll only when returning from property details.
-    // For direct category clicks from Home, always start from top.
+    // Restore scroll when returning from property details
+    const categoryScrollPos = sessionStorage.getItem('categoryScrollPosition');
     const returnSection = sessionStorage.getItem('returnSection');
-    const scrollPos = sessionStorage.getItem('scrollPosition');
-    if (returnSection === 'category' && scrollPos) {
+    
+    if (returnSection === 'category' && categoryScrollPos) {
+      // Returning from property details - restore category page scroll
       setTimeout(() => {
-        window.scrollTo(0, parseInt(scrollPos));
-        sessionStorage.removeItem('scrollPosition');
+        window.scrollTo(0, parseInt(categoryScrollPos));
+        // Clean up ONLY categoryScrollPosition, keep everything else for home navigation
+        sessionStorage.removeItem('categoryScrollPosition');
+        // Reset returnSection back to 'categories' for home navigation
+        sessionStorage.setItem('returnSection', 'categories');
+        sessionStorage.removeItem('returnCategory');
       }, 100);
-    } else {
+    } else if (!returnSection) {
+      // Coming fresh from home - start at top
       window.scrollTo(0, 0);
     }
   }, []);
@@ -110,9 +116,9 @@ const CategoryProperties = () => {
   }
 
   const handleBackClick = () => {
-    // When navigating back to home, keep the returnSection and scrollPosition
-    // that were set when we first navigated from Home to this category page
-    // Home.js will handle the restoration
+    // When going back to home, the scrollPosition should already be in sessionStorage
+    // from when we first navigated from Home to this category page
+    // Just navigate back and let Home.js handle the restoration
     navigate('/');
   };
 

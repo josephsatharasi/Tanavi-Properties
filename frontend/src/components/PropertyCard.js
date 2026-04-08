@@ -100,10 +100,15 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
         </div>
         <button 
           onClick={() => {
+            // When clicking from a category page:
+            // 1. Save category page scroll for returning from property details
+            sessionStorage.setItem('categoryScrollPosition', window.scrollY);
+            
+            // 2. Set return section for property details back navigation
             sessionStorage.setItem('returnSection', section);
-            sessionStorage.setItem('scrollPosition', window.scrollY);
+            
+            // 3. Save category info if coming from a category page
             if (fromCategory) {
-              // Convert category name to slug for URL
               const categorySlugMap = {
                 'Agricultural Land': 'agricultural-land',
                 'Independent House': 'independent-house',
@@ -117,6 +122,11 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
             } else {
               sessionStorage.removeItem('returnCategory');
             }
+            
+            // 4. DON'T touch scrollPosition - it should still have the home scroll position
+            // This way when we go: Category -> Property -> Category -> Home,
+            // the home scroll position is preserved
+            
             navigate(`/property/${property._id || property.id}`);
           }}
           className="w-full bg-primary text-white py-2 rounded hover:opacity-90 transition"
