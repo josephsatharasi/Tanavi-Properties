@@ -312,12 +312,13 @@ const ListProperty = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Floor</label>
+                    <label className="block text-gray-700 mb-2">Floor *</label>
                     <input 
                       type="text" 
                       value={formData.floor} 
                       onChange={(e) => setFormData({...formData, floor: e.target.value})} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="Enter the floor"
                     />
                   </div>
@@ -344,11 +345,12 @@ const ListProperty = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Plug & Play</label>
+                    <label className="block text-gray-700 mb-2">Plug & Play *</label>
                     <select 
                       value={formData.plugAndPlay} 
                       onChange={(e) => setFormData({...formData, plugAndPlay: e.target.value})} 
                       className="w-full border p-3 rounded"
+                      required
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
@@ -356,52 +358,57 @@ const ListProperty = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Work Stations</label>
+                    <label className="block text-gray-700 mb-2">Work Stations *</label>
                     <input 
                       type="text" 
                       value={formData.workStations} 
                       onChange={(e) => handleNumericChange('workStations', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Cabins</label>
+                    <label className="block text-gray-700 mb-2">Cabins *</label>
                     <input 
                       type="text" 
                       value={formData.cabins} 
                       onChange={(e) => handleNumericChange('cabins', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Conference Hall</label>
+                    <label className="block text-gray-700 mb-2">Conference Hall *</label>
                     <input 
                       type="text" 
                       value={formData.conferenceHall} 
                       onChange={(e) => handleNumericChange('conferenceHall', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Pantry</label>
+                    <label className="block text-gray-700 mb-2">Pantry *</label>
                     <input 
                       type="text" 
                       value={formData.pantry} 
                       onChange={(e) => handleNumericChange('pantry', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-gray-700 mb-2">Washroom Details</label>
+                    <label className="block text-gray-700 mb-2">Washroom Details *</label>
                     <input 
                       type="text" 
                       value={formData.washroomDetails} 
                       onChange={(e) => setFormData({...formData, washroomDetails: e.target.value})} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="Total-0, Inside-0, Outside-0"
                     />
                   </div>
@@ -423,8 +430,8 @@ const ListProperty = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Area (sq.ft)</label>
-                    <input type="text" value={formData.area} onChange={(e) => setFormData({...formData, area: e.target.value})} className="w-full border p-3 rounded" />
+                    <label className="block text-gray-700 mb-2">Area (sq.ft) *</label>
+                    <input type="text" value={formData.area} onChange={(e) => setFormData({...formData, area: e.target.value})} className="w-full border p-3 rounded" required />
                   </div>
                 </>
               )}
@@ -432,22 +439,24 @@ const ListProperty = () => {
               {formData.category && !['Agricultural Land', 'Open Plot', 'Office Space'].includes(formData.category) && (
                 <>
                   <div>
-                    <label className="block text-gray-700 mb-2">Bedrooms</label>
+                    <label className="block text-gray-700 mb-2">Bedrooms *</label>
                     <input 
                       type="text" 
                       value={formData.bedrooms} 
                       onChange={(e) => handleNumericChange('bedrooms', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Bathrooms</label>
+                    <label className="block text-gray-700 mb-2">Bathrooms *</label>
                     <input 
                       type="text" 
                       value={formData.bathrooms} 
                       onChange={(e) => handleNumericChange('bathrooms', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0"
                     />
                   </div>
@@ -456,21 +465,22 @@ const ListProperty = () => {
               {formData.category && ['Apartment', 'Office Space', 'Independent House'].includes(formData.category) && (
                 <>
                   <div>
-                    <label className="block text-gray-700 mb-2">Parking Type</label>
-                    <select value={formData.parkingType} onChange={(e) => setFormData({...formData, parkingType: e.target.value})} className="w-full border p-3 rounded">
+                    <label className="block text-gray-700 mb-2">Parking Type *</label>
+                    <select value={formData.parkingType} onChange={(e) => setFormData({...formData, parkingType: e.target.value})} className="w-full border p-3 rounded" required>
                       <option value="">Select Parking Type</option>
                       <option value="Public">Public</option>
                       <option value="Reserved">Reserved</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-2">Number of Car Parkings</label>
+                    <label className="block text-gray-700 mb-2">Number of Car Parkings *</label>
                     <input 
                       type="text" 
                       min="0" 
                       value={formData.parkingCount} 
                       onChange={(e) => handleNumericChange('parkingCount', e.target.value)} 
                       className="w-full border p-3 rounded" 
+                      required
                       placeholder="0" 
                     />
                   </div>
@@ -479,13 +489,13 @@ const ListProperty = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Description</label>
-              <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full border p-3 rounded" rows="4" />
+              <label className="block text-gray-700 mb-2">Description *</label>
+              <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full border p-3 rounded" rows="4" required />
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Property Images (Max 8 images)</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading || formData.images.length >= 8} />
+              <label className="block text-gray-700 mb-2">Property Images (Max 8 images) *</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full border p-3 rounded" disabled={uploading || formData.images.length >= 8} required={formData.images.length === 0} />
               {uploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
               {formData.images.length >= 8 && <p className="text-sm text-red-600 mt-1">Maximum 8 images allowed</p>}
               {formData.images.length > 0 && (

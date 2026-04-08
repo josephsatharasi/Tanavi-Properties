@@ -241,7 +241,7 @@ const About = () => {
                         <FaShieldAlt className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Identify a Trusted Platform</h3>
-                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-[0_8px_16px_rgba(217,119,6,0.4)] hover:shadow-[0_12px_24px_rgba(217,119,6,0.5)] transition-all duration-300 border border-amber-400/30">
                         <p className="text-xs font-semibold tracking-wide">Start with Confidence</p>
                       </div>
                     </div>
@@ -260,7 +260,7 @@ const About = () => {
                         <FaHome className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Select the Right Property</h3>
-                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-[0_8px_16px_rgba(217,119,6,0.4)] hover:shadow-[0_12px_24px_rgba(217,119,6,0.5)] transition-all duration-300 border border-amber-400/30">
                         <p className="text-xs font-semibold tracking-wide">Choose What Truly Fits You</p>
                       </div>
                     </div>
@@ -279,7 +279,7 @@ const About = () => {
                         <FaHandshake className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">Close the Deal Successfully</h3>
-                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-[0_8px_16px_rgba(217,119,6,0.4)] hover:shadow-[0_12px_24px_rgba(217,119,6,0.5)] transition-all duration-300 border border-amber-400/30">
                         <p className="text-xs font-semibold tracking-wide">Smooth, Transparent & Secure</p>
                       </div>
                     </div>
@@ -298,7 +298,7 @@ const About = () => {
                         <FaSmile className="text-emerald-700 text-3xl" />
                       </div>
                       <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">A Happy Family, A Confident Decision</h3>
-                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-md border border-amber-400/30">
+                      <div className="bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 text-white py-2 px-3 rounded-lg w-full shadow-[0_8px_16px_rgba(217,119,6,0.4)] hover:shadow-[0_12px_24px_rgba(217,119,6,0.5)] transition-all duration-300 border border-amber-400/30">
                         <p className="text-xs font-semibold tracking-wide">Because Trust Creates Happiness</p>
                       </div>
                     </div>

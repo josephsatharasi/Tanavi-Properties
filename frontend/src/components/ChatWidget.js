@@ -306,7 +306,7 @@ const ChatWidget = () => {
       )}
 
       {isOpen && (
-        <div className={`fixed right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col z-50 ${isAtBottom ? 'bottom-[220px]' : 'bottom-[140px]'}`}>
+        <div className="fixed top-4 right-6 bg-white rounded-lg shadow-2xl flex flex-col z-50 w-96 md:w-[450px] h-[500px] md:h-[600px] max-h-[calc(100vh-2rem)]">
           <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
             <div>
               <h3 className="font-bold">Chat with Tanavi Properties</h3>

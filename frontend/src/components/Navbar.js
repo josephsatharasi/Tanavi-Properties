@@ -10,6 +10,7 @@ const Navbar = () => {
   const [bounce, setBounce] = useState(false);
   const [hasVisibleGallery, setHasVisibleGallery] = useState(false);
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
+  const [mobilePropertiesOpen, setMobilePropertiesOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -172,7 +173,48 @@ const Navbar = () => {
             >
               List Your Property
             </button>
-            <a href="/category/all" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/category/all') || location.pathname.startsWith('/category/') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Properties</a>
+            
+            {/* Mobile Properties Dropdown */}
+            <div>
+              <button
+                onClick={() => setMobilePropertiesOpen(!mobilePropertiesOpen)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition font-medium ${
+                  isActive('/category/all') || location.pathname.startsWith('/category/') || location.pathname.startsWith('/choice-category/')
+                    ? 'bg-primary text-white' 
+                    : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'
+                }`}
+              >
+                Properties
+                <svg 
+                  className={`w-4 h-4 transition-transform ${mobilePropertiesOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {mobilePropertiesOpen && (
+                <div className="mt-2 ml-4 space-y-2">
+                  <a 
+                    href="/category/all" 
+                    onClick={handleLinkClick}
+                    className="block px-4 py-2.5 rounded-lg text-gray-700 bg-white/50 hover:bg-primary/80 hover:text-white transition font-medium"
+                  >
+                    All Properties
+                  </a>
+                  <a 
+                    href="/#choice-properties" 
+                    onClick={(e) => { handleChoicePropertiesClick(e); setIsOpen(false); setMobilePropertiesOpen(false); }}
+                    className="block px-4 py-2.5 rounded-lg text-gray-700 bg-white/50 hover:bg-primary/80 hover:text-white transition font-medium"
+                  >
+                    Choice Properties
+                  </a>
+                </div>
+              )}
+            </div>
+            
             {hasVisibleGallery && (
               <a href="/blogs" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/blogs') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Gallery</a>
             )}
