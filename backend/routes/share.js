@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
       return res.status(404).send('Property not found');
     }
 
-    // Construct full image URL
+    // Construct full image URL - ALWAYS use HTTPS for WhatsApp compatibility
     const apiUrl = process.env.BACKEND_URL || process.env.API_URL || 'http://localhost:5000';
     let imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200';
     
@@ -17,11 +17,12 @@ router.get('/:id', async (req, res) => {
       const imagePath = property.images[0];
       // Check if it's already a full URL (Cloudinary or external)
       if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        // Force HTTPS for Cloudinary URLs
-        imageUrl = imagePath.replace('http://', 'https://');
+        // Force HTTPS for ALL URLs (required by WhatsApp)
+        imageUrl = imagePath.replace(/^http:\/\//i, 'https://');
       } else {
-        // Local upload - construct full URL
-        imageUrl = `${apiUrl}/uploads/${imagePath}`;
+        // Local upload - construct full URL with HTTPS
+        const secureApiUrl = apiUrl.replace(/^http:\/\//i, 'https://');
+        imageUrl = `${secureApiUrl}/uploads/${imagePath}`;
       }
     }
     
@@ -64,6 +65,9 @@ router.get('/:id', async (req, res) => {
   <meta property="og:image:alt" content="${property.title} - ${property.location}">
   <meta property="og:site_name" content="Tanavi Properties">
   <meta property="og:locale" content="en_IN">
+  
+  <!-- Force WhatsApp to refresh cache -->
+  <meta property="og:updated_time" content="${Date.now()}" />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
