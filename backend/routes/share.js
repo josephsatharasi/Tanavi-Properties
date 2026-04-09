@@ -9,10 +9,24 @@ router.get('/:id', async (req, res) => {
       return res.status(404).send('Property not found');
     }
 
-    const imageUrl = property.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200';
+    // Construct full image URL
+    const apiUrl = process.env.BACKEND_URL || process.env.API_URL || 'http://localhost:5000';
+    let imageUrl = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200';
+    
+    if (property.images?.[0]) {
+      const imagePath = property.images[0];
+      // Check if it's already a full URL (Cloudinary or external)
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        // Force HTTPS for Cloudinary URLs
+        imageUrl = imagePath.replace('http://', 'https://');
+      } else {
+        // Local upload - construct full URL
+        imageUrl = `${apiUrl}/uploads/${imagePath}`;
+      }
+    }
+    
     const propertyId = property.propertyCode ? `[${property.propertyCode}]` : '';
-    const frontendUrl = process.env.FRONTEND_URL || 'https://tanaviproperties.com';
-    const apiUrl = process.env.API_URL || 'https://api.tanaviproperties.com';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const propertyUrl = `${frontendUrl}/property/${property._id}`;
     
     // Format price
@@ -42,6 +56,7 @@ router.get('/:id', async (req, res) => {
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${description}">
   <meta property="og:image" content="${imageUrl}">
+  <meta property="og:image:url" content="${imageUrl}">
   <meta property="og:image:secure_url" content="${imageUrl}">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
@@ -49,6 +64,11 @@ router.get('/:id', async (req, res) => {
   <meta property="og:image:alt" content="${property.title} - ${property.location}">
   <meta property="og:site_name" content="Tanavi Properties">
   <meta property="og:locale" content="en_IN">
+  
+  <!-- WhatsApp Specific -->
+  <meta property="og:image" content="${imageUrl}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
@@ -133,10 +153,18 @@ router.get('/:id', async (req, res) => {
   </style>
   
   <script>
-    // Redirect after a short delay to ensure meta tags are read
-    setTimeout(function() {
-      window.location.href = '${propertyUrl}';
-    }, 100);
+    // Only redirect if it's a real user (not a bot/crawler)
+    // WhatsApp and other social media crawlers don't execute JavaScript
+    if (!/bot|crawler|spider|crawling|whatsapp|facebook|twitter/i.test(navigator.userAgent)) {
+      setTimeout(function() {
+        window.location.href = '${propertyUrl}';
+      }, 1500);
+    } else {
+      // For crawlers, redirect after longer delay
+      setTimeout(function() {
+        window.location.href = '${propertyUrl}';
+      }, 5000);
+    }
   </script>
 </head>
 <body>
