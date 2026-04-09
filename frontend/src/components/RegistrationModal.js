@@ -965,18 +965,21 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                 </div>
               </>
             )}
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
-              <input 
-                type="text" 
-                name="expectedPrice" 
-                value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} 
-                onChange={handlePriceChange} 
-                required 
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
-                placeholder="₹ 0,00,000"
-              />
-            </div>
+            {/* Only show Expected Price for Sale transaction or Commercial Open Space */}
+            {(formData.transactionType === 'Sale' || formData.commercialPropertyType === 'Commercial Open Space') && (
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Expected Price <span className="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  name="expectedPrice" 
+                  value={formData.expectedPrice ? formatIndianNumber(formData.expectedPrice) : ''} 
+                  onChange={handlePriceChange} 
+                  required 
+                  className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary" 
+                  placeholder="₹ 0,00,000"
+                />
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Road Type</label>
