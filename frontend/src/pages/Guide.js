@@ -1524,6 +1524,7 @@ const OpenPlotGuide = () => (
         <h3 className="text-2xl font-semibold text-gray-800 mb-0">Land Zoning & Classification (Very Important)</h3>
       </div>
       <p className="text-gray-700 mb-4">Zoning determines what can legally be built.</p>
+      
       <div className="overflow-x-auto mb-4">
         <table className="min-w-full bg-white border">
           <thead className="bg-gray-100">
@@ -1546,28 +1547,6 @@ const OpenPlotGuide = () => (
         <div className="flex items-start gap-2">
           <FaExclamationTriangle className="text-red-600 mt-1" />
           <p className="text-gray-700 font-semibold">Always verify zoning before purchase.</p>
-        </div>
-      </div>
-    </section>
-        <div className="bg-blue-50 p-6 rounded-lg">
-          <h4 className="font-semibold text-lg mb-3">DTCP Layout Approval</h4>
-          <p className="text-gray-700 mb-3">DTCP (Directorate of Town & Country Planning) regulates development in non-metro and developing regions.</p>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            <li>Approved road network</li>
-            <li>Plot demarcation</li>
-            <li>Drainage planning</li>
-            <li>Master plan compliance</li>
-          </ul>
-        </div>
-        <div className="bg-purple-50 p-6 rounded-lg">
-          <h4 className="font-semibold text-lg mb-3">HMDA Layout Approval</h4>
-          <p className="text-gray-700 mb-3">HMDA (Hyderabad Metropolitan Development Authority) governs metropolitan development zones.</p>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            <li>Wide roads & infrastructure</li>
-            <li>Parks & open spaces</li>
-            <li>Environmental compliance</li>
-            <li>High legal credibility</li>
-          </ul>
         </div>
       </div>
     </section>
@@ -1671,27 +1650,15 @@ const OpenPlotGuide = () => (
         </div>
       </div>
     </section>
-      <p className="text-gray-700 mb-4">
-        RERA (Real Estate Regulatory Authority) ensures transparency and accountability in real estate projects.
-      </p>
-      <div className="bg-yellow-50 p-6 rounded-lg">
-        <h4 className="font-semibold text-lg mb-3">RERA Ensures:</h4>
-        <ul className="list-disc list-inside space-y-2 text-gray-700">
-          <li>Transparency in project details</li>
-          <li>Legal accountability</li>
-          <li>Buyer protection</li>
-          <li>Standard practices</li>
-          <li>No false advertising</li>
-        </ul>
-      </div>
-    </section>
 
     <section className="mb-8">
       <div className="flex items-center gap-2 mb-4">
         <FaShieldAlt className="text-2xl text-gray-700" />
         <h3 className="text-2xl font-semibold text-gray-800 mb-0">RERA — Buyer Protection System</h3>
       </div>
-      <p className="text-gray-700 mb-4">RERA (Real Estate Regulatory Authority) ensures transparency and accountability in real estate projects.</p>
+      <p className="text-gray-700 mb-4">
+        RERA (Real Estate Regulatory Authority) ensures transparency and accountability in real estate projects.
+      </p>
       
       <div className="bg-yellow-50 p-6 rounded-lg mb-4">
         <h4 className="font-semibold text-lg mb-3">Why RERA Exists</h4>
@@ -1783,6 +1750,12 @@ const OpenPlotGuide = () => (
         </div>
       </div>
     </section>
+
+    <section className="mb-8">
+      <div className="flex items-center gap-2 mb-4">
+        <FaChartLine className="text-2xl text-gray-700" />
+        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Factors Affecting Plot Value</h3>
+      </div>
       <div className="grid md:grid-cols-2 gap-4">
         {[
           'Location growth direction',
@@ -1800,128 +1773,19 @@ const OpenPlotGuide = () => (
       </div>
     </section>
 
-    <section className="mb-8">
+    <section className="bg-green-100 p-6 rounded-lg">
       <div className="flex items-center gap-2 mb-4">
-        <FaChartLine className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Tanavi Buyer Decision Flow (Smart Framework)</h3>
+        <FaCheckCircle className="text-2xl text-green-700" />
+        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Conclusion</h3>
       </div>
-      
-      <div className="space-y-4">
-        <div className="bg-primary text-white p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-white text-primary w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 1 — Define Goal</h4>
-          </div>
-          <div className="bg-white bg-opacity-20 p-3 rounded">
-            <table className="w-full text-sm">
-              <tbody>
-                <tr><td className="py-1 pr-4 font-semibold">Build home</td><td className="py-1">→ Residential plot</td></tr>
-                <tr><td className="py-1 pr-4 font-semibold">Investment</td><td className="py-1">→ Growth corridor plot</td></tr>
-                <tr><td className="py-1 pr-4 font-semibold">Premium lifestyle</td><td className="py-1">→ Villa plot</td></tr>
-                <tr><td className="py-1 pr-4 font-semibold">Business</td><td className="py-1">→ Commercial plot</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="bg-blue-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 2 — Location Evaluation</h4>
-          </div>
-          <p className="text-gray-700 mb-2">Check:</p>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>City expansion direction</li>
-            <li>Highway connectivity</li>
-            <li>Schools & hospitals</li>
-            <li>Industrial development</li>
-            <li>Infrastructure projects</li>
-          </ul>
-          <p className="text-primary mt-2 font-semibold">Location drives appreciation.</p>
-        </div>
-
-        <div className="bg-green-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 3 — Legal Verification</h4>
-          </div>
-          <p className="text-gray-700 mb-2">Verify:</p>
-          <div className="grid md:grid-cols-2 gap-2">
-            <div className="flex items-center gap-2"><FaCheckCircle className="text-green-600" /> Clear title</div>
-            <div className="flex items-center gap-2"><FaCheckCircle className="text-green-600" /> Layout approval</div>
-            <div className="flex items-center gap-2"><FaCheckCircle className="text-green-600" /> Encumbrance Certificate (EC)</div>
-            <div className="flex items-center gap-2"><FaCheckCircle className="text-green-600" /> Survey number</div>
-            <div className="flex items-center gap-2"><FaCheckCircle className="text-green-600" /> Legal road access</div>
-          </div>
-        </div>
-
-        <div className="bg-yellow-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-yellow-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 4 — Physical Inspection</h4>
-          </div>
-          <p className="text-gray-700 mb-2">Check:</p>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>Plot boundaries</li>
-            <li>Dimensions</li>
-            <li>Drainage</li>
-            <li>Flood risk</li>
-            <li>Access road</li>
-          </ul>
-        </div>
-
-        <div className="bg-purple-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">5</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 5 — Growth Analysis</h4>
-          </div>
-          <p className="text-gray-700 mb-2">Look for:</p>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>Upcoming highways</li>
-            <li>IT/industrial zones</li>
-            <li>Urban expansion</li>
-            <li>Residential demand</li>
-          </ul>
-        </div>
-
-        <div className="bg-indigo-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">6</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 6 — Tanavi Risk Rating Review</h4>
-          </div>
-          <p className="text-gray-700">Evaluate investment safety before decision.</p>
-        </div>
-
-        <div className="bg-teal-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">7</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 7 — Schedule Visit via Tanavi</h4>
-          </div>
-          <p className="text-gray-700">Structured visits ensure verified interaction.</p>
-        </div>
-
-        <div className="bg-pink-50 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-pink-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">8</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 8 — Negotiation Support</h4>
-          </div>
-          <p className="text-gray-700">Tanavi enables transparent communication.</p>
-        </div>
-
-        <div className="bg-gray-100 p-5 rounded-lg">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">9</div>
-            <h4 className="font-semibold text-lg mb-0">STEP 9 — Registration & Ownership Transfer</h4>
-          </div>
-          <p className="text-gray-700 mb-2">Includes:</p>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>Agreement execution</li>
-            <li>Registration</li>
-            <li>Ownership update</li>
-          </ul>
-        </div>
-      </div>
+      <p className="text-gray-700 leading-relaxed">
+        Open plots provide flexible land ownership and strong long-term appreciation potential when purchased with proper 
+        verification and planning. Through structured guidance, verified listings, regulatory awareness, and transparent 
+        processes, Tanavi Properties enables safe and confident plot investments for every buyer and seller.
+      </p>
     </section>
+  </div>
+);
 
 // Apartment Guide Component
 const ApartmentGuide = () => (
