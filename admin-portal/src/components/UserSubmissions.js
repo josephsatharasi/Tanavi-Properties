@@ -51,27 +51,42 @@ const UserSubmissions = ({ onEditProperty, onSwitchToProperties, showToast }) =>
   };
 
   const handleApproveSubmission = async (id) => {
-    if (!window.confirm('Approve this property submission?')) return;
+    if (!window.confirm('Approve this property submission? It will be published on the public portal.')) return;
     const token = localStorage.getItem('token');
+    
+    // Find the submission to get all its data
+    const submission = userSubmissions.find(s => s._id === id);
+    if (!submission) {
+      showToast('Submission not found', 'error');
+      return;
+    }
+
     try {
+      // Prepare the update data - keep all existing fields and update status to available
+      // Remove 'user-submitted' from sections so it doesn't show in pending list anymore
+      const updateData = {
+        status: 'available',
+        sections: ['featured'] // Add to featured section so it shows on home page and category pages
+      };
+
       const res = await fetch(`${API_URL}/api/properties/${id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json', 
           Authorization: `Bearer ${token}` 
         },
-        body: JSON.stringify({ 
-          status: 'available',
-          sections: ['featured']
-        })
+        body: JSON.stringify(updateData)
       });
+      
       if (res.ok) {
-        await fetchUserSubmissions(); // Refresh the list
-        showToast('Property approved and published!', 'success');
+        await fetchUserSubmissions();
+        showToast('Property approved and published on public portal!', 'success');
       } else {
-        showToast('Failed to approve property', 'error');
+        const error = await res.json();
+        showToast(error.message || 'Failed to approve property', 'error');
       }
     } catch (error) {
+      console.error('Approval error:', error);
       showToast('Failed to approve property', 'error');
     }
   };
