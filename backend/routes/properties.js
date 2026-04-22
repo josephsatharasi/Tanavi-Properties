@@ -3,10 +3,37 @@ const Property = require('../models/Property');
 const { protect, adminOnly } = require('../middleware/auth');
 const router = express.Router();
 
+// Admin-only route to get all properties with sensitive data
+router.get('/admin/all', protect, adminOnly, async (req, res) => {
+  try {
+    const properties = await Property.find()
+      .select('-__v')
+      .lean()
+      .sort({ createdAt: -1 });
+    res.json(properties);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Admin-only route to get single property with sensitive data
+router.get('/admin/:id', protect, adminOnly, async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) return res.status(404).json({ message: 'Property not found' });
+    res.json(property);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     res.set('Cache-Control', 'public, max-age=300');
-    const properties = await Property.find().select('-__v').lean().sort({ createdAt: -1 });
+    const properties = await Property.find()
+      .select('-__v -phone -email -verificationDocuments') // Hide sensitive data from public
+      .lean()
+      .sort({ createdAt: -1 });
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +42,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const property = await Property.findById(req.params.id);
+    const property = await Property.findById(req.params.id)
+      .select('-phone -email -verificationDocuments'); // Hide sensitive data from public
     if (!property) return res.status(404).json({ message: 'Property not found' });
     res.json(property);
   } catch (error) {

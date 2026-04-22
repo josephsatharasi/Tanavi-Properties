@@ -28,6 +28,7 @@ const propertySchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: String,
+  verificationDocuments: [String], // Secure storage for property confirmation documents
   // Office Space specific fields
   builtUpArea: String,
   pricePerSqFt: String,

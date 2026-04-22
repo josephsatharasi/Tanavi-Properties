@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaTimes, FaCheckCircle, FaLock } from 'react-icons/fa';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
+import Modal from './Modal';
 
 const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -81,11 +82,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     locationUrl: ''
   });
   const [uploading, setUploading] = useState(false);
+  const [modalState, setModalState] = useState({ isOpen: false, type: 'success', title: '', message: '' });
 
   // Send OTP to email
   const handleSendOtp = async () => {
     if (!formData.email) {
-      alert('Please enter your email');
+      setModalState({ isOpen: true, type: 'error', title: 'Error', message: 'Please enter your email' });
       return;
     }
 
@@ -100,12 +102,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
       const data = await res.json();
       if (res.ok) {
         setOtpSent(true);
-        alert('OTP sent to your email!');
+        setModalState({ isOpen: true, type: 'success', title: 'OTP Sent!', message: 'OTP has been sent to your email successfully!' });
       } else {
-        alert(data.message || 'Failed to send OTP');
+        setModalState({ isOpen: true, type: 'error', title: 'Failed', message: data.message || 'Failed to send OTP' });
       }
     } catch (error) {
-      alert('Failed to send OTP');
+      setModalState({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to send OTP. Please try again.' });
     } finally {
       setSendingOtp(false);
     }
@@ -114,12 +116,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   // Verify OTP
   const handleVerifyOtp = async () => {
     if (!otp || otp.length !== 6) {
-      alert('Please enter valid 6-digit OTP');
+      setModalState({ isOpen: true, type: 'error', title: 'Invalid OTP', message: 'Please enter a valid 6-digit OTP' });
       return;
     }
 
     if (!formData.name || !formData.phone) {
-      alert('Please fill name and phone number');
+      setModalState({ isOpen: true, type: 'error', title: 'Missing Information', message: 'Please fill in your name and phone number' });
       return;
     }
 
@@ -139,12 +141,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
       if (res.ok) {
         setIsVerified(true);
         setAuthToken(data.token);
-        alert('Email verified successfully!');
+        setModalState({ isOpen: true, type: 'success', title: 'Verified!', message: 'Your email has been verified successfully!' });
       } else {
-        alert(data.message || 'Invalid OTP');
+        setModalState({ isOpen: true, type: 'error', title: 'Verification Failed', message: data.message || 'Invalid OTP. Please try again.' });
       }
     } catch (error) {
-      alert('Failed to verify OTP');
+      setModalState({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to verify OTP. Please try again.' });
     }
   };
 
@@ -1228,12 +1230,12 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     e.preventDefault();
     
     if (!isVerified) {
-      alert('Please verify your email with OTP first');
+      setModalState({ isOpen: true, type: 'warning', title: 'Verification Required', message: 'Please verify your email with OTP before submitting' });
       return;
     }
     
     if (formData.userType === 'Agent') {
-      alert('Only property owners can submit listings.');
+      setModalState({ isOpen: true, type: 'warning', title: 'Not Allowed', message: 'Only property owners can submit listings.' });
       return;
     }
     
@@ -1363,10 +1365,10 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
         });
       } else {
         const error = await res.json();
-        alert(error.message || 'Failed to submit');
+        setModalState({ isOpen: true, type: 'error', title: 'Submission Failed', message: error.message || 'Failed to submit property. Please try again.' });
       }
     } catch (error) {
-      alert('Failed to submit property');
+      setModalState({ isOpen: true, type: 'error', title: 'Error', message: 'Failed to submit property. Please check your connection and try again.' });
     }
   };
 
@@ -1701,6 +1703,15 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
           </div>
         </form>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ ...modalState, isOpen: false })}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+      />
     </div>
   );
 };

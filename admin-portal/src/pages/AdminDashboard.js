@@ -4,6 +4,7 @@ import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCirc
 import LoadingSpinner from '../components/LoadingSpinner';
 import AdminChat from '../components/AdminChat';
 import UserSubmissions from '../components/UserSubmissions';
+import Modal from '../components/Modal';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
 
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '', onConfirm: null, showCancel: false });
   const navigate = useNavigate();
 
   const [propertyForm, setPropertyForm] = useState({
@@ -61,10 +63,15 @@ const AdminDashboard = () => {
 
   const fetchProperties = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/properties`);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/properties/admin/all`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       const data = await res.json();
-      setProperties(data);
-      return data;
+      // Filter to show only admin-posted properties (no name, email, phone)
+      const adminProperties = data.filter(p => !p.name && !p.email && !p.phone);
+      setProperties(adminProperties);
+      return adminProperties;
     } catch (error) {
       console.error('Error fetching properties:', error);
       return [];
@@ -394,24 +401,45 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteProperty = async (id) => {
-    if (!window.confirm('Delete this property?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/properties/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setProperties(properties.filter(p => p._id !== id));
-        showToast('Property deleted successfully!', 'success');
-      } else {
-        const error = await res.json();
-        showToast(error.message || 'Failed to delete property', 'error');
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this property? This action cannot be undone.',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/properties/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            setProperties(properties.filter(p => p._id !== id));
+            showToast('Property deleted successfully!', 'success');
+          } else {
+            const error = await res.json();
+            setModal({
+              isOpen: true,
+              type: 'error',
+              title: 'Delete Failed',
+              message: error.message || 'Failed to delete property',
+              onConfirm: () => setModal({ ...modal, isOpen: false })
+            });
+          }
+        } catch (error) {
+          console.error('Error deleting property:', error);
+          setModal({
+            isOpen: true,
+            type: 'error',
+            title: 'Delete Failed',
+            message: 'Failed to delete property',
+            onConfirm: () => setModal({ ...modal, isOpen: false })
+          });
+        }
       }
-    } catch (error) {
-      console.error('Error deleting property:', error);
-      showToast('Failed to delete property', 'error');
-    }
+    });
   };
 
   const handleRenewProperty = async (id) => {
@@ -506,22 +534,31 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteGallery = async (id) => {
-    if (!window.confirm('Delete this gallery item?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/gallery/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setGallery(gallery.filter(g => g._id !== id));
-        showToast('Gallery deleted!', 'success');
-      } else {
-        showToast('Failed to delete', 'error');
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Delete this gallery item?',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/gallery/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            setGallery(gallery.filter(g => g._id !== id));
+            showToast('Gallery deleted!', 'success');
+          } else {
+            showToast('Failed to delete', 'error');
+          }
+        } catch (error) {
+          showToast('Failed to delete', 'error');
+        }
       }
-    } catch (error) {
-      showToast('Failed to delete', 'error');
-    }
+    });
   };
 
   const handleBuySellSubmit = async (e) => {
@@ -557,22 +594,31 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteBuySell = async (id) => {
-    if (!window.confirm('Delete this item?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/buysell/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setBuySell(buySell.filter(b => b._id !== id));
-        showToast('Item deleted!', 'success');
-      } else {
-        showToast('Failed to delete', 'error');
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Delete this item?',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/buysell/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            setBuySell(buySell.filter(b => b._id !== id));
+            showToast('Item deleted!', 'success');
+          } else {
+            showToast('Failed to delete', 'error');
+          }
+        } catch (error) {
+          showToast('Failed to delete', 'error');
+        }
       }
-    } catch (error) {
-      showToast('Failed to delete', 'error');
-    }
+    });
   };
 
   const handleTestimonialSubmit = async (e) => {
@@ -606,22 +652,31 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteTestimonial = async (id) => {
-    if (!window.confirm('Delete this testimonial?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/testimonials/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setTestimonials(testimonials.filter(t => t._id !== id));
-        showToast('Testimonial deleted!', 'success');
-      } else {
-        showToast('Failed to delete', 'error');
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Delete this testimonial?',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/testimonials/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            setTestimonials(testimonials.filter(t => t._id !== id));
+            showToast('Testimonial deleted!', 'success');
+          } else {
+            showToast('Failed to delete', 'error');
+          }
+        } catch (error) {
+          showToast('Failed to delete', 'error');
+        }
       }
-    } catch (error) {
-      showToast('Failed to delete', 'error');
-    }
+    });
   };
 
   const handleLocationSubmit = async (e) => {
@@ -659,26 +714,35 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteLocation = async (id) => {
-    if (!window.confirm('Delete this location?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/locations/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) {
-        if (res.status === 404) {
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Delete this location?',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/locations/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) {
+            if (res.status === 404) {
+              showToast('Locations API not available. Please deploy the updated backend code.', 'error');
+              return;
+            }
+            showToast('Failed to delete', 'error');
+            return;
+          }
+          setPropertyLocations(propertyLocations.filter(l => l._id !== id));
+          showToast('Location deleted!', 'success');
+        } catch (error) {
           showToast('Locations API not available. Please deploy the updated backend code.', 'error');
-          return;
         }
-        showToast('Failed to delete', 'error');
-        return;
       }
-      setPropertyLocations(propertyLocations.filter(l => l._id !== id));
-      showToast('Location deleted!', 'success');
-    } catch (error) {
-      showToast('Locations API not available. Please deploy the updated backend code.', 'error');
-    }
+    });
   };
 
   const copyToClipboard = (text) => {
@@ -731,22 +795,31 @@ const AdminDashboard = () => {
   };
 
   const handleDeletePoster = async (id) => {
-    if (!window.confirm('Delete this poster?')) return;
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${API_URL}/api/posters/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) {
-        showToast('Failed to delete poster', 'error');
-        return;
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: 'Delete this poster?',
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ ...modal, isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/posters/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) {
+            showToast('Failed to delete poster', 'error');
+            return;
+          }
+          setPosters(posters.filter(p => p._id !== id));
+          showToast('Poster deleted!', 'success');
+        } catch (error) {
+          showToast('Failed to delete poster', 'error');
+        }
       }
-      setPosters(posters.filter(p => p._id !== id));
-      showToast('Poster deleted!', 'success');
-    } catch (error) {
-      showToast('Failed to delete poster', 'error');
-    }
+    });
   };
 
   const handleTogglePoster = async (id) => {
@@ -787,6 +860,15 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        onConfirm={modal.onConfirm}
+        showCancel={modal.showCancel}
+      />
       {toast.show && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 animate-fadeIn">
           <div className={`bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 animate-scaleIn ${toast.type === 'success' ? 'border-t-4 border-green-500' : 'border-t-4 border-red-500'}`}>
@@ -1032,7 +1114,7 @@ const AdminDashboard = () => {
                     <th className="px-6 py-4 text-left font-semibold">Location</th>
                     <th className="px-6 py-4 text-left font-semibold">Section</th>
                     <th className="px-6 py-4 text-left font-semibold">Status</th>
-                    <th className="px-6 py-4 text-left font-semibold">Expiry</th>
+                    <th className="px-6 py-4 text-left font-semibold">Created</th>
                     <th className="px-6 py-4 text-center font-semibold">Actions</th>
                   </tr>
                 </thead>
@@ -1063,24 +1145,17 @@ const AdminDashboard = () => {
                       </td>
                       <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${property.status === 'available' ? 'bg-green-100 text-green-800' : property.status === 'sold' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{property.status}</span></td>
                       <td className="px-6 py-4">
-                        {expiryDate ? (
-                          <div>
-                            <span className={`px-2 py-1 rounded text-xs font-semibold ${isExpired ? 'bg-red-100 text-red-800' : daysLeft <= 7 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>
-                              {isExpired ? 'Expired' : `${daysLeft}d left`}
-                            </span>
-                            {property.renewalCount > 0 && <div className="text-xs text-gray-500 mt-1">Renewed {property.renewalCount}x</div>}
-                          </div>
-                        ) : <span className="text-gray-400 text-xs">No expiry</span>}
+                        <div className="text-xs text-gray-600">
+                          {new Date(property.createdAt).toLocaleDateString()}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(property.createdAt).toLocaleTimeString()}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <button onClick={() => handleEditProperty(property)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2" title="Edit">
                           <FaEdit size={18} />
                         </button>
-                        {(isExpired || (daysLeft && daysLeft <= 30)) && (
-                          <button onClick={() => handleRenewProperty(property._id)} className="text-green-600 hover:text-green-800 hover:bg-green-100 px-2 py-1 rounded text-xs font-semibold mr-2" title="Renew for 90 days">
-                            Renew
-                          </button>
-                        )}
                         <button onClick={() => handleDeleteProperty(property._id)} className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition" title="Delete">
                           <FaTrash size={18} />
                         </button>

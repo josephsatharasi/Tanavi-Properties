@@ -206,15 +206,146 @@ const PropertyDetails = () => {
                   <p className="text-gray-600">Bathrooms</p>
                 </div>
               )}
+              {property.builtUpArea && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.builtUpArea}</p>
+                  <p className="text-gray-600">Sq. Ft</p>
+                </div>
+              )}
+              {property.parkingType && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-lg font-bold text-primary">{property.parkingType}</p>
+                  <p className="text-gray-600">Parking</p>
+                </div>
+              )}
+              {property.parkingCount > 0 && (
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <p className="text-3xl font-bold text-primary">{property.parkingCount}</p>
+                  <p className="text-gray-600">Car Parking{property.parkingCount > 1 ? 's' : ''}</p>
+                </div>
+              )}
               <div className="bg-blue-50 p-4 rounded-lg text-center">
                 <p className="text-lg font-bold text-primary">{property.category || property.type}</p>
                 <p className="text-gray-600">Property Type</p>
               </div>
             </div>
 
+            {/* Office Space Specific Details */}
+            {property.category === 'Office Space' && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Office Space Details</h2>
+                <div className="bg-purple-50 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {property.pricePerSqFt && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Price Per Sq.Ft</p>
+                        <p className="text-purple-900 font-bold text-xl">₹{property.pricePerSqFt}</p>
+                      </div>
+                    )}
+                    {property.expectedRent && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Expected Rent</p>
+                        <p className="text-purple-900 font-bold text-xl">₹{property.expectedRent}</p>
+                      </div>
+                    )}
+                    {property.depositAmount && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Deposit Amount</p>
+                        <p className="text-purple-900 font-bold text-xl">₹{property.depositAmount}</p>
+                      </div>
+                    )}
+                    {property.floor && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Floor</p>
+                        <p className="text-purple-900 font-medium">{property.floor}</p>
+                      </div>
+                    )}
+                    {property.plugAndPlay && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Plug & Play</p>
+                        <p className="text-purple-900 font-medium">{property.plugAndPlay}</p>
+                      </div>
+                    )}
+                    {property.workStations && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Work Stations</p>
+                        <p className="text-purple-900 font-medium">{property.workStations}</p>
+                      </div>
+                    )}
+                    {property.cabins && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Cabins</p>
+                        <p className="text-purple-900 font-medium">{property.cabins}</p>
+                      </div>
+                    )}
+                    {property.conferenceHall && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Conference Hall</p>
+                        <p className="text-purple-900 font-medium">{property.conferenceHall}</p>
+                      </div>
+                    )}
+                    {property.pantry && (
+                      <div className="border-b border-purple-200 pb-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Pantry</p>
+                        <p className="text-purple-900 font-medium">{property.pantry}</p>
+                      </div>
+                    )}
+                    {property.washroomDetails && (
+                      <div className="border-b border-purple-200 pb-3 md:col-span-3">
+                        <p className="text-sm font-semibold text-purple-600 mb-1">Washroom Details</p>
+                        <p className="text-purple-900 font-medium">{property.washroomDetails}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Property Description</h2>
-              <p className="text-gray-700 leading-relaxed">{property.description}</p>
+              {(() => {
+                try {
+                  // Try to parse as JSON
+                  if (property.description && property.description.trim().startsWith('{')) {
+                    const data = JSON.parse(property.description);
+                    return (
+                      <div className="bg-gray-50 rounded-lg p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {Object.entries(data).map(([key, value], idx) => {
+                            // Skip empty values
+                            if (!value || value === '' || value === '0') return null;
+                            
+                            // Format the key to be more readable
+                            const formattedKey = key
+                              .replace(/([A-Z])/g, ' $1')
+                              .replace(/^./, str => str.toUpperCase())
+                              .trim();
+                            
+                            // Format the value
+                            let formattedValue = value;
+                            if (key === 'road' && !String(value).includes('Feet')) {
+                              formattedValue = `${value} Feet Road`;
+                            }
+                            
+                            return (
+                              <div key={idx} className="border-b border-gray-200 pb-3">
+                                <p className="text-sm font-semibold text-gray-600 mb-1">{formattedKey}</p>
+                                <p className="text-gray-800 font-medium">{formattedValue}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // Display as regular text
+                    return <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{property.description}</p>;
+                  }
+                } catch (e) {
+                  // If JSON parsing fails, display as regular text
+                  return <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{property.description}</p>;
+                }
+              })()}
             </div>
 
             {property.video && (
