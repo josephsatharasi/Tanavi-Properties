@@ -17,6 +17,9 @@ import {
   FaUsers,
   FaLightbulb
 } from 'react-icons/fa';
+import ApartmentGuideContent from '../components/ApartmentGuideContent';
+import FarmhouseGuideContent from '../components/FarmhouseGuideContent';
+import CommercialGuideContent from '../components/CommercialGuideContent';
 
 const Guide = () => {
   const [activeSection, setActiveSection] = useState('agricultural');
@@ -68,15 +71,14 @@ const Guide = () => {
           {activeSection === 'agricultural' && <AgriculturalLandGuide />}
           {activeSection === 'independent' && <IndependentHouseGuide />}
           {activeSection === 'plot' && <OpenPlotGuide />}
-          {activeSection === 'apartment' && <ApartmentGuide />}
-          {activeSection === 'farmhouse' && <FarmhouseGuide />}
-          {activeSection === 'commercial' && <CommercialGuide />}
+          {activeSection === 'apartment' && <ApartmentGuideContent />}
+          {activeSection === 'farmhouse' && <FarmhouseGuideContent />}
+          {activeSection === 'commercial' && <CommercialGuideContent />}
         </div>
       </div>
     </div>
   );
 };
-
 // Agricultural Land Guide Component
 const AgriculturalLandGuide = () => (
   <div className="prose max-w-none">
@@ -1787,121 +1789,7 @@ const OpenPlotGuide = () => (
   </div>
 );
 
-// Apartment Guide Component
-const ApartmentGuide = () => (
-  <div className="prose max-w-none">
-    <div className="flex items-center gap-3 mb-6">
-      <FaBuilding className="text-3xl text-primary" />
-      <h2 className="text-3xl font-bold text-primary mb-0">COMPLETE USER GUIDE — APARTMENT / FLAT</h2>
-    </div>
-    
-    <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <FaBook className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Introduction</h3>
-      </div>
-      <p className="text-gray-700 leading-relaxed">
-        An Apartment (Flat) is one of the most preferred urban real estate assets, combining home ownership, shared infrastructure, 
-        security, and lifestyle amenities within a planned residential building.
-      </p>
-    </section>
 
-    <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <FaInfoCircle className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">What is an Apartment / Flat?</h3>
-      </div>
-      <p className="text-gray-700 mb-4">
-        An Apartment (Flat) is a residential unit inside a multi-storey building where individual owners own their unit 
-        and common areas are shared among residents.
-      </p>
-      <div className="bg-blue-50 p-6 rounded-lg">
-        <h4 className="font-semibold text-lg mb-3">Understanding UDS (Undivided Share of Land)</h4>
-        <p className="text-gray-700">
-          UDS represents your proportional ownership in the land on which the building stands. 
-          Higher UDS = Better long-term asset value. Even if the building redevelops in future, land ownership remains valuable.
-        </p>
-      </div>
-    </section>
-
-    <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <FaClipboardList className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Types of Apartments</h3>
-      </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        {[
-          { type: 'Builder Apartment', desc: 'Constructed and sold by a real estate developer' },
-          { type: 'Gated Community', desc: 'Large projects with amenities and security' },
-          { type: 'Luxury Apartment', desc: 'Premium location, high-end specifications' },
-          { type: 'Ready-to-Move', desc: 'Construction completed; immediate possession' },
-          { type: 'Under-Construction', desc: 'Purchased during construction phase' }
-        ].map((item, idx) => (
-          <div key={idx} className="border-l-4 border-primary pl-4">
-            <h4 className="font-semibold text-lg">{item.type}</h4>
-            <p className="text-gray-600">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <FaShieldAlt className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">RERA — Mandatory Protection</h3>
-      </div>
-      <div className="bg-yellow-50 p-6 rounded-lg">
-        <p className="text-gray-700 mb-4">
-          RERA (Real Estate Regulatory Authority) protects buyers by regulating real estate developers and projects 
-          under the Real Estate (Regulation and Development) Act, 2016.
-        </p>
-        <h4 className="font-semibold mb-3">Buyer Protection Under RERA:</h4>
-        <ul className="list-disc list-inside space-y-2 text-gray-700">
-          <li>Protection from project delays</li>
-          <li>No misleading advertisements</li>
-          <li>Compensation rights</li>
-          <li>Complaint resolution mechanism</li>
-        </ul>
-      </div>
-    </section>
-
-    <section className="mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <FaFileAlt className="text-2xl text-gray-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Ready-to-Move vs Under-Construction</h3>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 border text-left">Factor</th>
-              <th className="px-4 py-2 border text-left">Ready</th>
-              <th className="px-4 py-2 border text-left">Under Construction</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td className="px-4 py-2 border">Possession</td><td className="px-4 py-2 border">Immediate</td><td className="px-4 py-2 border">Future</td></tr>
-            <tr><td className="px-4 py-2 border">Risk</td><td className="px-4 py-2 border">Low</td><td className="px-4 py-2 border">Moderate</td></tr>
-            <tr><td className="px-4 py-2 border">Price</td><td className="px-4 py-2 border">Higher</td><td className="px-4 py-2 border">Lower</td></tr>
-            <tr><td className="px-4 py-2 border">Rental Income</td><td className="px-4 py-2 border">Immediate</td><td className="px-4 py-2 border">Delayed</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section className="bg-blue-100 p-6 rounded-lg">
-      <div className="flex items-center gap-2 mb-4">
-        <FaCheckCircle className="text-2xl text-blue-700" />
-        <h3 className="text-2xl font-semibold text-gray-800 mb-0">Conclusion</h3>
-      </div>
-      <p className="text-gray-700 leading-relaxed">
-        Apartments provide immediate living comfort, rental opportunities, and structured urban investment when chosen with 
-        proper verification and planning. Through verified listings, RERA transparency, structured decision systems, and 
-        end-to-end guidance, Tanavi Properties enables confident apartment ownership for every buyer and seller.
-      </p>
-    </section>
-  </div>
-);
 
 // Farmhouse Guide Component
 const FarmhouseGuide = () => (

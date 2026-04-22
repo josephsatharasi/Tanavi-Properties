@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { FaTimes, FaCheckCircle } from 'react-icons/fa';
+import { FaTimes, FaCheckCircle, FaLock } from 'react-icons/fa';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
 
 const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPTWarning, setShowPTWarning] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+  const [sendingOtp, setSendingOtp] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -76,6 +81,72 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     locationUrl: ''
   });
   const [uploading, setUploading] = useState(false);
+
+  // Send OTP to email
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      alert('Please enter your email');
+      return;
+    }
+
+    setSendingOtp(true);
+    try {
+      const res = await fetch(`${API_URL}/api/otp/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setOtpSent(true);
+        alert('OTP sent to your email!');
+      } else {
+        alert(data.message || 'Failed to send OTP');
+      }
+    } catch (error) {
+      alert('Failed to send OTP');
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      alert('Please enter valid 6-digit OTP');
+      return;
+    }
+
+    if (!formData.name || !formData.phone) {
+      alert('Please fill name and phone number');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/otp/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          otp,
+          name: formData.name,
+          phone: formData.phone
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setIsVerified(true);
+        setAuthToken(data.token);
+        alert('Email verified successfully!');
+      } else {
+        alert(data.message || 'Invalid OTP');
+      }
+    } catch (error) {
+      alert('Failed to verify OTP');
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -1156,6 +1227,11 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!isVerified) {
+      alert('Please verify your email with OTP first');
+      return;
+    }
+    
     if (formData.userType === 'Agent') {
       alert('Only property owners can submit listings.');
       return;
@@ -1219,7 +1295,10 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
     try {
       const res = await fetch(`${API_URL}/api/properties/user-listing`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
         body: JSON.stringify(submitData)
       });
       
@@ -1391,17 +1470,36 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">Email <span className="text-red-500">*</span></label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              pattern="[a-zA-Z0-9._%+-]+@gmail\.com$"
-              title="Email must be a valid Gmail address (e.g., example@gmail.com)"
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-              placeholder="Enter your email"
-            />
+            <div className="flex gap-2">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                disabled={isVerified}
+                pattern="[a-zA-Z0-9._%+-]+@gmail\.com$"
+                title="Email must be a valid Gmail address (e.g., example@gmail.com)"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary disabled:bg-gray-100"
+                placeholder="Enter your email"
+              />
+              {!isVerified && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={sendingOtp || !formData.email}
+                  className="bg-primary text-white px-6 py-3 rounded hover:bg-blue-700 transition disabled:bg-gray-400 whitespace-nowrap font-medium"
+                >
+                  {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                </button>
+              )}
+              {isVerified && (
+                <div className="flex items-center gap-2 px-4 py-3 bg-green-100 text-green-700 rounded">
+                  <FaCheckCircle />
+                  <span className="font-semibold">Verified</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
@@ -1423,17 +1521,59 @@ const RegistrationModal = ({ isOpen, onClose, modalType = 'register' }) => {
                 }
               }}
               required
+              disabled={isVerified}
               pattern="[0-9]{10}"
               minLength="10"
               maxLength="10"
               title="Phone number must be exactly 10 digits"
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary disabled:bg-gray-100"
               placeholder="Enter 10-digit phone number"
             />
             {formData.phone && formData.phone.length < 10 && (
               <p className="text-red-500 text-sm mt-1">Phone number must be exactly 10 digits</p>
             )}
           </div>
+
+          {/* OTP Verification Section */}
+          {otpSent && !isVerified && (
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <FaLock className="text-blue-600 text-xl" />
+                <h3 className="text-lg font-semibold text-gray-800">Verify Your Email</h3>
+              </div>
+              <p className="text-gray-600 mb-4">We've sent a 6-digit OTP to {formData.email}</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                    setOtp(value);
+                  }}
+                  placeholder="Enter 6-digit OTP"
+                  className="flex-1 border-2 border-blue-300 p-3 rounded text-center text-2xl font-bold tracking-widest"
+                  maxLength="6"
+                />
+                <button
+                  type="button"
+                  onClick={handleVerifyOtp}
+                  disabled={otp.length !== 6}
+                  className="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition disabled:bg-gray-400 font-semibold"
+                >
+                  Verify
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-3">Didn't receive OTP? 
+                <button 
+                  type="button" 
+                  onClick={handleSendOtp} 
+                  className="text-blue-600 hover:underline ml-1 font-semibold"
+                >
+                  Resend
+                </button>
+              </p>
+            </div>
+          )}
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">You are <span className="text-red-500">*</span></label>

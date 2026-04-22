@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaLock } from 'react-icons/fa';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
 
@@ -15,6 +15,11 @@ const ListProperty = () => {
   });
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+  const [sendingOtp, setSendingOtp] = useState(false);
 
   const locations = ['Hyderabad', 'Secunderabad', 'Gachibowli', 'Madhapur', 'Kondapur', 'Kukatpally', 'Miyapur', 'Nizampet', 'Bachupally', 'Kompally'];
   const categories = ['Agricultural Land', 'Independent House', 'Open Plot', 'Apartment', 'Farmhouse', 'Office Space'];
@@ -22,6 +27,72 @@ const ListProperty = () => {
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+  };
+
+  // Send OTP to email
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      showToast('Please enter your email', 'error');
+      return;
+    }
+
+    setSendingOtp(true);
+    try {
+      const res = await fetch(`${API_URL}/api/otp/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setOtpSent(true);
+        showToast('OTP sent to your email!', 'success');
+      } else {
+        showToast(data.message || 'Failed to send OTP', 'error');
+      }
+    } catch (error) {
+      showToast('Failed to send OTP', 'error');
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      showToast('Please enter valid 6-digit OTP', 'error');
+      return;
+    }
+
+    if (!formData.name || !formData.phone) {
+      showToast('Please fill name and phone number', 'error');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/otp/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          otp,
+          name: formData.name,
+          phone: formData.phone
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setIsVerified(true);
+        setAuthToken(data.token);
+        showToast('Email verified successfully!', 'success');
+      } else {
+        showToast(data.message || 'Invalid OTP', 'error');
+      }
+    } catch (error) {
+      showToast('Failed to verify OTP', 'error');
+    }
   };
 
   // Format number with Indian comma system
@@ -169,10 +240,19 @@ const ListProperty = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isVerified) {
+      showToast('Please verify your email with OTP first', 'error');
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/properties/user-listing`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
         body: JSON.stringify(formData)
       });
       
@@ -185,6 +265,10 @@ const ListProperty = () => {
           plugAndPlay: '', workStations: '', cabins: '', conferenceHall: '', pantry: '', washroomDetails: '',
           locationUrl: ''
         });
+        setOtpSent(false);
+        setOtp('');
+        setIsVerified(false);
+        setAuthToken(null);
       } else {
         const error = await res.json();
         showToast(error.message || 'Failed to submit', 'error');
@@ -247,7 +331,32 @@ const ListProperty = () => {
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Email *</label>
-                <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border p-3 rounded" required />
+                <div className="flex gap-2">
+                  <input 
+                    type="email" 
+                    value={formData.email} 
+                    onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                    className="flex-1 border p-3 rounded" 
+                    required 
+                    disabled={isVerified}
+                  />
+                  {!isVerified && (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={sendingOtp || !formData.email}
+                      className="bg-primary text-white px-6 py-3 rounded hover:bg-blue-700 transition disabled:bg-gray-400 whitespace-nowrap"
+                    >
+                      {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                    </button>
+                  )}
+                  {isVerified && (
+                    <div className="flex items-center gap-2 px-4 py-3 bg-green-100 text-green-700 rounded">
+                      <FaCheckCircle />
+                      <span className="font-semibold">Verified</span>
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Phone *</label>
@@ -487,6 +596,47 @@ const ListProperty = () => {
                 </>
               )}
             </div>
+
+            {/* OTP Verification Section */}
+            {otpSent && !isVerified && (
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <FaLock className="text-blue-600 text-xl" />
+                  <h3 className="text-lg font-semibold text-gray-800">Verify Your Email</h3>
+                </div>
+                <p className="text-gray-600 mb-4">We've sent a 6-digit OTP to {formData.email}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                      setOtp(value);
+                    }}
+                    placeholder="Enter 6-digit OTP"
+                    className="flex-1 border-2 border-blue-300 p-3 rounded text-center text-2xl font-bold tracking-widest"
+                    maxLength="6"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleVerifyOtp}
+                    disabled={otp.length !== 6}
+                    className="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition disabled:bg-gray-400 font-semibold"
+                  >
+                    Verify
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mt-3">Didn't receive OTP? 
+                  <button 
+                    type="button" 
+                    onClick={handleSendOtp} 
+                    className="text-blue-600 hover:underline ml-1 font-semibold"
+                  >
+                    Resend
+                  </button>
+                </p>
+              </div>
+            )}
 
             <div>
               <label className="block text-gray-700 mb-2">Description *</label>

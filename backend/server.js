@@ -72,6 +72,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/otp', require('./routes/otp'));
 app.use('/api/properties', require('./routes/properties'));
 app.use('/api/schedules', require('./routes/schedules'));
 app.use('/api/upload', require('./routes/upload'));
