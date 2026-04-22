@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaCheckCircle, FaLock } from 'react-icons/fa';
+import Modal from './Modal';
 import API_URL from '../utils/api';
 
 const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, propertyCode }) => {
@@ -21,8 +22,133 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
     message: ''
   });
 
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
+
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      setModal({
+        isOpen: true,
+        type: 'warning',
+        title: 'Email Required',
+        message: 'Please enter your email address first.'
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Invalid Email',
+        message: 'Please enter a valid email address.'
+      });
+      return;
+    }
+
+    setSendingOtp(true);
+    try {
+      const res = await fetch(`${API_URL}/api/otp/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setOtpSent(true);
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'OTP Sent!',
+          message: `A 6-digit OTP has been sent to ${formData.email}. Please check your inbox.`
+        });
+      } else {
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Failed to Send OTP',
+          message: data.message || 'Could not send OTP. Please try again.'
+        });
+      }
+    } catch (error) {
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to send OTP. Please check your connection and try again.'
+      });
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      setModal({
+        isOpen: true,
+        type: 'warning',
+        title: 'Invalid OTP',
+        message: 'Please enter the 6-digit OTP sent to your email.'
+      });
+      return;
+    }
+
+    setVerifyingOtp(true);
+    try {
+      const res = await fetch(`${API_URL}/api/otp/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, otp })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setIsVerified(true);
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Verified!',
+          message: 'Your email has been verified successfully. You can now schedule your visit.'
+        });
+      } else {
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Verification Failed',
+          message: data.message || 'Invalid OTP. Please try again.'
+        });
+      }
+    } catch (error) {
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to verify OTP. Please try again.'
+      });
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isVerified) {
+      setModal({
+        isOpen: true,
+        type: 'warning',
+        title: 'Verification Required',
+        message: 'Please verify your email with OTP before scheduling a visit.'
+      });
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/schedules`, {
         method: 'POST',
@@ -30,12 +156,34 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
         body: JSON.stringify({ ...formData, propertyId, propertyTitle, propertyCode })
       });
       if (res.ok) {
-        alert('Visit scheduled successfully! We will contact you soon.');
-        onClose();
-        setFormData({ name: '', email: '', phone: '', date: '', time: '', message: '' });
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Visit Scheduled!',
+          message: 'Your visit has been scheduled successfully! We will contact you soon.'
+        });
+        setTimeout(() => {
+          onClose();
+          setFormData({ name: '', email: '', phone: '', date: '', time: '', message: '' });
+          setOtpSent(false);
+          setOtp('');
+          setIsVerified(false);
+        }, 2000);
+      } else {
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Scheduling Failed',
+          message: 'Could not schedule visit. Please try again.'
+        });
       }
     } catch (error) {
-      alert('Error scheduling visit. Please try again.');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Error',
+        message: 'Error scheduling visit. Please try again.'
+      });
     }
   };
 
@@ -43,6 +191,13 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
@@ -75,14 +230,59 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
             
             <div className="mb-4">
               <label className="block text-gray-700 mb-2">Email <span className="text-red-500">*</span></label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:border-primary"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  disabled={isVerified}
+                  className={`flex-1 px-4 py-2 border rounded focus:outline-none focus:border-primary ${
+                    isVerified ? 'bg-green-50 border-green-500' : ''
+                  }`}
+                />
+                {isVerified && (
+                  <div className="flex items-center justify-center w-12 bg-green-500 rounded">
+                    <FaCheckCircle className="text-white" size={20} />
+                  </div>
+                )}
+              </div>
+              {!isVerified && (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  disabled={sendingOtp || !formData.email}
+                  className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold disabled:text-gray-400"
+                >
+                  {sendingOtp ? 'Sending OTP...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                </button>
+              )}
             </div>
+
+            {otpSent && !isVerified && (
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
+                <div className="flex items-center gap-2 mb-3">
+                  <FaLock className="text-blue-600" />
+                  <label className="block text-gray-700 font-semibold">Enter OTP <span className="text-red-500">*</span></label>
+                </div>
+                <input
+                  type="text"
+                  maxLength="6"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Enter 6-digit OTP"
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500 text-center text-2xl tracking-widest font-bold"
+                />
+                <button
+                  type="button"
+                  onClick={handleVerifyOtp}
+                  disabled={verifyingOtp || otp.length !== 6}
+                  className="w-full mt-3 bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {verifyingOtp ? 'Verifying...' : 'Verify OTP'}
+                </button>
+              </div>
+            )}
             
             <div className="mb-4">
               <label className="block text-gray-700 mb-2">Phone <span className="text-red-500">*</span></label>
@@ -133,9 +333,10 @@ const ScheduleVisitModal = ({ isOpen, onClose, propertyTitle, propertyId, proper
             
             <button
               type="submit"
-              className="w-full bg-primary text-white py-3 rounded font-semibold"
+              disabled={!isVerified}
+              className="w-full bg-primary text-white py-3 rounded font-semibold hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              Schedule Visit
+              {isVerified ? 'Schedule Visit' : 'Verify Email to Continue'}
             </button>
           </form>
         </div>

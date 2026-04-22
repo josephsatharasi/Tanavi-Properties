@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaLock, FaEnvelope } from 'react-icons/fa';
+import Modal from '../components/Modal';
 import API_URL from '../utils/api';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [modal, setModal] = useState({ isOpen: false, type: 'success', title: '', message: '' });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const res = await fetch(`${API_URL}/api/admin-auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -22,32 +24,50 @@ const AdminLogin = () => {
       const data = await res.json();
 
       if (res.ok) {
-        if (data.user.role !== 'admin') {
-          setError('Admin access required.');
-          return;
-        }
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/dashboard');
+        setModal({
+          isOpen: true,
+          type: 'success',
+          title: 'Login Successful!',
+          message: 'Welcome back to Tanavi Properties Admin Portal.'
+        });
+        setTimeout(() => navigate('/dashboard'), 1500);
       } else {
-        setError(data.message || 'Invalid credentials');
+        setModal({
+          isOpen: true,
+          type: 'error',
+          title: 'Login Failed',
+          message: data.message || 'Invalid credentials. Please try again.'
+        });
       }
     } catch (error) {
-      setError('Cannot connect to server');
+      setModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Connection Error',
+        message: 'Cannot connect to server. Please check your connection.'
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+      />
+      
       <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Admin Portal</h1>
-          <p className="text-gray-600 mt-2">Tanavi Properties</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+        {modal.isOpen ? null : (
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">Admin Portal</h1>
+            <p className="text-gray-600 mt-2">Tanavi Properties</p>
           </div>
         )}
 
@@ -82,11 +102,27 @@ const AdminLogin = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <Link to="/forgot-password" className="text-blue-600 hover:underline text-sm">
+            Forgot Password?
+          </Link>
+        </div>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-blue-600 hover:underline font-semibold">
+              Register here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
