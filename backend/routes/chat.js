@@ -93,7 +93,7 @@ router.post('/start', async (req, res) => {
   }
 });
 
-// Send a message
+// Send a message (no auth required - works for both user and admin)
 router.post('/message', async (req, res) => {
   console.log('POST /message called with body:', req.body);
   try {
@@ -169,8 +169,8 @@ router.get('/all', protect, adminOnly, async (req, res) => {
   }
 });
 
-// Mark chat as read (admin only)
-router.put('/read/:userId', protect, adminOnly, async (req, res) => {
+// Mark chat as read (no auth required - admin can mark as read)
+router.put('/read/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     
