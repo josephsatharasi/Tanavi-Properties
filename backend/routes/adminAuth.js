@@ -20,20 +20,26 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
     // Check if admin already exists
     const existingAdmin = await User.findOne({ email });
     if (existingAdmin) {
       return res.status(400).json({ message: 'Admin with this email already exists' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create admin user
+    // Create admin user (password will be hashed by User model pre-save hook)
     const admin = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password, // Don't hash here - let the model do it
       role: 'admin',
       isVerified: true
     });
@@ -57,7 +63,7 @@ router.post('/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Admin registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(500).json({ message: 'Server error during registration', error: error.message });
   }
 });
 
@@ -66,15 +72,28 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log('Login attempt for:', email);
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     // Find admin user
     const admin = await User.findOne({ email, role: 'admin' });
     if (!admin) {
+      console.log('Admin not found for email:', email);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    console.log('Admin found:', admin.email, 'Role:', admin.role);
+
+    // Check password using the model method
+    const isPasswordValid = await admin.comparePassword(password);
+    console.log('Password valid:', isPasswordValid);
+    
     if (!isPasswordValid) {
+      console.log('Invalid password for:', email);
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -84,6 +103,8 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '30d' }
     );
+
+    console.log('Login successful for:', email);
 
     res.json({
       message: 'Login successful',
@@ -97,7 +118,7 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Admin login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    res.status(500).json({ message: 'Server error during login', error: error.message });
   }
 });
 
@@ -156,6 +177,15 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
 
+    // Validate input
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: 'Email, OTP, and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
     // Find admin user
     const admin = await User.findOne({ email, role: 'admin' });
     if (!admin) {
@@ -168,11 +198,8 @@ router.post('/reset-password', async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update password
-    admin.password = hashedPassword;
+    // Update password (will be hashed by User model pre-save hook)
+    admin.password = newPassword;
     await admin.save();
 
     // Delete used OTP
@@ -181,7 +208,7 @@ router.post('/reset-password', async (req, res) => {
     res.json({ message: 'Password reset successfully. You can now login with your new password.' });
   } catch (error) {
     console.error('Reset password error:', error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+    res.status(500).json({ message: 'Server error. Please try again.', error: error.message });
   }
 });
 
@@ -189,6 +216,11 @@ router.post('/reset-password', async (req, res) => {
 router.post('/verify-reset-otp', async (req, res) => {
   try {
     const { email, otp } = req.body;
+
+    // Validate input
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and OTP are required' });
+    }
 
     // Find admin user
     const admin = await User.findOne({ email, role: 'admin' });
@@ -205,7 +237,7 @@ router.post('/verify-reset-otp', async (req, res) => {
     res.json({ message: 'OTP verified successfully', verified: true });
   } catch (error) {
     console.error('Verify OTP error:', error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+    res.status(500).json({ message: 'Server error. Please try again.', error: error.message });
   }
 });
 
