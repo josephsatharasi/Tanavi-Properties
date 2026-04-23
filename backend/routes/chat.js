@@ -39,7 +39,7 @@ router.post('/start', async (req, res) => {
       if (property && property.isActive && property.status === 'available') {
         userType = 'seller';
         sellerName = property.ownerName || property.contactPerson || 'Seller';
-        propertyIdToStore = propertyId;
+        propertyIdToStore = property.propertyCode || propertyId;
       }
     } else {
       // Check if mobile number matches any approved property
@@ -52,7 +52,7 @@ router.post('/start', async (req, res) => {
       if (property) {
         userType = 'seller';
         sellerName = property.ownerName || property.contactPerson || 'Seller';
-        propertyIdToStore = property._id.toString();
+        propertyIdToStore = property.propertyCode || property._id.toString();
       } else {
         // Check for approval pending properties
         const pendingProperty = await Property.findOne({ 
@@ -63,7 +63,7 @@ router.post('/start', async (req, res) => {
         if (pendingProperty) {
           userType = 'approval_pending';
           sellerName = pendingProperty.ownerName || pendingProperty.contactPerson || 'Seller';
-          propertyIdToStore = pendingProperty._id.toString();
+          propertyIdToStore = pendingProperty.propertyCode || pendingProperty._id.toString();
         }
       }
     }
@@ -229,10 +229,17 @@ router.post('/confirm-availability', async (req, res) => {
     
     // If property is sold, update property status
     if (!available && chat.propertyId) {
-      await Property.findByIdAndUpdate(chat.propertyId, { 
-        status: 'sold',
-        soldDate: new Date()
-      });
+      // Try to find by property code first, then by ID
+      let property = await Property.findOne({ propertyCode: chat.propertyId });
+      if (!property) {
+        property = await Property.findById(chat.propertyId);
+      }
+      
+      if (property) {
+        property.status = 'sold';
+        property.soldDate = new Date();
+        await property.save();
+      }
     }
     
     res.json({ success: true, chat });

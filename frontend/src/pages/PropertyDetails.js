@@ -144,27 +144,35 @@ const PropertyDetails = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="relative h-[70vh] min-h-[320px] max-h-[820px] overflow-hidden bg-white">
+          <div className="relative bg-white overflow-hidden">
             {property.images && property.images.length > 0 ? (
               <>
-                {property.images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={getImageUrl(img, property.propertyCode)}
-                    alt={`${property.title} ${index + 1}`}
-                    loading="lazy"
-                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
-                      index === currentImage ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  />
-                ))}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                <div className="w-full">
+                  {property.images.map((img, index) => (
+                    <div
+                      key={index}
+                      className={`transition-opacity duration-1000 ${
+                        index === currentImage ? 'opacity-100' : 'opacity-0 absolute inset-0'
+                      }`}
+                    >
+                      <div className="p-4 md:p-6 lg:p-8">
+                        <img
+                          src={getImageUrl(img, property.propertyCode)}
+                          alt={`${property.title} ${index + 1}`}
+                          loading="lazy"
+                          className="w-full h-auto rounded-lg shadow-2xl border-8 border-black"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black bg-opacity-70 px-4 py-2 rounded-full">
                   {property.images.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImage(index)}
-                      className={`w-3 h-3 rounded-full ${
-                        index === currentImage ? 'bg-white' : 'bg-white/50'
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        index === currentImage ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
                       }`}
                     />
                   ))}

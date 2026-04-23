@@ -246,6 +246,38 @@ const UserSubmissions = ({ onEditProperty, onSwitchToProperties, showToast }) =>
         </div>
         <div className="flex gap-2">
           <button
+            onClick={() => {
+              const dataToExport = activeView === 'pending' ? userSubmissions : publishedUserProperties;
+              const csvContent = [
+                ['Property ID', 'Title', 'Category', 'Price', 'Location', 'Area', 'Submitter Name', 'Email', 'Phone', 'Status', 'Submitted Date'],
+                ...dataToExport.map(p => [
+                  p.propertyCode || 'N/A',
+                  p.title,
+                  p.category,
+                  p.price,
+                  p.location,
+                  p.area || 'N/A',
+                  p.name || 'N/A',
+                  p.email || 'N/A',
+                  p.phone || 'N/A',
+                  p.status,
+                  new Date(p.createdAt).toLocaleDateString()
+                ])
+              ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+              
+              const blob = new Blob([csvContent], { type: 'text/csv' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `user_submissions_${activeView}_${new Date().toISOString().split('T')[0]}.csv`;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }}
+            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 flex items-center gap-2"
+          >
+            📥 Download Report
+          </button>
+          <button
             onClick={() => setActiveView('pending')}
             className={`px-4 py-2 rounded-lg font-semibold transition ${
               activeView === 'pending'

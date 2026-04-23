@@ -298,43 +298,44 @@ const ChatWidget = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-[220px]' : 'bottom-[140px]'}`}
+          className={`fixed right-4 md:right-6 bg-primary text-white p-3 md:p-4 rounded-full shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-110 z-50 ${isAtBottom ? 'bottom-[220px]' : 'bottom-[140px]'}`}
           aria-label="Open chat"
         >
-          <FaComments className="w-6 h-6" />
+          <FaComments className="w-5 h-5 md:w-6 md:h-6" />
         </button>
       )}
 
       {isOpen && (
-        <div className="fixed top-4 right-6 bg-white rounded-lg shadow-2xl flex flex-col z-50 w-96 md:w-[450px] h-[500px] md:h-[600px] max-h-[calc(100vh-2rem)]">
-          <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
-            <div>
-              <h3 className="font-bold">Chat with Tanavi Properties</h3>
-              {isSetup && <p className="text-xs opacity-90">{username} {getUserTypeLabel()}</p>}
+        <div className="fixed inset-0 md:inset-auto md:top-4 md:right-4 md:bottom-auto bg-white md:rounded-lg shadow-2xl flex flex-col z-50 md:w-[450px] md:h-[600px] md:max-h-[calc(100vh-2rem)]">
+          {/* Header */}
+          <div className="bg-primary text-white p-3 md:p-4 md:rounded-t-lg flex justify-between items-center">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-base md:text-lg">Chat with Tanavi Properties</h3>
+              {isSetup && <p className="text-xs opacity-90 truncate">{username} {getUserTypeLabel()}</p>}
             </div>
-            <button onClick={() => setIsOpen(false)} aria-label="Close chat">
-              <FaTimes />
+            <button onClick={() => setIsOpen(false)} aria-label="Close chat" className="flex-shrink-0 ml-2">
+              <FaTimes className="text-lg md:text-xl" />
             </button>
           </div>
 
           {!isSetup ? (
-            <form onSubmit={handleSetup} className="p-6 flex flex-col gap-4">
-              <h4 className="font-bold text-lg">Start Chat</h4>
-              <p className="text-sm text-gray-600">Enter your registered mobile number to continue</p>
-              {error && <p className="text-red-500 text-sm">{error}</p>}
+            <form onSubmit={handleSetup} className="p-4 md:p-6 flex flex-col gap-3 md:gap-4">
+              <h4 className="font-bold text-base md:text-lg">Start Chat</h4>
+              <p className="text-xs md:text-sm text-gray-600">Enter your registered mobile number to continue</p>
+              {error && <p className="text-red-500 text-xs md:text-sm">{error}</p>}
               <input
                 type="tel"
                 placeholder="Enter your mobile number"
                 value={mobileNumber}
                 onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className="border p-3 rounded"
+                className="border p-2 md:p-3 rounded text-sm md:text-base"
                 required
                 disabled={loading}
                 maxLength={10}
               />
               <button 
                 type="submit" 
-                className="bg-primary text-white py-2 rounded hover:opacity-90 disabled:opacity-50"
+                className="bg-primary text-white py-2 md:py-3 rounded hover:opacity-90 disabled:opacity-50 text-sm md:text-base font-medium"
                 disabled={loading}
               >
                 {loading ? 'Starting...' : 'Start Chat'}
@@ -342,34 +343,35 @@ const ChatWidget = () => {
             </form>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+              {/* Messages - WhatsApp style */}
+              <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 bg-gray-50">
+                {error && <p className="text-red-500 text-xs md:text-sm text-center bg-red-50 p-2 rounded">{error}</p>}
                 {messages.length === 0 ? (
-                  <p className="text-gray-500 text-center mt-4">No messages yet. Start the conversation!</p>
+                  <p className="text-gray-500 text-center mt-4 text-xs md:text-sm">No messages yet. Start the conversation!</p>
                 ) : (
                   Object.entries(groupMessagesByDate(messages)).map(([date, msgs]) => (
                     <div key={date}>
                       {/* Date Separator */}
-                      <div className="flex justify-center my-4">
-                        <div className="bg-white px-3 py-1 rounded-full shadow-sm">
-                          <span className="text-xs text-gray-600 font-medium">{date}</span>
+                      <div className="flex justify-center my-3 md:my-4">
+                        <div className="bg-white px-2 md:px-3 py-1 rounded-full shadow-sm">
+                          <span className="text-[10px] md:text-xs text-gray-600 font-medium">{date}</span>
                         </div>
                       </div>
                       
                       {/* Messages for this date */}
                       {msgs.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
-                          <div className={`max-w-[75%] ${msg.sender === 'user' ? 'bg-green-500 text-white' : 'bg-white'} rounded-lg shadow-sm`}>
-                            <div className="px-3 py-2">
-                              <p className={`text-sm ${msg.sender === 'user' ? 'text-white' : 'text-gray-800'} break-words`}>
+                          <div className={`max-w-[85%] md:max-w-[75%] ${msg.sender === 'user' ? 'bg-green-500 text-white rounded-br-none' : 'bg-white rounded-bl-none'} rounded-lg shadow-sm`}>
+                            <div className="px-2.5 md:px-3 py-2">
+                              <p className={`text-xs md:text-sm ${msg.sender === 'user' ? 'text-white' : 'text-gray-800'} break-words`}>
                                 {msg.text}
                               </p>
                               <div className="flex items-center justify-end gap-1 mt-1">
-                                <span className={`text-[10px] ${msg.sender === 'user' ? 'text-green-100' : 'text-gray-500'}`}>
+                                <span className={`text-[9px] md:text-[10px] ${msg.sender === 'user' ? 'text-green-100' : 'text-gray-500'}`}>
                                   {formatMessageTime(msg.timestamp)}
                                 </span>
                                 {msg.sender === 'user' && (
-                                  <svg className="w-4 h-4 text-green-100" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg className="w-3 h-3 md:w-4 md:h-4 text-green-100" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                                   </svg>
                                 )}
@@ -384,20 +386,21 @@ const ChatWidget = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              <form onSubmit={handleSendMessage} className="p-3 bg-gray-100 border-t flex gap-2 items-center">
+              {/* Input - Mobile friendly */}
+              <form onSubmit={handleSendMessage} className="p-2 md:p-3 bg-gray-100 border-t flex gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Type a message..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  className="flex-1 border-0 bg-white p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 border-0 bg-white p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-primary text-xs md:text-sm"
                 />
                 <button 
                   type="submit" 
-                  className="bg-primary text-white p-3 rounded-full hover:opacity-90 transition-all hover:scale-105"
+                  className="bg-primary text-white p-2 md:p-3 rounded-full hover:opacity-90 transition-all hover:scale-105 flex-shrink-0 disabled:opacity-50"
                   disabled={!newMessage.trim()}
                 >
-                  <FaPaperPlane className="text-lg" />
+                  <FaPaperPlane className="text-sm md:text-base" />
                 </button>
               </form>
             </>
@@ -407,22 +410,22 @@ const ChatWidget = () => {
 
       {/* Availability Confirmation Modal */}
       {showAvailabilityModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-xl font-bold mb-4">Confirm Property Availability</h3>
-            <p className="text-gray-700 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Confirm Property Availability</h3>
+            <p className="text-sm md:text-base text-gray-700 mb-4 md:mb-6">
               It's been 90 days since you listed your property. Is your property still available?
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <button
                 onClick={() => handleAvailabilityConfirmation(true)}
-                className="flex-1 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition font-medium"
+                className="flex-1 bg-green-500 text-white py-2.5 md:py-3 rounded-lg hover:bg-green-600 transition font-medium text-sm md:text-base"
               >
                 Yes, Still Available
               </button>
               <button
                 onClick={() => handleAvailabilityConfirmation(false)}
-                className="flex-1 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition font-medium"
+                className="flex-1 bg-red-500 text-white py-2.5 md:py-3 rounded-lg hover:bg-red-600 transition font-medium text-sm md:text-base"
               >
                 No, Sold
               </button>

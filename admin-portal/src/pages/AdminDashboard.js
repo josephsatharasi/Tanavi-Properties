@@ -17,6 +17,7 @@ const AdminDashboard = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [propertyLocations, setPropertyLocations] = useState([]);
   const [posters, setPosters] = useState([]);
+  const [soldProperties, setSoldProperties] = useState([]);
   const [galleryEnabled, setGalleryEnabled] = useState(true);
   const [mapEnabled, setMapEnabled] = useState(true);
   const [showPropertyForm, setShowPropertyForm] = useState(false);
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
       navigate('/');
       return;
     }
-    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings(), fetchMapSettings(), fetchLocations(), fetchPosters()]).then(() => setLoading(false));
+    Promise.all([fetchProperties(), fetchSchedules(), fetchGallery(), fetchBuySell(), fetchTestimonials(), fetchGallerySettings(), fetchMapSettings(), fetchLocations(), fetchPosters(), fetchSoldProperties()]).then(() => setLoading(false));
   }, [navigate]);
 
   const fetchProperties = async () => {
@@ -250,6 +251,27 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error fetching posters:', error);
       setPosters([]);
+      return [];
+    }
+  };
+
+  const fetchSoldProperties = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/chat/sold-properties`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        console.warn('Sold properties API not available');
+        setSoldProperties([]);
+        return [];
+      }
+      const data = await res.json();
+      setSoldProperties(Array.isArray(data) ? data : []);
+      return data;
+    } catch (error) {
+      console.error('Error fetching sold properties:', error);
+      setSoldProperties([]);
       return [];
     }
   };
@@ -976,6 +998,12 @@ const AdminDashboard = () => {
               >
                 <FaComments /> Live Chat
               </button>
+              <button 
+                onClick={() => { setActiveTab('soldProperties'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'soldProperties' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaCheckCircle /> Sold Properties
+              </button>
             </nav>
           </div>
         </div>
@@ -988,9 +1016,42 @@ const AdminDashboard = () => {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Manage Properties</h2>
-              <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', sections: ['featured'] }); }} className="bg-green-600 text-white px-4 py-2 rounded">
-                Add Property
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => {
+                    const csvContent = [
+                      ['Property ID', 'Title', 'Category', 'Price', 'Location', 'Area', 'Bedrooms', 'Bathrooms', 'Status', 'Section', 'Created Date'],
+                      ...properties.map(p => [
+                        p.propertyCode || 'N/A',
+                        p.title,
+                        p.category,
+                        p.price,
+                        p.location,
+                        p.area || 'N/A',
+                        p.bedrooms || 'N/A',
+                        p.bathrooms || 'N/A',
+                        p.status,
+                        (p.sections || []).join(', '),
+                        new Date(p.createdAt).toLocaleDateString()
+                      ])
+                    ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                    
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `properties_report_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
+                >
+                  📥 Download Report
+                </button>
+                <button onClick={() => { setShowPropertyForm(true); setEditingProperty(null); setPropertyForm({ title: '', category: '', price: '', location: '', area: '', bedrooms: '', bathrooms: '', description: '', features: '', images: [], status: 'available', sections: ['featured'] }); }} className="bg-green-600 text-white px-4 py-2 rounded">
+                  Add Property
+                </button>
+              </div>
             </div>
 
             {showPropertyForm && (
@@ -1825,6 +1886,92 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'soldProperties' && (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Sold Properties (90-Day Confirmation)</h2>
+              <button 
+                onClick={() => {
+                  const csvContent = [
+                    ['Seller Name', 'Mobile Number', 'Property ID', 'Confirmed Date', 'Days Active'],
+                    ...soldProperties.map(sp => [
+                      sp.sellerName || sp.username,
+                      sp.mobileNumber,
+                      sp.propertyId || 'N/A',
+                      new Date(sp.availabilityConfirmedAt).toLocaleDateString(),
+                      Math.floor((new Date(sp.availabilityConfirmedAt) - new Date(sp.chatStartedAt)) / (1000 * 60 * 60 * 24))
+                    ])
+                  ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                  
+                  const blob = new Blob([csvContent], { type: 'text/csv' });
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `sold_properties_${new Date().toISOString().split('T')[0]}.csv`;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                }}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2"
+              >
+                📥 Download Report
+              </button>
+            </div>
+            <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+              <table className="w-full min-w-[800px]">
+                <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left font-semibold">Seller Name</th>
+                    <th className="px-6 py-4 text-left font-semibold">Mobile Number</th>
+                    <th className="px-6 py-4 text-left font-semibold">Property ID</th>
+                    <th className="px-6 py-4 text-left font-semibold">Chat Started</th>
+                    <th className="px-6 py-4 text-left font-semibold">Confirmed Date</th>
+                    <th className="px-6 py-4 text-left font-semibold">Days Active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {soldProperties.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                        No sold properties yet. Properties marked as sold after 90-day confirmation will appear here.
+                      </td>
+                    </tr>
+                  ) : (
+                    soldProperties.map(sp => {
+                      const daysActive = Math.floor((new Date(sp.availabilityConfirmedAt) - new Date(sp.chatStartedAt)) / (1000 * 60 * 60 * 24));
+                      return (
+                        <tr key={sp._id} className="border-b hover:bg-red-50 transition-colors duration-200">
+                          <td className="px-6 py-4 font-medium">{sp.sellerName || sp.username}</td>
+                          <td className="px-6 py-4">
+                            <a href={`tel:${sp.mobileNumber}`} className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+                              📞 {sp.mobileNumber}
+                            </a>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                              {sp.propertyId || 'N/A'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">
+                            {new Date(sp.chatStartedAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">
+                            {new Date(sp.availabilityConfirmedAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                              {daysActive} days
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>

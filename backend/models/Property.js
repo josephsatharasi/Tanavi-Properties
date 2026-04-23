@@ -17,6 +17,7 @@ const propertySchema = new mongoose.Schema({
   video: String,
   locationUrl: String,
   status: { type: String, enum: ['available', 'sold', 'pending'], default: 'available', index: true },
+  soldDate: { type: Date },
   sections: { type: [String], enum: ['featured', 'highlights', 'choice', 'user-submitted'] },
   expiryDate: { type: Date, index: true },
   isActive: { type: Boolean, default: true, index: true },
