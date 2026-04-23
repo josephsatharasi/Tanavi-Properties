@@ -6,27 +6,38 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
     console.log('✓ MongoDB connected');
     
-    const adminExists = await User.findOne({ email: 'admin@tanavi.com' });
+    const email = 'admin@tanavi.com';
+    const password = 'admin123';
+    
+    const adminExists = await User.findOne({ email });
     if (adminExists) {
-      console.log('\n✓ Admin user already exists!');
-      console.log('\n📧 Email: admin@tanavi.com');
-      console.log('🔑 Password: admin123');
-      console.log('\n🌐 Login at: http://localhost:3000/admin/login');
+      console.log('\n⚠️  Admin already exists. Testing password...');
+      const isValid = await adminExists.comparePassword(password);
+      if (isValid) {
+        console.log('✓ Password is correct!');
+      } else {
+        console.log('✗ Password mismatch. Updating...');
+        adminExists.password = password;
+        await adminExists.save();
+        console.log('✓ Password updated!');
+      }
+      console.log('\n📧 Email:', email);
+      console.log('🔑 Password:', password);
       process.exit(0);
     }
 
     await User.create({
       name: 'Admin',
-      email: 'admin@tanavi.com',
-      password: 'admin123',
+      email,
+      password,
       role: 'admin',
-      phone: '1234567890'
+      phone: '1234567890',
+      isVerified: true
     });
 
     console.log('\n✓ Admin user created successfully!');
-    console.log('\n📧 Email: admin@tanavi.com');
-    console.log('🔑 Password: admin123');
-    console.log('\n🌐 Login at: http://localhost:3000/admin/login');
+    console.log('\n📧 Email:', email);
+    console.log('🔑 Password:', password);
     process.exit(0);
   })
   .catch(err => {
