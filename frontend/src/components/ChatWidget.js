@@ -6,6 +6,9 @@ const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSetup, setIsSetup] = useState(false);
   const [mobileNumber, setMobileNumber] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [userType, setUserType] = useState('buyer');
@@ -129,6 +132,11 @@ const ChatWidget = () => {
       return;
     }
     
+    if (!otpVerified) {
+      setError('Please verify your mobile number with OTP');
+      return;
+    }
+    
     setLoading(true);
     setError('');
     
@@ -178,6 +186,85 @@ const ChatWidget = () => {
     } catch (error) {
       console.error('Error starting chat:', error);
       setError(error.message || 'Failed to start chat. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!mobileNumber.trim()) {
+      setError('Please enter your mobile number');
+      return;
+    }
+    
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobileNumber.trim())) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      const res = await fetch(`${API_URL}/api/otp/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: `${mobileNumber.trim()}@chat.tanavi.com`,
+          purpose: 'chat_verification'
+        })
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to send OTP');
+      }
+      
+      setOtpSent(true);
+      setError('');
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      setError(error.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp.trim()) {
+      setError('Please enter the OTP');
+      return;
+    }
+    
+    if (otp.trim().length !== 6) {
+      setError('Please enter a valid 6-digit OTP');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      const res = await fetch(`${API_URL}/api/otp/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: `${mobileNumber.trim()}@chat.tanavi.com`,
+          otp: otp.trim()
+        })
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Invalid OTP');
+      }
+      
+      setOtpVerified(true);
+      setError('');
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setError(error.message || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -321,25 +408,98 @@ const ChatWidget = () => {
           {!isSetup ? (
             <form onSubmit={handleSetup} className="p-4 md:p-6 flex flex-col gap-3 md:gap-4">
               <h4 className="font-bold text-base md:text-lg">Start Chat</h4>
-              <p className="text-xs md:text-sm text-gray-600">Enter your registered mobile number to continue</p>
-              {error && <p className="text-red-500 text-xs md:text-sm">{error}</p>}
-              <input
-                type="tel"
-                placeholder="Enter your mobile number"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                className="border p-2 md:p-3 rounded text-sm md:text-base"
-                required
-                disabled={loading}
-                maxLength={10}
-              />
-              <button 
-                type="submit" 
-                className="bg-primary text-white py-2 md:py-3 rounded hover:opacity-90 disabled:opacity-50 text-sm md:text-base font-medium"
-                disabled={loading}
-              >
-                {loading ? 'Starting...' : 'Start Chat'}
-              </button>
+              <p className="text-xs md:text-sm text-gray-600">Verify your mobile number to continue</p>
+              {error && <p className="text-red-500 text-xs md:text-sm bg-red-50 p-2 rounded">{error}</p>}
+              
+              {/* Mobile Number Input */}
+              <div>
+                <label className="block text-xs md:text-sm font-medium mb-1">Mobile Number</label>
+                <div className="flex gap-2">
+                  <input
+                    type="tel"
+                    placeholder="Enter 10-digit mobile number"
+                    value={mobileNumber}
+                    onChange={(e) => {
+                      setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10));
+                      setOtpSent(false);
+                      setOtpVerified(false);
+                      setOtp('');
+                    }}
+                    className="flex-1 border p-2 md:p-3 rounded text-sm md:text-base"
+                    required
+                    disabled={loading || otpVerified}
+                    maxLength={10}
+                  />
+                  {!otpSent && !otpVerified && (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={loading || mobileNumber.length !== 10}
+                      className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded text-xs md:text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {loading ? 'Sending...' : 'Send OTP'}
+                    </button>
+                  )}
+                  {otpVerified && (
+                    <div className="flex items-center text-green-600 px-2">
+                      <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* OTP Input */}
+              {otpSent && !otpVerified && (
+                <div>
+                  <label className="block text-xs md:text-sm font-medium mb-1">Enter OTP</label>
+                  <p className="text-xs text-gray-500 mb-2">We've sent a 6-digit OTP to your mobile number</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter 6-digit OTP"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      className="flex-1 border p-2 md:p-3 rounded text-sm md:text-base text-center tracking-widest font-mono"
+                      required
+                      disabled={loading}
+                      maxLength={6}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      disabled={loading || otp.length !== 6}
+                      className="bg-green-600 text-white px-3 md:px-4 py-2 rounded text-xs md:text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {loading ? 'Verifying...' : 'Verify'}
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpSent(false);
+                      setOtp('');
+                      handleSendOtp();
+                    }}
+                    disabled={loading}
+                    className="text-xs md:text-sm text-blue-600 hover:text-blue-700 mt-2 disabled:opacity-50"
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+              )}
+
+              {/* Start Chat Button */}
+              {otpVerified && (
+                <button 
+                  type="submit" 
+                  className="bg-primary text-white py-2 md:py-3 rounded hover:opacity-90 disabled:opacity-50 text-sm md:text-base font-medium"
+                  disabled={loading}
+                >
+                  {loading ? 'Starting Chat...' : 'Start Chat'}
+                </button>
+              )}
             </form>
           ) : (
             <>
