@@ -101,4 +101,60 @@ router.get('/me', protect, async (req, res) => {
   res.json({ user: req.user });
 });
 
+// Get all users (admin only)
+router.get('/users', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update user (admin only)
+router.put('/users/:id', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { name, email, phone } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { name, email, phone },
+      { new: true, runValidators: true }
+    ).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Delete user (admin only)
+router.delete('/users/:id', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Delete user's chat messages
+    const Chat = require('../models/Chat');
+    await Chat.deleteMany({ userId: req.params.id });
+    
+    res.json({ message: 'User and associated data deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

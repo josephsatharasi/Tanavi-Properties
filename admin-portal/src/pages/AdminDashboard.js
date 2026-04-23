@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments, FaBars, FaImages, FaShoppingCart, FaStar, FaMapMarkerAlt, FaImage, FaClipboardList } from 'react-icons/fa';
+import { FaHome, FaCalendar, FaSignOutAlt, FaEdit, FaTrash, FaTimes, FaCheckCircle, FaTimesCircle, FaComments, FaBars, FaImages, FaShoppingCart, FaStar, FaMapMarkerAlt, FaImage, FaClipboardList, FaUser } from 'react-icons/fa';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AdminChat from '../components/AdminChat';
 import UserSubmissions from '../components/UserSubmissions';
+import UserManagement from '../components/UserManagement';
 import Modal from '../components/Modal';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
@@ -999,6 +1000,12 @@ const AdminDashboard = () => {
                 <FaComments /> Live Chat
               </button>
               <button 
+                onClick={() => { setActiveTab('users'); setSidebarOpen(false); }} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'users' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
+              >
+                <FaUser /> User Management
+              </button>
+              <button 
                 onClick={() => { setActiveTab('soldProperties'); setSidebarOpen(false); }} 
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded mb-2 transition ${activeTab === 'soldProperties' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`}
               >
@@ -1011,6 +1018,7 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         {activeTab === 'chat' && <AdminChat />}
+        {activeTab === 'users' && <UserManagement showToast={showToast} setModal={setModal} />}
 
         {activeTab === 'properties' && (
           <div>
