@@ -100,17 +100,25 @@ router.post('/message', async (req, res) => {
     const { userId, sender, text } = req.body;
     
     if (!userId || !sender || !text) {
+      console.error('Missing required fields:', { userId, sender, text });
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
     if (!['user', 'admin'].includes(sender)) {
+      console.error('Invalid sender type:', sender);
       return res.status(400).json({ message: 'Invalid sender type' });
     }
 
     const chat = await Chat.findOne({ userId });
     
     if (!chat) {
+      console.error('Chat session not found for userId:', userId);
       return res.status(404).json({ message: 'Chat session not found' });
+    }
+    
+    // Ensure messages array exists
+    if (!chat.messages) {
+      chat.messages = [];
     }
     
     chat.messages.push({ 
@@ -120,16 +128,18 @@ router.post('/message', async (req, res) => {
     });
     
     if (sender === 'user') {
-      chat.unreadCount += 1;
+      chat.unreadCount = (chat.unreadCount || 0) + 1;
     }
     
     chat.lastMessage = new Date();
+    
     await chat.save();
+    console.log('Message saved successfully for userId:', userId);
     
     res.json({ success: true, chat });
   } catch (error) {
     console.error('Error sending message:', error);
-    res.status(500).json({ message: 'Failed to send message', error: error.message });
+    res.status(500).json({ message: 'Failed to send message', error: error.message, stack: error.stack });
   }
 });
 
@@ -171,22 +181,30 @@ router.get('/all', protect, adminOnly, async (req, res) => {
 
 // Mark chat as read (no auth required - admin can mark as read)
 router.put('/read/:userId', async (req, res) => {
+  console.log('PUT /read called for userId:', req.params.userId);
   try {
     const { userId } = req.params;
+    
+    if (!userId) {
+      console.error('Missing userId parameter');
+      return res.status(400).json({ message: 'User ID is required' });
+    }
     
     const chat = await Chat.findOne({ userId });
     
     if (!chat) {
+      console.error('Chat not found for userId:', userId);
       return res.status(404).json({ message: 'Chat not found' });
     }
     
     chat.unreadCount = 0;
     await chat.save();
+    console.log('Chat marked as read for userId:', userId);
     
     res.json({ success: true, chat });
   } catch (error) {
     console.error('Error marking as read:', error);
-    res.status(500).json({ message: 'Failed to mark as read', error: error.message });
+    res.status(500).json({ message: 'Failed to mark as read', error: error.message, stack: error.stack });
   }
 });
 
