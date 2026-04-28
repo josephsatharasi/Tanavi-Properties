@@ -16,6 +16,23 @@ router.get('/admin/all', protect, adminOnly, async (req, res) => {
   }
 });
 
+// Admin-only route to get sellers (properties with name, email, phone)
+router.get('/sellers', protect, adminOnly, async (req, res) => {
+  try {
+    const sellers = await Property.find({
+      name: { $exists: true, $ne: null, $ne: '' },
+      email: { $exists: true, $ne: null, $ne: '' },
+      phone: { $exists: true, $ne: null, $ne: '' }
+    })
+      .select('propertyCode name email phone title createdAt')
+      .lean()
+      .sort({ createdAt: -1 });
+    res.json(sellers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Admin-only route to get single property with sensitive data
 router.get('/admin/:id', protect, adminOnly, async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import ScheduleVisitModal from '../components/ScheduleVisitModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import API_URL, { getImageUrl } from '../utils/api';
@@ -7,6 +7,7 @@ import API_URL, { getImageUrl } from '../utils/api';
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
@@ -98,20 +99,22 @@ const PropertyDetails = () => {
   }, [property]);
 
   const handleBackClick = () => {
-    const returnSection = sessionStorage.getItem('returnSection');
-    const returnCategory = sessionStorage.getItem('returnCategory');
-    
-    // If coming from choice category, navigate back to that category page
-    if (returnSection === 'choice' && returnCategory) {
-      navigate(`/choice-category/${returnCategory}`);
-    } 
-    // If coming from regular category, navigate back to that category page
-    else if (returnSection === 'category' && returnCategory) {
-      navigate(`/category/${returnCategory}`);
-    } 
-    // Otherwise navigate to home, keeping scroll position for restoration
-    else {
-      navigate('/');
+    const fromRoute = location.state?.fromRoute;
+    const clickedPropertyId = location.state?.clickedPropertyId;
+    const scrollPosition = location.state?.scrollPosition;
+
+    if (fromRoute) {
+      // Navigate back with restoration context
+      navigate(fromRoute, {
+        state: {
+          restoreContext: true,
+          clickedPropertyId: clickedPropertyId,
+          scrollPosition: scrollPosition,
+        }
+      });
+    } else {
+      // Fallback to browser back
+      navigate(-1);
     }
   };
 

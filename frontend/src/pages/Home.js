@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import Hero from '../components/Hero';
 import PropertyCard from '../components/PropertyCard';
@@ -15,10 +16,21 @@ import AnnouncementMarquee from '../components/AnnouncementMarquee';
 import API_URL, { fetchWithTimeout } from '../utils/api';
 
 const Home = () => {
+  const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibleSections, setVisibleSections] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const propertyRefs = useRef({});
+  const hasRestoredRef = useRef(false);
+
+  // Get ref for a specific property card
+  const getPropertyRef = useCallback((propertyId) => {
+    if (!propertyRefs.current[propertyId]) {
+      propertyRefs.current[propertyId] = React.createRef();
+    }
+    return propertyRefs.current[propertyId];
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,41 +48,52 @@ const Home = () => {
     return () => observer.disconnect();
   }, [loading]);
 
+  // Restore scroll and highlight card when returning from detail page
   useEffect(() => {
-    // Restore scroll position when returning to home page
-    const scrollPos = sessionStorage.getItem('scrollPosition');
-    const returnSection = sessionStorage.getItem('returnSection');
-    
-    if (scrollPos && returnSection) {
-      // Prevent default scroll to top
-      window.history.scrollRestoration = 'manual';
-      
-      // Restore scroll after content is loaded
-      const restoreScroll = () => {
-        const targetY = parseInt(scrollPos);
-        window.scrollTo(0, targetY);
-        // Clean up
-        sessionStorage.removeItem('scrollPosition');
-        sessionStorage.removeItem('returnSection');
-      };
-      
-      // Wait for content to load, then restore scroll
-      if (loading) {
-        const checkLoaded = setInterval(() => {
-          if (!loading) {
-            clearInterval(checkLoaded);
-            setTimeout(restoreScroll, 100);
+    if (hasRestoredRef.current || loading || properties.length === 0) return;
+
+    const shouldRestore = location.state?.restoreContext === true;
+    const clickedPropertyId = location.state?.clickedPropertyId;
+    const savedScrollPosition = location.state?.scrollPosition;
+    const scrollTo = location.state?.scrollTo;
+
+    if (scrollTo) {
+      // Scroll to specific section (e.g., choice-properties)
+      setTimeout(() => {
+        const element = document.getElementById(scrollTo);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        hasRestoredRef.current = true;
+      }, 300);
+    } else if (shouldRestore) {
+      // Wait longer for refs to be created and DOM to be ready
+      setTimeout(() => {
+        if (clickedPropertyId && propertyRefs.current[clickedPropertyId]) {
+          const cardRef = propertyRefs.current[clickedPropertyId];
+          if (cardRef?.current) {
+            cardRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+
+            cardRef.current.classList.add('card-highlight');
+            setTimeout(() => {
+              cardRef.current?.classList.remove('card-highlight');
+            }, 2000);
           }
-        }, 50);
-      } else {
-        setTimeout(restoreScroll, 100);
-      }
+        } else if (savedScrollPosition !== undefined) {
+          window.scrollTo({
+            top: savedScrollPosition,
+            behavior: 'smooth',
+          });
+        }
+        hasRestoredRef.current = true;
+      }, 500);
+    } else {
+      window.scrollTo(0, 0);
     }
-    
-    return () => {
-      window.history.scrollRestoration = 'auto';
-    };
-  }, [loading]);
+  }, [loading, location.state, properties.length]);
 
   useEffect(() => {
     const fetchProperties = () => {
@@ -135,7 +158,12 @@ const Home = () => {
               p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
               (p.propertyCode && p.propertyCode.toLowerCase().includes(searchQuery.toLowerCase()))
             ).slice(0, 8).map((property, index) => (
-              <div key={property._id} className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <div 
+                key={property._id} 
+                ref={getPropertyRef(property._id)}
+                className="flex-shrink-0 w-[calc(50%-8px)] snap-start md:w-auto animate-slide-up" 
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <PropertyCard property={property} section="properties" />
               </div>
             ))}
@@ -143,8 +171,8 @@ const Home = () => {
         </div>
       </section>
 
-      <PropertyCategories />
-      <TanaviHighlights />
+      <PropertyCategories categoryRefs={propertyRefs} getCategoryRef={getPropertyRef} />
+      <TanaviHighlights propertyRefs={propertyRefs} getPropertyRef={getPropertyRef} />
       <ChoiceProperties />
       
       <section id="banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.banner ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>

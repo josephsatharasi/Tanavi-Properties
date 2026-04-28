@@ -27,14 +27,8 @@ const Navbar = () => {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
-      // Navigate to home page first, then scroll
-      navigate('/');
-      setTimeout(() => {
-        const element = document.getElementById('choice-properties');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
+      // Navigate to home page with scroll target
+      navigate('/', { state: { scrollTo: 'choice-properties' } });
     }
   };
 

@@ -144,7 +144,7 @@ const About = () => {
                 </div>
               </div>
               <div className="flex justify-center">
-                <div className="max-w-6xl w-full rounded-lg shadow-2xl bg-white p-2 md:p-3">
+                <div className="max-w-6xl w-full">
                   <img 
                     src={tanaviDeals} 
                     alt="TANAVI DEALS - Property Types" 
@@ -165,7 +165,7 @@ const About = () => {
                 </div>
               </div>
               <div className="flex justify-center">
-                <div className="max-w-6xl w-full rounded-lg shadow-2xl bg-white p-2 md:p-3">
+                <div className="max-w-6xl w-full">
                   <img 
                     src={imagePng} 
                     alt="TANAVI SERVICES - Real Estate Solutions" 

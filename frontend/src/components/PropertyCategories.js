@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GiPlantSeed, GiHouse, GiBarn, GiBriefcase } from 'react-icons/gi';
 import { FaMapMarkerAlt, FaBuilding } from 'react-icons/fa';
 
-const PropertyCategories = () => {
+const PropertyCategories = ({ categoryRefs, getCategoryRef }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -32,10 +33,17 @@ const PropertyCategories = () => {
   ];
 
   const handleCategoryClick = (slug) => {
-    // Store the section ID and scroll position (same as HighlightCard)
-    sessionStorage.setItem('returnSection', 'categories');
-    sessionStorage.setItem('scrollPosition', window.scrollY);
-    navigate(`/category/${slug}`);
+    const currentScrollPosition = window.scrollY;
+
+    // Navigate with restoration context
+    navigate(`/category/${slug}`, {
+      state: {
+        fromRoute: location.pathname,
+        categorySlug: slug,
+        scrollPosition: currentScrollPosition,
+        section: 'categories',
+      }
+    });
   };
 
   return (
@@ -45,7 +53,8 @@ const PropertyCategories = () => {
         <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {categories.map((category, index) => (
             <div 
-              key={index} 
+              key={index}
+              ref={getCategoryRef ? getCategoryRef(category.slug) : null}
               onClick={() => handleCategoryClick(category.slug)}
               className={`flex flex-col items-center justify-center p-6 border-2 border-gray-300 rounded-lg hover:shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               style={{ transitionDelay: `${index * 100}ms` }}

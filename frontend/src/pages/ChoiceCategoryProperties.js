@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import PropertyCard from '../components/PropertyCard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -8,8 +8,11 @@ import API_URL from '../utils/api';
 const ChoiceCategoryProperties = () => {
   const { category: categorySlug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const propertyRefs = useRef({});
+  const hasRestoredRef = useRef(false);
 
   // Map slugs to actual category names
   const categoryMap = {
@@ -25,23 +28,59 @@ const ChoiceCategoryProperties = () => {
 
   console.log('ChoiceCategoryProperties rendered, slug:', categorySlug, 'category:', category);
 
+  // Get ref for a specific property card
+  const getPropertyRef = useCallback((propertyId) => {
+    if (!propertyRefs.current[propertyId]) {
+      propertyRefs.current[propertyId] = React.createRef();
+    }
+    return propertyRefs.current[propertyId];
+  }, []);
+
   useEffect(() => {
     fetchProperties();
-    
-    // Always start at top when entering category page
-    const returnSection = sessionStorage.getItem('returnSection');
-    
-    if (returnSection === 'choice') {
-      // Returning from property details - go to top of page
-      window.scrollTo(0, 0);
-      // Reset returnSection back to 'choice-properties' for home navigation
-      sessionStorage.setItem('returnSection', 'choice-properties');
-      sessionStorage.removeItem('returnCategory');
-    } else if (!returnSection) {
-      // Coming fresh from home - start at top
+  }, [categorySlug]);
+
+  // Restore scroll and highlight card when returning from detail page
+  useEffect(() => {
+    if (hasRestoredRef.current || loading) return;
+
+    const shouldRestore = location.state?.restoreContext === true;
+    const clickedPropertyId = location.state?.clickedPropertyId;
+    const savedScrollPosition = location.state?.scrollPosition;
+
+    if (shouldRestore) {
+      if (clickedPropertyId && propertyRefs.current[clickedPropertyId]) {
+        // Scroll to the clicked card and highlight it
+        setTimeout(() => {
+          const cardRef = propertyRefs.current[clickedPropertyId];
+          if (cardRef?.current) {
+            cardRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+
+            // Add highlight effect
+            cardRef.current.classList.add('card-highlight');
+            setTimeout(() => {
+              cardRef.current?.classList.remove('card-highlight');
+            }, 2000);
+          }
+        }, 150);
+      } else if (savedScrollPosition !== undefined) {
+        // Fallback to scroll position
+        setTimeout(() => {
+          window.scrollTo({
+            top: savedScrollPosition,
+            behavior: 'smooth',
+          });
+        }, 150);
+      }
+      hasRestoredRef.current = true;
+    } else {
+      // Fresh navigation - scroll to top
       window.scrollTo(0, 0);
     }
-  }, [categorySlug]);
+  }, [loading, location.state]);
 
   const fetchProperties = async () => {
     try {
@@ -64,9 +103,17 @@ const ChoiceCategoryProperties = () => {
   };
 
   const handleBackClick = () => {
-    // Store the section for Home to restore (same as HighlightCard)
-    // returnSection and scrollPosition are already in sessionStorage from when we navigated here
-    navigate('/');
+    // Navigate back to home with restoration context
+    const categorySlug = location.state?.categorySlug || categorySlug;
+    const scrollPosition = location.state?.scrollPosition;
+
+    navigate('/', {
+      state: {
+        restoreContext: true,
+        clickedPropertyId: categorySlug, // Use category slug as the "card" ID
+        scrollPosition: scrollPosition,
+      }
+    });
   };
 
   if (loading) {
@@ -114,12 +161,16 @@ const ChoiceCategoryProperties = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <PropertyCard 
-                key={property._id} 
-                property={property} 
-                section="choice"
-                fromCategory={category}
-              />
+              <div
+                key={property._id}
+                ref={getPropertyRef(property._id)}
+              >
+                <PropertyCard 
+                  property={property} 
+                  section="choice"
+                  fromCategory={category}
+                />
+              </div>
             ))}
           </div>
         )}

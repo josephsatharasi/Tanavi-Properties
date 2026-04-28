@@ -33,7 +33,7 @@ const ProjectDetail = () => {
     <div className="pt-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button 
-          onClick={() => navigate('/projects')} 
+          onClick={() => navigate(-1)} 
           className="mb-6 text-primary hover:underline flex items-center gap-2"
         >
           ← Back to Projects

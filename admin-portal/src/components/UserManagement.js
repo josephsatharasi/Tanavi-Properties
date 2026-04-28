@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { FaEdit, FaTrash, FaUser } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaUser, FaStore } from 'react-icons/fa';
 import API_URL from '../utils/api';
 
 const UserManagement = ({ showToast, setModal }) => {
   const [users, setUsers] = useState([]);
+  const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [userForm, setUserForm] = useState({ name: '', email: '', phone: '' });
+  const [activeView, setActiveView] = useState('users'); // 'users' or 'sellers'
 
   useEffect(() => {
     fetchUsers();
+    fetchSellers();
   }, []);
 
   const fetchUsers = async () => {
@@ -27,6 +30,21 @@ const UserManagement = ({ showToast, setModal }) => {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSellers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/properties/sellers`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSellers(data);
+      }
+    } catch (error) {
+      console.error('Error fetching sellers:', error);
     }
   };
 
@@ -90,15 +108,64 @@ const UserManagement = ({ showToast, setModal }) => {
     });
   };
 
+  const handleDeleteSeller = (propertyId, sellerName) => {
+    setModal({
+      isOpen: true,
+      type: 'warning',
+      title: 'Confirm Delete',
+      message: `Delete seller "${sellerName}" and their property listing?`,
+      showCancel: true,
+      onConfirm: async () => {
+        setModal({ isOpen: false });
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch(`${API_URL}/api/properties/${propertyId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            setSellers(sellers.filter(s => s._id !== propertyId));
+            showToast('Seller and property deleted successfully!', 'success');
+          } else {
+            showToast('Failed to delete seller', 'error');
+          }
+        } catch (error) {
+          showToast('Failed to delete seller', 'error');
+        }
+      }
+    });
+  };
+
   if (loading) {
-    return <div className="text-center py-8">Loading users...</div>;
+    return <div className="text-center py-8">Loading...</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">User Management (Chat Users)</h2>
-        <div className="text-sm text-gray-600">Total Users: {users.length}</div>
+        <h2 className="text-xl font-bold">User Management</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setActiveView('users')}
+            className={`px-6 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+              activeView === 'users'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            <FaUser /> Chat Users ({users.length})
+          </button>
+          <button
+            onClick={() => setActiveView('sellers')}
+            className={`px-6 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+              activeView === 'sellers'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            <FaStore /> Sellers ({sellers.length})
+          </button>
+        </div>
       </div>
 
       {showEditForm && (
@@ -160,60 +227,124 @@ const UserManagement = ({ showToast, setModal }) => {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
-        <table className="w-full min-w-[600px]">
-          <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-            <tr>
-              <th className="px-6 py-4 text-left font-semibold">Name</th>
-              <th className="px-6 py-4 text-left font-semibold">Email</th>
-              <th className="px-6 py-4 text-left font-semibold">Phone</th>
-              <th className="px-6 py-4 text-left font-semibold">Joined</th>
-              <th className="px-6 py-4 text-center font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length === 0 ? (
+      {activeView === 'users' && (
+        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+          <table className="w-full min-w-[600px]">
+            <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
               <tr>
-                <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                  No users found
-                </td>
+                <th className="px-6 py-4 text-left font-semibold">Name</th>
+                <th className="px-6 py-4 text-left font-semibold">Email</th>
+                <th className="px-6 py-4 text-left font-semibold">Phone</th>
+                <th className="px-6 py-4 text-left font-semibold">Joined</th>
+                <th className="px-6 py-4 text-center font-semibold">Actions</th>
               </tr>
-            ) : (
-              users.map(user => (
-                <tr key={user._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <FaUser className="text-gray-400" />
-                      <span className="font-medium">{user.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{user.email}</td>
-                  <td className="px-6 py-4 text-gray-700">{user.phone || 'N/A'}</td>
-                  <td className="px-6 py-4 text-gray-700">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button 
-                      onClick={() => handleEditUser(user)} 
-                      className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2"
-                      title="Edit User"
-                    >
-                      <FaEdit size={18} />
-                    </button>
-                    <button 
-                      onClick={() => handleDeleteUser(user._id, user.name)} 
-                      className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
-                      title="Delete User"
-                    >
-                      <FaTrash size={18} />
-                    </button>
+            </thead>
+            <tbody>
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                    No chat users found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                users.map(user => (
+                  <tr key={user._id} className="border-b hover:bg-blue-50 transition-colors duration-200">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <FaUser className="text-gray-400" />
+                        <span className="font-medium">{user.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">{user.email}</td>
+                    <td className="px-6 py-4 text-gray-700">{user.phone || 'N/A'}</td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button 
+                        onClick={() => handleEditUser(user)} 
+                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 p-2 rounded-full transition mr-2"
+                        title="Edit User"
+                      >
+                        <FaEdit size={18} />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteUser(user._id, user.name)} 
+                        className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
+                        title="Delete User"
+                      >
+                        <FaTrash size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {activeView === 'sellers' && (
+        <div className="bg-white rounded-lg shadow-lg overflow-x-auto">
+          <table className="w-full min-w-[800px]">
+            <thead className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+              <tr>
+                <th className="px-6 py-4 text-left font-semibold">Property ID</th>
+                <th className="px-6 py-4 text-left font-semibold">Seller Name</th>
+                <th className="px-6 py-4 text-left font-semibold">Email</th>
+                <th className="px-6 py-4 text-left font-semibold">Phone</th>
+                <th className="px-6 py-4 text-left font-semibold">Property Title</th>
+                <th className="px-6 py-4 text-left font-semibold">Listed Date</th>
+                <th className="px-6 py-4 text-center font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sellers.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                    No sellers found
+                  </td>
+                </tr>
+              ) : (
+                sellers.map(seller => (
+                  <tr key={seller._id} className="border-b hover:bg-green-50 transition-colors duration-200">
+                    <td className="px-6 py-4">
+                      <span className="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                        {seller.propertyCode || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <FaStore className="text-gray-400" />
+                        <span className="font-medium">{seller.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">{seller.email}</td>
+                    <td className="px-6 py-4">
+                      <a href={`tel:${seller.phone}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                        📞 {seller.phone}
+                      </a>
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">{seller.title}</td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {new Date(seller.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button 
+                        onClick={() => handleDeleteSeller(seller._id, seller.name)} 
+                        className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
+                        title="Delete Seller & Property"
+                      >
+                        <FaTrash size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

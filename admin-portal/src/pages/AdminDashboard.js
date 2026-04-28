@@ -936,8 +936,8 @@ const AdminDashboard = () => {
           ></div>
           
           {/* Drawer */}
-          <div className="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-2xl animate-slideInRight">
-            <div className="p-4 border-b flex justify-between items-center">
+          <div className="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-2xl animate-slideInRight overflow-y-auto">
+            <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-white z-10">
               <h2 className="text-xl font-bold">Menu</h2>
               <button onClick={() => setSidebarOpen(false)} className="text-gray-500 hover:text-gray-700">
                 <FaTimes size={24} />

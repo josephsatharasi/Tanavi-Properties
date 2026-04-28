@@ -1,10 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaBed, FaBath, FaCar, FaRulerCombined } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 
 const PropertyCard = ({ property, section = 'properties', fromCategory = null }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const getAreaUnit = (type) => {
     if (type === 'Agricultural Land' || type === 'Farmhouse') return 'Acres/Guntas';
@@ -100,32 +101,19 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
         </div>
         <button 
           onClick={() => {
-            // When clicking from a category page:
-            // 1. DON'T save category scroll - we want to return to top of category page
-            // 2. Set return section for property details back navigation
-            sessionStorage.setItem('returnSection', section);
-            
-            // 3. Save category info if coming from a category page
-            if (fromCategory) {
-              const categorySlugMap = {
-                'Agricultural Land': 'agricultural-land',
-                'Independent House': 'independent-house',
-                'Open Plot': 'open-plot',
-                'Apartment': 'apartment',
-                'Farmhouse': 'farmhouse',
-                'Office / Commercial Space': 'office-commercial-space'
-              };
-              const categorySlug = categorySlugMap[fromCategory] || fromCategory;
-              sessionStorage.setItem('returnCategory', categorySlug);
-            } else {
-              sessionStorage.removeItem('returnCategory');
-            }
-            
-            // 4. DON'T touch scrollPosition - it should still have the home scroll position
-            // This way when we go: Category -> Property -> Category -> Home,
-            // the home scroll position is preserved
-            
-            navigate(`/property/${property._id || property.id}`);
+            const propertyId = property._id || property.id;
+            const currentScrollPosition = window.scrollY;
+
+            // Navigate with restoration context
+            navigate(`/property/${propertyId}`, {
+              state: {
+                fromRoute: location.pathname,
+                clickedPropertyId: propertyId,
+                scrollPosition: currentScrollPosition,
+                fromCategory: fromCategory,
+                section: section,
+              }
+            });
           }}
           className="w-full bg-primary text-white py-2 rounded hover:opacity-90 transition"
         >

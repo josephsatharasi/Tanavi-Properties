@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaMapMarkerAlt, FaArrowRight, FaCheck } from 'react-icons/fa';
 import { getImageUrl } from '../utils/api';
 import API_URL from '../utils/api';
 
 const HighlightCard = ({ property }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showCopyNotification, setShowCopyNotification] = useState(false);
 
@@ -95,9 +96,18 @@ const HighlightCard = ({ property }) => {
         <div className="flex items-center justify-between gap-2">
           <button 
             onClick={() => {
-              sessionStorage.setItem('returnSection', 'tanavi-highlights');
-              sessionStorage.setItem('scrollPosition', window.scrollY);
-              navigate(`/property/${property._id || property.id}`);
+              const propertyId = property._id || property.id;
+              const currentScrollPosition = window.scrollY;
+
+              // Navigate with restoration context
+              navigate(`/property/${propertyId}`, {
+                state: {
+                  fromRoute: location.pathname,
+                  clickedPropertyId: propertyId,
+                  scrollPosition: currentScrollPosition,
+                  section: 'highlights',
+                }
+              });
             }}
             className="flex items-center gap-2 text-primary font-semibold group-hover:text-secondary transition-colors"
           >

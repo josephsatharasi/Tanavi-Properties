@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import PropertyCard from '../components/PropertyCard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -9,10 +9,13 @@ const CategoryProperties = () => {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const propertyRefs = useRef({});
+  const hasRestoredRef = useRef(false);
   
-  const location = searchParams.get('location');
+  const locationParam = searchParams.get('location');
   const type = searchParams.get('type');
   const priceRange = searchParams.get('price');
   const searchQuery = searchParams.get('search');
@@ -41,21 +44,55 @@ const CategoryProperties = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Get ref for a specific property card
+  const getPropertyRef = useCallback((propertyId) => {
+    if (!propertyRefs.current[propertyId]) {
+      propertyRefs.current[propertyId] = React.createRef();
+    }
+    return propertyRefs.current[propertyId];
+  }, []);
+
+  // Restore scroll and highlight card when returning from detail page
   useEffect(() => {
-    // Always start at top when entering category page
-    const returnSection = sessionStorage.getItem('returnSection');
-    
-    if (returnSection === 'category') {
-      // Returning from property details - go to top of page
-      window.scrollTo(0, 0);
-      // Reset returnSection back to 'categories' for home navigation
-      sessionStorage.setItem('returnSection', 'categories');
-      sessionStorage.removeItem('returnCategory');
-    } else if (!returnSection) {
-      // Coming fresh from home - start at top
+    if (hasRestoredRef.current || loading) return;
+
+    const shouldRestore = location.state?.restoreContext === true;
+    const clickedPropertyId = location.state?.clickedPropertyId;
+    const savedScrollPosition = location.state?.scrollPosition;
+
+    if (shouldRestore) {
+      if (clickedPropertyId && propertyRefs.current[clickedPropertyId]) {
+        // Scroll to the clicked card and highlight it
+        setTimeout(() => {
+          const cardRef = propertyRefs.current[clickedPropertyId];
+          if (cardRef?.current) {
+            cardRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+
+            // Add highlight effect
+            cardRef.current.classList.add('card-highlight');
+            setTimeout(() => {
+              cardRef.current?.classList.remove('card-highlight');
+            }, 2000);
+          }
+        }, 150);
+      } else if (savedScrollPosition !== undefined) {
+        // Fallback to scroll position
+        setTimeout(() => {
+          window.scrollTo({
+            top: savedScrollPosition,
+            behavior: 'smooth',
+          });
+        }, 150);
+      }
+      hasRestoredRef.current = true;
+    } else {
+      // Fresh navigation - scroll to top
       window.scrollTo(0, 0);
     }
-  }, []);
+  }, [loading, location.state]);
   
   const categoryMap = {
     'agricultural-lands': 'Agricultural Land',
@@ -90,8 +127,8 @@ const CategoryProperties = () => {
     );
   }
   
-  if (location) {
-    filteredProperties = filteredProperties.filter(p => p.location === location);
+  if (locationParam) {
+    filteredProperties = filteredProperties.filter(p => p.location === locationParam);
   }
   
   if (type) {
@@ -111,10 +148,17 @@ const CategoryProperties = () => {
   }
 
   const handleBackClick = () => {
-    // When going back to home, the scrollPosition should already be in sessionStorage
-    // from when we first navigated from Home to this category page
-    // Just navigate back and let Home.js handle the restoration
-    navigate('/');
+    // Navigate back to home with restoration context
+    const categorySlug = location.state?.categorySlug || category;
+    const scrollPosition = location.state?.scrollPosition;
+
+    navigate('/', {
+      state: {
+        restoreContext: true,
+        clickedPropertyId: categorySlug, // Use category slug as the "card" ID
+        scrollPosition: scrollPosition,
+      }
+    });
   };
 
   if (loading) return <LoadingSpinner />;
@@ -133,10 +177,10 @@ const CategoryProperties = () => {
         </div>
         
         <h1 className="text-4xl font-bold mb-4">{categoryName}</h1>
-        {(location || type || priceRange || searchQuery) && (
+        {(locationParam || type || priceRange || searchQuery) && (
           <div className="mb-4 flex gap-2 flex-wrap">
             {searchQuery && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Search: {searchQuery}</span>}
-            {location && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Location: {location}</span>}
+            {locationParam && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Location: {locationParam}</span>}
             {type && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Type: {type}</span>}
             {priceRange && <span className="bg-primary text-white px-3 py-1 rounded-full text-sm">Budget: {priceRange === '500+' ? 'Above 5 Cr' : priceRange.split('-').join('L - ') + (priceRange.includes('-') ? 'L' : '')}</span>}
           </div>
@@ -146,12 +190,16 @@ const CategoryProperties = () => {
         {filteredProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredProperties.map((property) => (
-              <PropertyCard 
-                key={property._id || property.id} 
-                property={property}
-                section="category"
-                fromCategory={category}
-              />
+              <div
+                key={property._id || property.id}
+                ref={getPropertyRef(property._id || property.id)}
+              >
+                <PropertyCard 
+                  property={property}
+                  section="category"
+                  fromCategory={category}
+                />
+              </div>
             ))}
           </div>
         ) : (
