@@ -13,6 +13,56 @@ const PropertyDetails = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Save navigation context when component mounts
+  useEffect(() => {
+    const fromRoute = location.state?.fromRoute;
+    const clickedPropertyId = location.state?.clickedPropertyId;
+
+    if (fromRoute && clickedPropertyId) {
+      // Store for browser back button
+      sessionStorage.setItem('propertyDetailsContext', JSON.stringify({
+        fromRoute,
+        clickedPropertyId,
+        timestamp: Date.now()
+      }));
+    } else {
+      // Check if we have lastClickedProperty from card click
+      const lastClicked = sessionStorage.getItem('lastClickedProperty');
+      if (lastClicked) {
+        try {
+          const context = JSON.parse(lastClicked);
+          if (Date.now() - context.timestamp < 30000) {
+            sessionStorage.setItem('propertyDetailsContext', JSON.stringify({
+              fromRoute: context.fromRoute,
+              clickedPropertyId: context.propertyId,
+              timestamp: Date.now()
+            }));
+          }
+        } catch (e) {
+          console.error('Error parsing last clicked property:', e);
+        }
+      }
+    }
+
+    // Cleanup on unmount - prepare for browser back
+    return () => {
+      const storedContext = sessionStorage.getItem('propertyDetailsContext');
+      if (storedContext) {
+        try {
+          const context = JSON.parse(storedContext);
+          // Store as navigation context for the page we're going back to
+          sessionStorage.setItem('navigationContext', JSON.stringify({
+            restoreContext: true,
+            clickedPropertyId: context.clickedPropertyId,
+            timestamp: Date.now()
+          }));
+        } catch (e) {
+          console.error('Error preparing navigation context:', e);
+        }
+      }
+    };
+  }, [location.state]);
+
   const getAreaUnit = (type) => {
     if (type === 'Agricultural Land' || type === 'Farmhouse') return 'Acres/Guntas';
     if (type === 'Open Plot') return 'Sq Yards';
@@ -99,21 +149,46 @@ const PropertyDetails = () => {
   }, [property]);
 
   const handleBackClick = () => {
-    const fromRoute = location.state?.fromRoute;
-    const clickedPropertyId = location.state?.clickedPropertyId;
-    const scrollPosition = location.state?.scrollPosition;
+    let fromRoute = location.state?.fromRoute;
+    let clickedPropertyId = location.state?.clickedPropertyId;
 
-    if (fromRoute) {
-      // Navigate back with restoration context
+    // Check sessionStorage if location.state is not available
+    if (!fromRoute || !clickedPropertyId) {
+      const storedContext = sessionStorage.getItem('propertyDetailsContext');
+      if (storedContext) {
+        try {
+          const context = JSON.parse(storedContext);
+          if (Date.now() - context.timestamp < 30000) {
+            fromRoute = context.fromRoute;
+            clickedPropertyId = context.clickedPropertyId;
+          }
+        } catch (e) {
+          console.error('Error parsing property details context:', e);
+        }
+      }
+    }
+
+    if (fromRoute && clickedPropertyId) {
+      // Store restoration context
+      sessionStorage.setItem('navigationContext', JSON.stringify({
+        restoreContext: true,
+        clickedPropertyId: clickedPropertyId,
+        timestamp: Date.now()
+      }));
+
+      // Clean up
+      sessionStorage.removeItem('propertyDetailsContext');
+      sessionStorage.removeItem('lastClickedProperty');
+
+      // Navigate back
       navigate(fromRoute, {
         state: {
           restoreContext: true,
           clickedPropertyId: clickedPropertyId,
-          scrollPosition: scrollPosition,
-        }
+        },
+        replace: false
       });
     } else {
-      // Fallback to browser back
       navigate(-1);
     }
   };
@@ -158,12 +233,12 @@ const PropertyDetails = () => {
                         index === currentImage ? 'opacity-100' : 'opacity-0 absolute inset-0'
                       }`}
                     >
-                      <div className="p-4 md:p-6 lg:p-8">
+                      <div className="p-4 md:p-6 lg:p-8 flex justify-center">
                         <img
                           src={getImageUrl(img, property.propertyCode)}
                           alt={`${property.title} ${index + 1}`}
                           loading="lazy"
-                          className="w-full h-auto rounded-lg shadow-2xl border-8 border-black"
+                          className="max-w-full h-auto rounded-lg shadow-2xl border-8 border-black"
                         />
                       </div>
                     </div>

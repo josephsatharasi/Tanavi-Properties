@@ -14,6 +14,7 @@ const CategoryProperties = () => {
   const [loading, setLoading] = useState(true);
   const propertyRefs = useRef({});
   const hasRestoredRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
   
   const locationParam = searchParams.get('location');
   const type = searchParams.get('type');
@@ -54,45 +55,76 @@ const CategoryProperties = () => {
 
   // Restore scroll and highlight card when returning from detail page
   useEffect(() => {
-    if (hasRestoredRef.current || loading) return;
+    if (hasRestoredRef.current || loading || properties.length === 0) return;
 
-    const shouldRestore = location.state?.restoreContext === true;
-    const clickedPropertyId = location.state?.clickedPropertyId;
-    const savedScrollPosition = location.state?.scrollPosition;
+    let shouldRestore = location.state?.restoreContext === true;
+    let clickedPropertyId = location.state?.clickedPropertyId;
 
-    if (shouldRestore) {
-      if (clickedPropertyId && propertyRefs.current[clickedPropertyId]) {
-        // Scroll to the clicked card and highlight it
-        setTimeout(() => {
-          const cardRef = propertyRefs.current[clickedPropertyId];
-          if (cardRef?.current) {
+    // Check sessionStorage as backup for browser back button
+    if (!shouldRestore) {
+      const storedContext = sessionStorage.getItem('navigationContext');
+      if (storedContext) {
+        try {
+          const context = JSON.parse(storedContext);
+          // Only use if less than 10 seconds old
+          if (Date.now() - context.timestamp < 10000) {
+            shouldRestore = context.restoreContext;
+            clickedPropertyId = context.clickedPropertyId;
+          }
+          sessionStorage.removeItem('navigationContext');
+        } catch (e) {
+          console.error('Error parsing navigation context:', e);
+        }
+      }
+    }
+
+    if (shouldRestore && clickedPropertyId) {
+      // Start from top
+      window.scrollTo(0, 0);
+      
+      // Wait for DOM to be ready, then scroll to card
+      const attemptRestore = (attempts = 0) => {
+        if (attempts > 20) {
+          hasRestoredRef.current = true;
+          return;
+        }
+
+        const cardRef = propertyRefs.current[clickedPropertyId];
+        if (cardRef?.current) {
+          // Scroll to the clicked card
+          scrollTimeoutRef.current = setTimeout(() => {
             cardRef.current.scrollIntoView({
               behavior: 'smooth',
               block: 'center',
             });
 
-            // Add highlight effect
+            // Add highlight animation
             cardRef.current.classList.add('card-highlight');
             setTimeout(() => {
               cardRef.current?.classList.remove('card-highlight');
             }, 2000);
-          }
-        }, 150);
-      } else if (savedScrollPosition !== undefined) {
-        // Fallback to scroll position
-        setTimeout(() => {
-          window.scrollTo({
-            top: savedScrollPosition,
-            behavior: 'smooth',
-          });
-        }, 150);
-      }
-      hasRestoredRef.current = true;
+          }, 100);
+
+          hasRestoredRef.current = true;
+          // Clear sessionStorage after successful restoration
+          sessionStorage.removeItem('lastClickedProperty');
+        } else {
+          // Retry if ref not ready
+          setTimeout(() => attemptRestore(attempts + 1), 50);
+        }
+      };
+
+      attemptRestore();
     } else {
-      // Fresh navigation - scroll to top
       window.scrollTo(0, 0);
     }
-  }, [loading, location.state]);
+
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [loading, location.state, properties.length]);
   
   const categoryMap = {
     'agricultural-lands': 'Agricultural Land',
@@ -148,16 +180,20 @@ const CategoryProperties = () => {
   }
 
   const handleBackClick = () => {
-    // Navigate back to home with restoration context
     const categorySlug = location.state?.categorySlug || category;
-    const scrollPosition = location.state?.scrollPosition;
+
+    sessionStorage.setItem('navigationContext', JSON.stringify({
+      restoreContext: true,
+      clickedPropertyId: categorySlug,
+      timestamp: Date.now()
+    }));
 
     navigate('/', {
       state: {
         restoreContext: true,
-        clickedPropertyId: categorySlug, // Use category slug as the "card" ID
-        scrollPosition: scrollPosition,
-      }
+        clickedPropertyId: categorySlug,
+      },
+      replace: false
     });
   };
 

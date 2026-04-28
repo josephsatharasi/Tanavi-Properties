@@ -102,14 +102,19 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
         <button 
           onClick={() => {
             const propertyId = property._id || property.id;
-            const currentScrollPosition = window.scrollY;
+
+            // Save clicked property to sessionStorage for browser back button
+            sessionStorage.setItem('lastClickedProperty', JSON.stringify({
+              propertyId: propertyId,
+              fromRoute: location.pathname,
+              timestamp: Date.now()
+            }));
 
             // Navigate with restoration context
             navigate(`/property/${propertyId}`, {
               state: {
                 fromRoute: location.pathname,
                 clickedPropertyId: propertyId,
-                scrollPosition: currentScrollPosition,
                 fromCategory: fromCategory,
                 section: section,
               }

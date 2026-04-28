@@ -23,6 +23,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const propertyRefs = useRef({});
   const hasRestoredRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
 
   // Get ref for a specific property card
   const getPropertyRef = useCallback((propertyId) => {
@@ -48,17 +49,32 @@ const Home = () => {
     return () => observer.disconnect();
   }, [loading]);
 
-  // Restore scroll and highlight card when returning from detail page
+  // Restore scroll and highlight card when returning from category page
   useEffect(() => {
     if (hasRestoredRef.current || loading || properties.length === 0) return;
 
-    const shouldRestore = location.state?.restoreContext === true;
-    const clickedPropertyId = location.state?.clickedPropertyId;
-    const savedScrollPosition = location.state?.scrollPosition;
+    let shouldRestore = location.state?.restoreContext === true;
+    let clickedPropertyId = location.state?.clickedPropertyId;
     const scrollTo = location.state?.scrollTo;
 
+    // Check sessionStorage as backup for browser back button
+    if (!shouldRestore) {
+      const storedContext = sessionStorage.getItem('navigationContext');
+      if (storedContext) {
+        try {
+          const context = JSON.parse(storedContext);
+          if (Date.now() - context.timestamp < 10000) {
+            shouldRestore = context.restoreContext;
+            clickedPropertyId = context.clickedPropertyId;
+          }
+          sessionStorage.removeItem('navigationContext');
+        } catch (e) {
+          console.error('Error parsing navigation context:', e);
+        }
+      }
+    }
+
     if (scrollTo) {
-      // Scroll to specific section (e.g., choice-properties)
       setTimeout(() => {
         const element = document.getElementById(scrollTo);
         if (element) {
@@ -66,12 +82,18 @@ const Home = () => {
         }
         hasRestoredRef.current = true;
       }, 300);
-    } else if (shouldRestore) {
-      // Wait longer for refs to be created and DOM to be ready
-      setTimeout(() => {
-        if (clickedPropertyId && propertyRefs.current[clickedPropertyId]) {
-          const cardRef = propertyRefs.current[clickedPropertyId];
-          if (cardRef?.current) {
+    } else if (shouldRestore && clickedPropertyId) {
+      window.scrollTo(0, 0);
+      
+      const attemptRestore = (attempts = 0) => {
+        if (attempts > 20) {
+          hasRestoredRef.current = true;
+          return;
+        }
+
+        const cardRef = propertyRefs.current[clickedPropertyId];
+        if (cardRef?.current) {
+          scrollTimeoutRef.current = setTimeout(() => {
             cardRef.current.scrollIntoView({
               behavior: 'smooth',
               block: 'center',
@@ -81,18 +103,24 @@ const Home = () => {
             setTimeout(() => {
               cardRef.current?.classList.remove('card-highlight');
             }, 2000);
-          }
-        } else if (savedScrollPosition !== undefined) {
-          window.scrollTo({
-            top: savedScrollPosition,
-            behavior: 'smooth',
-          });
+          }, 100);
+
+          hasRestoredRef.current = true;
+        } else {
+          setTimeout(() => attemptRestore(attempts + 1), 50);
         }
-        hasRestoredRef.current = true;
-      }, 500);
+      };
+
+      attemptRestore();
     } else {
       window.scrollTo(0, 0);
     }
+
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [loading, location.state, properties.length]);
 
   useEffect(() => {
