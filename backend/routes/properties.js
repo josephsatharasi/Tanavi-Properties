@@ -89,15 +89,29 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
-router.post('/user-listing', async (req, res) => {
+router.post('/user-listing', protect, async (req, res) => {
   try {
     const userListing = {
       ...req.body,
+      userId: req.user._id,
       status: 'pending',
       sections: ['user-submitted']
     };
     const property = await Property.create(userListing);
     res.status(201).json({ message: 'Property submitted for review', property });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get user's own listings
+router.get('/user-listings', protect, async (req, res) => {
+  try {
+    const properties = await Property.find({ userId: req.user._id })
+      .select('-__v')
+      .lean()
+      .sort({ createdAt: -1 });
+    res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

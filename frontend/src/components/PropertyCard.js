@@ -79,11 +79,6 @@ const PropertyCard = ({ property, section = 'properties', fromCategory = null })
     <div className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 border border-gray-200 h-full flex flex-col">
       <div className="relative">
         <img src={getImageUrl(property.images?.[0] || property.image)} alt={property.title} className="w-full h-48 object-cover" loading="lazy" />
-        {property.propertyCode && (
-          <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-            ID: {property.propertyCode}
-          </div>
-        )}
       </div>
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-2">

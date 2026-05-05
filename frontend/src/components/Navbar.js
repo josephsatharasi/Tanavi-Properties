@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaHome } from 'react-icons/fa';
+import { FaHome, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { useAuth } from '../contexts/AuthContext';
 import RegistrationModal from './RegistrationModal';
 import API_URL from '../utils/api';
 
@@ -11,8 +12,15 @@ const Navbar = () => {
   const [hasVisibleGallery, setHasVisibleGallery] = useState(false);
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
   const [mobilePropertiesOpen, setMobilePropertiesOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  // Debug: Log user state
+  useEffect(() => {
+    console.log('Navbar - User state:', user);
+  }, [user]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -54,9 +62,11 @@ const Navbar = () => {
       if (isOpen && !e.target.closest('nav')) {
         setIsOpen(false);
       }
-      // Close properties dropdown when clicking anywhere
       if (propertiesDropdownOpen && !e.target.closest('.properties-dropdown-container')) {
         setPropertiesDropdownOpen(false);
+      }
+      if (userMenuOpen && !e.target.closest('.user-menu-container')) {
+        setUserMenuOpen(false);
       }
     };
     const handleScroll = () => {
@@ -66,6 +76,9 @@ const Navbar = () => {
       if (propertiesDropdownOpen) {
         setPropertiesDropdownOpen(false);
       }
+      if (userMenuOpen) {
+        setUserMenuOpen(false);
+      }
     };
     document.addEventListener('click', handleClickOutside);
     window.addEventListener('scroll', handleScroll);
@@ -73,7 +86,7 @@ const Navbar = () => {
       document.removeEventListener('click', handleClickOutside);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isOpen, propertiesDropdownOpen]);
+  }, [isOpen, propertiesDropdownOpen, userMenuOpen]);
 
   const handleLinkClick = () => {
     setIsOpen(false);
@@ -97,7 +110,6 @@ const Navbar = () => {
             >
               List Your Property
             </button>
-            
             {/* Properties Dropdown */}
             <div className="relative properties-dropdown-container">
               <button
@@ -145,6 +157,43 @@ const Navbar = () => {
             <a href="/buy-sell" className={`px-4 py-2 font-medium transition ${isActive('/buy-sell') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Buy & Sell</a>
             <a href="/guide" className={`px-4 py-2 font-medium transition ${isActive('/guide') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>Guide</a>
             <a href="/about" className={`px-4 py-2 font-medium transition ${isActive('/about') ? 'bg-primary text-white rounded' : 'text-gray-700 hover:text-primary'}`}>About</a>
+            
+            {user && (
+              <div className="relative user-menu-container">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-primary font-medium transition"
+                >
+                  <FaUser className="text-lg" />
+                  <span>{user.name}</span>
+                </button>
+                
+                {userMenuOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="font-semibold text-gray-800">{user.name}</p>
+                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="text-sm text-gray-600">{user.phone}</p>
+                    </div>
+                    <a
+                      href="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition font-medium"
+                    >
+                      <FaUser />
+                      <span>My Profile</span>
+                    </a>
+                    <button
+                      onClick={() => { logout(); setUserMenuOpen(false); }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50 transition font-medium"
+                    >
+                      <FaSignOutAlt />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <button onClick={() => setIsOpen(!isOpen)} className="md:hidden flex items-center justify-center w-10 h-10 self-center">
@@ -215,6 +264,31 @@ const Navbar = () => {
             <a href="/buy-sell" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/buy-sell') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Buy & Sell</a>
             <a href="/guide" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/guide') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>Guide</a>
             <a href="/about" onClick={handleLinkClick} className={`block px-4 py-3 rounded-lg transition font-medium ${isActive('/about') ? 'bg-primary text-white' : 'text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white'}`}>About</a>
+            
+            {user && (
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <div className="px-4 py-3 bg-white/50 rounded-lg mb-2">
+                  <p className="font-semibold text-gray-800">{user.name}</p>
+                  <p className="text-sm text-gray-600">{user.email}</p>
+                  <p className="text-sm text-gray-600">{user.phone}</p>
+                </div>
+                <a
+                  href="/profile"
+                  onClick={handleLinkClick}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-gray-700 bg-white/30 hover:bg-primary/80 hover:text-white rounded-lg font-medium transition mb-2"
+                >
+                  <FaUser />
+                  <span>My Profile</span>
+                </a>
+                <button
+                  onClick={() => { logout(); setIsOpen(false); }}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg font-medium transition"
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -26,6 +26,7 @@ const propertySchema = new mongoose.Schema({
   parkingType: { type: String, enum: ['Public', 'Reserved', ''], default: '' },
   parkingCount: { type: Number, default: 0 },
   // User submission fields
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
   name: String,
   email: String,
   phone: String,

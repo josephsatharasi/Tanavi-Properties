@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaLock } from 'react-icons/fa';
 import API_URL, { getImageUrl } from '../utils/api';
 import { compressImage } from '../utils/imageCompressor';
+import { useAuth } from '../contexts/AuthContext';
 
 const ListProperty = () => {
+  const { user, login } = useAuth();
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', title: '', category: '', price: '', location: '', area: '', 
+    name: user?.name || '', email: user?.email || '', phone: user?.phone || '', title: '', category: '', price: '', location: '', area: '', 
     bedrooms: '', bathrooms: '', description: '', images: [], video: '', parkingType: '', parkingCount: '',
     // Office Space specific fields
     builtUpArea: '', pricePerSqFt: '', expectedRent: '', depositAmount: '', floor: '',
@@ -17,7 +19,7 @@ const ListProperty = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(!!user);
   const [authToken, setAuthToken] = useState(null);
   const [sendingOtp, setSendingOtp] = useState(false);
 
@@ -86,6 +88,8 @@ const ListProperty = () => {
       if (res.ok) {
         setIsVerified(true);
         setAuthToken(data.token);
+        // Update AuthContext with user data
+        login(data.user, data.token);
         showToast('Email verified successfully!', 'success');
       } else {
         showToast(data.message || 'Invalid OTP', 'error');
@@ -247,11 +251,12 @@ const ListProperty = () => {
     }
 
     try {
+      const token = authToken || localStorage.getItem('token');
       const res = await fetch(`${API_URL}/api/properties/user-listing`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });

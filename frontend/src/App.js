@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -20,6 +21,8 @@ import CallLog from './pages/CallLog';
 import ChoiceCategoryProperties from './pages/ChoiceCategoryProperties';
 import ListProperty from './pages/ListProperty';
 import Guide from './pages/Guide';
+
+import Profile from './pages/Profile';
 
 const scrollPositions = {};
 
@@ -50,33 +53,36 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/property/:id" element={<PropertyDetails />} />
-          <Route path="/category/:category" element={<CategoryProperties />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/buy-sell" element={<BuySell />} />
-          <Route path="/guide" element={<Guide />} />
-          <Route path="/gallery/:id" element={<GalleryDetail />} />
-          <Route path="/leadership" element={<Leadership />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/call-log" element={<CallLog />} />
-          <Route path="/choice-category/:category" element={<ChoiceCategoryProperties />} />
-          <Route path="/list-property" element={<ListProperty />} />
-        </Routes>
-        <Footer />
-        <WhatsAppButton />
-        <CallButton />
-        <ScrollToTopButton />
-        <ChatWidget />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="App">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/property/:id" element={<PropertyDetails />} />
+            <Route path="/category/:category" element={<CategoryProperties />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/buy-sell" element={<BuySell />} />
+            <Route path="/guide" element={<Guide />} />
+            <Route path="/gallery/:id" element={<GalleryDetail />} />
+            <Route path="/leadership" element={<Leadership />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/call-log" element={<CallLog />} />
+            <Route path="/choice-category/:category" element={<ChoiceCategoryProperties />} />
+            <Route path="/list-property" element={<ListProperty />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+          <Footer />
+          <WhatsAppButton />
+          <CallButton />
+          <ScrollToTopButton />
+          <ChatWidget />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
