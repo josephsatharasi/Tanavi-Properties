@@ -50,7 +50,7 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-6 md:py-12 bg-white relative">
+    <section className="py-6 md:py-12 bg-background relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">What Our Customers Say</h2>
         <div className="relative">
@@ -60,16 +60,16 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <div 
               key={testimonial._id || index} 
-              className="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl flex-shrink-0 w-80 snap-center flex flex-col items-center text-center transition-all duration-500 hover:scale-105"
+              className="bg-secondary/20 border-2 border-secondary p-8 rounded-lg shadow-lg hover:shadow-2xl flex-shrink-0 w-80 snap-center flex flex-col items-center text-center transition-all duration-500 hover:scale-105"
             >
-              <img src={getImageUrl(testimonial.image)} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-black" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />
-              <p className="font-bold text-lg mb-2">{testimonial.name}</p>
+              <img src={getImageUrl(testimonial.image)} alt={testimonial.name} className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-primary" onError={(e) => e.target.src = 'https://via.placeholder.com/200x200?text=No+Image'} />
+              <p className="font-bold text-lg mb-2 text-textDark">{testimonial.name}</p>
               <div className="flex mb-3">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <span key={i} className="text-yellow-400 text-xl">★</span>
                 ))}
               </div>
-              <p className="text-gray-600 italic">"{testimonial.text}"</p>
+              <p className="text-textGray italic">"{testimonial.text}"</p>
             </div>
           ))}
         </div>

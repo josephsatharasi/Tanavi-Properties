@@ -176,7 +176,7 @@ const Home = () => {
       <AnnouncementMarquee />
       <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       
-      <section id="properties" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+      <section id="properties" data-animate className={`py-6 md:py-8 bg-background transition-all duration-1000 ${visibleSections.properties ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 animate-fade-in">Featured Properties</h2>
 
@@ -203,7 +203,7 @@ const Home = () => {
       <TanaviHighlights propertyRefs={propertyRefs} getPropertyRef={getPropertyRef} />
       <ChoiceProperties />
       
-      <section id="banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections.banner ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+      <section id="banner" data-animate className={`py-6 md:py-8 bg-background transition-all duration-1000 ${visibleSections.banner ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative h-64 md:h-80 rounded-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500">
             <img 
@@ -223,7 +223,7 @@ const Home = () => {
 
       <WhyChoose />
       
-      <section id="agri-banner" data-animate className={`py-6 md:py-8 bg-white transition-all duration-1000 ${visibleSections['agri-banner'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+      <section id="agri-banner" data-animate className={`py-6 md:py-8 bg-background transition-all duration-1000 ${visibleSections['agri-banner'] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative h-64 md:h-80 rounded-lg overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-500">
             <img 

@@ -64,19 +64,19 @@ const FAQ = () => {
   };
 
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-12 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">Frequently Asked Questions</h2>
         <p className="text-center text-gray-600 mb-8">Everything you need to know about Tanavi Properties</p>
         
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={index} className="bg-secondary/10 border-2 border-secondary rounded-lg shadow-md overflow-hidden">
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition"
+                className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-secondary/20 transition"
               >
-                <span className="font-semibold text-gray-800 pr-4">{faq.question}</span>
+                <span className="font-semibold text-textDark pr-4">{faq.question}</span>
                 {openIndex === index ? (
                   <FaChevronUp className="text-primary flex-shrink-0" />
                 ) : (
@@ -84,7 +84,7 @@ const FAQ = () => {
                 )}
               </button>
               {openIndex === index && (
-                <div className="px-6 pb-4 text-gray-600 whitespace-pre-line">
+                <div className="px-6 pb-4 text-textGray whitespace-pre-line">
                   {faq.answer}
                 </div>
               )}
@@ -93,7 +93,7 @@ const FAQ = () => {
         </div>
 
         <div className="mt-8 p-6 bg-primary/10 rounded-lg border-l-4 border-primary">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-textDark">
             <strong>✅ NOTE:</strong> Tanavi Properties operates as a verified property facilitation platform, prioritizing transparency, legal diligence, and customer confidence in every transaction.
           </p>
         </div>

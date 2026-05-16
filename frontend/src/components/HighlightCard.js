@@ -72,7 +72,7 @@ const HighlightCard = ({ property }) => {
         </div>
       )}
 
-      <div className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 h-full">
+      <div className="group relative bg-secondary/10 border-2 border-secondary rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:border-primary transition-all duration-500 h-full">
       <div className="relative h-64 overflow-hidden">
         <img 
           src={getImageUrl(property.images?.[0] || property.image)} 
@@ -87,8 +87,8 @@ const HighlightCard = ({ property }) => {
       </div>
       
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary transition-colors">{property.title}</h3>
-        <div className="flex items-center text-gray-600 mb-4">
+        <h3 className="text-xl font-bold mb-2 text-textDark group-hover:text-primary transition-colors">{property.title}</h3>
+        <div className="flex items-center text-textGray mb-4">
           <FaMapMarkerAlt className="mr-2 text-primary" />
           <span className="text-sm">{property.location}</span>
         </div>

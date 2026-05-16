@@ -27,7 +27,7 @@ const WhyChoose = () => {
   ];
 
   return (
-    <section id="why-choose" className="py-12 md:py-16 bg-white">
+    <section id="why-choose" className="py-12 md:py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">How Tanavi Properties Helps You Succeed</h2>
@@ -44,14 +44,14 @@ const WhyChoose = () => {
                 return (
                   <React.Fragment key={index}>
                     <div className="flex-shrink-0">
-                      <div className="bg-green-700 text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">{step.step}</div>
-                      <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm w-56">
+                      <div className="bg-primary text-white text-xs font-bold px-5 py-1.5 rounded-full inline-block mb-3">{step.step}</div>
+                      <div className="bg-secondary/20 border border-secondary rounded-lg p-4 shadow-sm w-56">
                         <div className="flex flex-col items-center text-center">
-                          <div className="bg-green-100 p-3 rounded-full mb-2">
-                            <Icon className="text-green-700 text-3xl" />
+                          <div className="bg-secondary/30 p-3 rounded-full mb-2">
+                            <Icon className="text-primary text-3xl" />
                           </div>
-                          <h3 className="font-bold text-gray-800 text-sm mb-3 leading-tight">{step.title}</h3>
-                          <div className="bg-gradient-to-r from-amber-700 to-amber-600 text-white py-2 px-3 rounded w-full">
+                          <h3 className="font-bold text-textDark text-sm mb-3 leading-tight">{step.title}</h3>
+                          <div className="bg-gradient-to-r from-primary to-secondary text-white py-2 px-3 rounded w-full">
                             <p className="text-xs font-medium">{step.subtitle}</p>
                           </div>
                         </div>

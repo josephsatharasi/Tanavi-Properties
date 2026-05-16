@@ -9,7 +9,7 @@ const Essentials = () => {
 
   return (
     <>
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Essentials</h2>
           
@@ -24,7 +24,7 @@ const Essentials = () => {
 
             <button
               onClick={() => setShowPrivacy(true)}
-              className="flex items-center justify-center gap-4 p-6 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="flex items-center justify-center gap-4 p-6 bg-gradient-to-r from-secondary to-primary text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
               <FaShieldAlt className="text-4xl" />
               <span className="text-xl font-semibold">PRIVACY POLICY</span>

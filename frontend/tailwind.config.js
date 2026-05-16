@@ -6,8 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#4a7c59',
-        secondary: '#6b8e23',
+        primary: '#EF8E0D',
+        secondary: '#76C2BE',
+        background: '#F7FAFA',
+        textDark: '#000000',
+        textGray: '#737373',
       },
       animation: {
         'fade-in': 'fadeIn 0.8s ease-in-out',

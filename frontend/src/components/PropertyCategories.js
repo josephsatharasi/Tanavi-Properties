@@ -47,7 +47,7 @@ const PropertyCategories = ({ categoryRefs, getCategoryRef }) => {
   };
 
   return (
-    <section id="categories" className="py-6 md:py-8 bg-white">
+    <section id="categories" className="py-6 md:py-8 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className={`text-3xl md:text-4xl font-bold mb-4 md:mb-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>Property Categories</h2>
         <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -56,13 +56,13 @@ const PropertyCategories = ({ categoryRefs, getCategoryRef }) => {
               key={index}
               ref={getCategoryRef ? getCategoryRef(category.slug) : null}
               onClick={() => handleCategoryClick(category.slug)}
-              className={`flex flex-col items-center justify-center p-6 border-2 border-gray-300 rounded-lg hover:shadow-xl hover:scale-110 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`flex flex-col items-center justify-center p-6 bg-secondary/10 border-2 border-secondary rounded-lg hover:shadow-xl hover:scale-110 hover:bg-secondary/20 transition-all duration-500 cursor-pointer ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="hover:rotate-12 transition-transform duration-300">
                 {category.icon}
               </div>
-              <p className="mt-4 text-center font-medium text-gray-700">{category.name}</p>
+              <p className="mt-4 text-center font-medium text-textDark">{category.name}</p>
             </div>
           ))}
         </div>
